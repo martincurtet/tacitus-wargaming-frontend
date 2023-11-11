@@ -1,5 +1,6 @@
 import React from 'react'
 import { socket } from '../connections/socket'
+import '../styles/pages/Home.css'
 
 const Home = () => {
   const createRoom = () => {
