@@ -1,6 +1,7 @@
 {
   "name": "tacitus-wargaming-frontend",
   "version": "0.1.0",
+  "description": "A client for the Tacitus Wargaming website",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",
