@@ -29,7 +29,7 @@ const Board = ({ board, setBoard }) => {
   }
 
   const changeInputBoardSizeC = (e) => {
-    if (!/0-9/.test(e.target.value) && e.target.value >= 1 && e.target.value <= 30) {
+    if (/^[0-9\b]+$/.test(e.target.value) && e.target.value >= 1 && e.target.value <= 30) {
       setInputBoardSizeC(e.target.value)
     } else {
       console.log(`Invalid column number`)
@@ -37,7 +37,7 @@ const Board = ({ board, setBoard }) => {
   }
 
   const changeInputBoardSizeR = (e) => {
-    if (!/0-9/.test(e.target.value) && e.target.value >= 1 && e.target.value <= 30) {
+    if (/^[0-9\b]+$/.test(e.target.value) && e.target.value >= 1 && e.target.value <= 30) {
       setInputBoardSizeR(e.target.value)
     } else {
       console.log(`Invalid row number`)
@@ -57,8 +57,8 @@ const Board = ({ board, setBoard }) => {
       for (let c = 0; c <= boardSize[1]; c++) {
         tempTiles.push(<Tile key={`r${r}c${c}`} rowIndex={r} columnIndex={c} />)
       }
-      setTiles(tempTiles)
     }
+    setTiles(tempTiles)
   }
 
   // TODO put in a use effect
