@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { socket } from '../connections/socket'
 import Modal from '../components/Modal'
+import Board from '../components/Board'
 
 const Battle = () => {
   //
@@ -63,7 +64,7 @@ const Battle = () => {
   // RENDER
   return (
     <div>
-      <div>Board</div>
+      <Board board={board} setBoard={setBoard} />
       <div>Tracker</div>
       <div>Log</div>
       <div>Chat</div>
