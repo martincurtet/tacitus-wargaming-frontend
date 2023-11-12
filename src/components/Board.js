@@ -2,22 +2,24 @@ import React, { useEffect, useState } from 'react'
 import Tile from './Tile'
 import '../styles/components/Board.css'
 import Modal from './Modal'
+import { integerToLetter, terrainToHex } from '../functions/functions'
+import { socket } from '../connections/socket'
+import { useParams } from 'react-router-dom'
 
 const Board = ({ board, setBoard }) => {
-  // TODO
-  // show board
-  // add grid size
-  // edit board modal
-
-  //
-  const [boardSize, setBoardSize] = useState([8, 8]) // rows, columns
-  const [tiles, setTiles] = useState([])
-  const tileSize = 32
+  const params = useParams()
 
   // BOARD SIZE VARIABLES
   const [isBoardSizeModalOpen, setIsBoardSizeModalOpen] = useState(false)
-  const [inputBoardSizeC, setInputBoardSizeC] = useState(8)
   const [inputBoardSizeR, setInputBoardSizeR] = useState(8)
+  const [inputBoardSizeC, setInputBoardSizeC] = useState(8)
+  const [tiles, setTiles] = useState([])
+  const tileSize = 32
+  
+  // BOARD PAINT VARIABLES
+  const [isToolbarOpen, setIsToolbarOpen] = useState(false)
+  const [isPaintOn, setIsPaintOn] = useState(false)
+  let selectedTerrain = ''
 
   //
   const openBoardSizeModal = () => {
@@ -45,37 +47,83 @@ const Board = ({ board, setBoard }) => {
   }
 
   const submitBoardSizeModal = () => {
-    setBoardSize([Number(inputBoardSizeR), Number(inputBoardSizeC)])
+    // setBoard(prevBoard => ({
+    //   ...prevBoard,
+    //   'rows': Number(inputBoardSizeR),
+    //   'columns': Number(inputBoardSizeC)
+    // }))
+    console.log('submitting size modal')
+    socket.emit('update-board', { uuid: params.battleuuid, board: {
+      ...board,
+        'rows': Number(inputBoardSizeR),
+        'columns': Number(inputBoardSizeC)
+    } })
     setIsBoardSizeModalOpen(false)
-    generateTiles()
   }
 
   //
   const generateTiles = () => {
     let tempTiles = []
-    for (let r = 0; r <= boardSize[0]; r++) {
-      for (let c = 0; c <= boardSize[1]; c++) {
-        tempTiles.push(<Tile key={`r${r}c${c}`} rowIndex={r} columnIndex={c} />)
+    for (let r = 0; r <= board['rows']; r++) {
+      for (let c = 0; c <= board['columns']; c++) {
+        let tileContent = (c === 0 && r === 0) ? '' : c === 0 ? r : r === 0 ? integerToLetter(c) : ''
+        let tileColor = '#d9ead3'
+        if (c === 0 || r === 0) tileColor = '#ffffff'
+        if (board[`${integerToLetter(c)}${r}`]) {
+          tileColor = terrainToHex(board[`${integerToLetter(c)}${r}`].terrain)
+        }
+        tempTiles.push(<Tile key={`r${r}c${c}`} content={tileContent} color={tileColor} />)
       }
     }
     setTiles(tempTiles)
   }
 
-  // TODO put in a use effect
+  const toggleToolbar = () => {
+    setIsPaintOn(false)
+    setIsToolbarOpen(prev =>!prev)
+  }
+
+  const togglePaint = () => {
+    setIsPaintOn(prev => !prev)
+  }
+
   useEffect(() => {
     generateTiles()
-  }, [boardSize])
+  }, [board])
 
+  // RENDER
   return (
     <div className='board'>
-      <div className='board-toolbar'>
-        <button onClick={openBoardSizeModal}>Edit Board</button>
-      </div>
+      <button onClick={toggleToolbar}>Toggle Board Toolbar</button>
+      {isToolbarOpen ? (
+        <div className='board-toolbar'>
+          <button onClick={openBoardSizeModal}>Edit Size</button>
+          <button onClick={togglePaint}>Toggle Paint</button>
+          {isPaintOn ? (
+            <select onChange={e => {
+              selectedTerrain = e.target.value
+              console.log(selectedTerrain)
+            }}>
+              <option value='plains'>Plains</option>
+              <option value='forest'>Forest</option>
+              <option value='mud'>Mud</option>
+              <option value='jungle'>Jungle</option>
+              <option value='undergrowth'>Undergrowth</option>
+              <option value='marsh'>Marsh</option>
+              <option value='high-ground'>High Ground</option>
+              <option value='shallow-water'>Shallow Water</option>
+              <option value='deep-water'>Deep Water</option>
+              <option value='fire'>Fire</option>
+              <option value='road'>Road</option>
+            </select>
+          ) : null}
+        </div>
+      ) : null}
       <div
-        className='board-grid'
+        className={`board-grid ${isPaintOn ? 'paint-cursor' : ''}`}
         style={{
-          gridTemplateColumns: `repeat(${boardSize[1]+1}, ${tileSize}px)`,
-          gridTemplateRows: `repeat(${boardSize[0]+1}, ${tileSize}px)`
+          gridTemplateColumns: `repeat(${board['columns']+1}, ${tileSize}px)`,
+          gridTemplateRows: `repeat(${board['rows']+1}, ${tileSize}px)`,
         }}
       >
         {tiles}
