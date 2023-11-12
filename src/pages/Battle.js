@@ -4,6 +4,7 @@ import { socket } from '../connections/socket'
 import Modal from '../components/Modal'
 
 const Battle = () => {
+  //
   const params = useParams()
 
   // USERNAME VARIABLES

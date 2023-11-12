@@ -4,13 +4,16 @@ import { socket } from '../connections/socket'
 import '../styles/pages/Home.css'
 
 const Home = () => {
+  //
   const navigate = useNavigate()
 
+  //
   const createRoom = () => {
     socket.connect()
     socket.emit('create-room')
   }
 
+  // SOCKET LISTENERS
   useEffect(() => {
     socket.on('room-created', (data) => {
       navigate(`/${data.uuid}`)
@@ -21,6 +24,7 @@ const Home = () => {
     }
   }, [navigate])
 
+  // RENDER
   return (
     <div className='page-home'>
       <h1>Tacitus Wargaming</h1>
