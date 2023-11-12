@@ -13,6 +13,16 @@ const integerToLetter = (n) => {
   return result
 }
 
+const terrainToHex = (t) => {
+  const match = {
+    'plains': '#d9ead3',
+    'forest': '#6aa84f',
+    'mud': '#b46006'
+  }
+  return match[t]
+}
+
 module.exports = {
-  integerToLetter
+  integerToLetter,
+  terrainToHex
 }
