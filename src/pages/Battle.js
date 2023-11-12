@@ -56,18 +56,27 @@ const Battle = () => {
       setUsers(data.users)
     })
 
+    socket.on('board-updated', (data) => {
+      setBoard(data.board)
+    })
+
     return () => {
       socket.off('room-joined')
+      socket.off('board-updated')
     }
   }, [])
 
   // RENDER
   return (
     <div>
-      <Board board={board} setBoard={setBoard} />
-      <div>Tracker</div>
-      <div>Log</div>
-      <div>Chat</div>
+      {username !== '' ? (
+        <>
+          <Board board={board} setBoard={setBoard} />
+          <div>Tracker</div>
+          <div>Log</div>
+          <div>Chat</div>
+        </>
+      ) :  null }
       <Modal
         isOpen={isUsernameModalOpen}
         hasCancel={false}
