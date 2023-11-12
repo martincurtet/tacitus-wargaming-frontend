@@ -1,5 +1,6 @@
 import React from 'react'
 import Tile from './Tile'
+import '../styles/components/Board.css'
 
 const Board = ({ board, setBoard }) => {
   // TODO
@@ -23,7 +24,9 @@ const Board = ({ board, setBoard }) => {
   generateTiles()
 
   return (
-    <div>{tiles}</div>
+    <div className='board'>
+      {tiles}
+    </div>
   )
 }
 

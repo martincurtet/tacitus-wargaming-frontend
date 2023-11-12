@@ -1,8 +1,11 @@
 import React from 'react'
+import '../styles/components/Tile.css'
 
 const Tile = ({ rowIndex, columnIndex}) => {
   return (
-    <>{columnIndex}{rowIndex}</>
+    <div className='tile'>
+      {columnIndex}{rowIndex}
+    </div>
   )
 }
 
