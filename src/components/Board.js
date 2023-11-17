@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Tile from './Tile'
 import '../styles/components/Board.css'
 import Modal from './Modal'
-import { integerToLetter, terrainToHex } from '../functions/functions'
+import { cellRange, integerToLetter, terrainToHex } from '../functions/functions'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
 
@@ -14,12 +14,14 @@ const Board = ({ board, setBoard }) => {
   const [inputBoardSizeR, setInputBoardSizeR] = useState(8)
   const [inputBoardSizeC, setInputBoardSizeC] = useState(8)
   const [tiles, setTiles] = useState([])
-  const tileSize = 32
+  const tileSize = 40
   
   // BOARD PAINT VARIABLES
   const [isToolbarOpen, setIsToolbarOpen] = useState(false)
   const [isPaintOn, setIsPaintOn] = useState(false)
-  let selectedTerrain = ''
+  const [inputTerrain, setInputTerrain] = useState('plains')
+  const [startingTile, setStartingTile] = useState(null)
+  const [finishingTile, setFinishingTile] = useState(null)
 
   //
   const openBoardSizeModal = () => {
@@ -47,11 +49,6 @@ const Board = ({ board, setBoard }) => {
   }
 
   const submitBoardSizeModal = () => {
-    // setBoard(prevBoard => ({
-    //   ...prevBoard,
-    //   'rows': Number(inputBoardSizeR),
-    //   'columns': Number(inputBoardSizeC)
-    // }))
     console.log('submitting size modal')
     socket.emit('update-board', { uuid: params.battleuuid, board: {
       ...board,
@@ -72,7 +69,16 @@ const Board = ({ board, setBoard }) => {
         if (board[`${integerToLetter(c)}${r}`]) {
           tileColor = terrainToHex(board[`${integerToLetter(c)}${r}`].terrain)
         }
-        tempTiles.push(<Tile key={`r${r}c${c}`} content={tileContent} color={tileColor} />)
+        tempTiles.push(
+          <Tile
+            key={`r${r}c${c}`}
+            coordinates={`${integerToLetter(c)}${r}`}
+            content={tileContent}
+            color={tileColor}
+            setStartingTile={setStartingTile}
+            setFinishingTile={setFinishingTile}
+          />
+        )
       }
     }
     setTiles(tempTiles)
@@ -89,7 +95,18 @@ const Board = ({ board, setBoard }) => {
 
   useEffect(() => {
     generateTiles()
-  }, [board])
+  }, [board, isPaintOn])
+
+  useEffect(() => {
+    if (finishingTile !== null && isPaintOn) {
+      const cells = cellRange(startingTile, finishingTile)
+      let tempBoard = board
+      cells.forEach(cell => {
+        tempBoard[cell] = { terrain: inputTerrain }
+      })
+      socket.emit('update-board', { uuid: params.battleuuid, board: tempBoard })
+    }
+  }, [finishingTile])
 
   // RENDER
   return (
@@ -100,10 +117,10 @@ const Board = ({ board, setBoard }) => {
           <button onClick={openBoardSizeModal}>Edit Size</button>
           <button onClick={togglePaint}>Toggle Paint</button>
           {isPaintOn ? (
-            <select onChange={e => {
-              selectedTerrain = e.target.value
-              console.log(selectedTerrain)
-            }}>
+            <select
+              onChange={e => setInputTerrain(e.target.value)}
+              value={inputTerrain}
+            >
               <option value='plains'>Plains</option>
               <option value='forest'>Forest</option>
               <option value='mud'>Mud</option>

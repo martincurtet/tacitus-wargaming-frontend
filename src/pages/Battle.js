@@ -14,7 +14,7 @@ const Battle = () => {
   const [inputUsername, setInputUsername] = useState('Tacitus')
 
   // BATTLE VARIABLES
-  const [board, setBoard] = useState([])
+  const [board, setBoard] = useState({})
   const [factions, setFactions] = useState([])
   const [log, setLog] = useState([])
   const [messages, setMessages] = useState([])
