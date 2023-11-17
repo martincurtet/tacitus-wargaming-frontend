@@ -2,5 +2,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.red-border {
+  border: solid 1px red; 
+}
+
+.grey-border {
   border: solid 1px lightgrey;
 }

@@ -1,7 +1,8 @@
 .board-grid {
   display: grid;
+  user-select: none;
 }
 
 .paint-cursor {
-  cursor: url("../../images/paintbrush.png"), default;
+  cursor: url("../../images/paintbrush.png") 0 16, default;
 }
