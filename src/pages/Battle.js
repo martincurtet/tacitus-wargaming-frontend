@@ -5,6 +5,7 @@ import Modal from '../components/Modal'
 import Board from '../components/Board'
 import '../styles/pages/Battle.css'
 import Tracker from '../components/Tracker'
+import Chat from '../components/Chat'
 
 const Battle = () => {
   //
@@ -76,7 +77,7 @@ const Battle = () => {
           <Board board={board} setBoard={setBoard} />
           <Tracker factions={factions} setFactions={setFactions} units={units} setUnits={setUnits} />
           <div>Log</div>
-          <div>Chat</div>
+          <Chat messages={messages} setMessages={setMessages} />
         </>
       ) :  null }
       <Modal
