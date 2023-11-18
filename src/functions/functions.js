@@ -68,8 +68,28 @@ const cellRange = (start, end) => {
   return result
 }
 
+function formatTimestamp(timestamp, format) {
+  const date = new Date(timestamp)
+
+  const formats = {
+    'dd': String(date.getDate()).padStart(2, '0'),
+    'mm': String(date.getMonth() + 1).padStart(2, '0'),
+    'yyyy': String(date.getFullYear()),
+    'hh': String(date.getHours()).padStart(2, '0'),
+    'min': String(date.getMinutes()).padStart(2, '0'),
+    'ss': String(date.getSeconds()).padStart(2, '0')
+  }
+
+  const keys = Object.keys(formats).join('|')
+  const regex = new RegExp(keys, 'g')
+
+  return format.replace(regex, match => formats[match] || match)
+}
+
+
 module.exports = {
   integerToLetter,
   terrainToHex,
-  cellRange
+  cellRange,
+  formatTimestamp
 }
