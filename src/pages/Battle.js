@@ -74,7 +74,7 @@ const Battle = () => {
       {username !== '' ? (
         <>
           <Board board={board} setBoard={setBoard} />
-          <Tracker factions={factions} setFactions={setFactions} />
+          <Tracker factions={factions} setFactions={setFactions} units={units} setUnits={setUnits} />
           <div>Log</div>
           <div>Chat</div>
         </>

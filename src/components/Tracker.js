@@ -4,7 +4,7 @@ import '../styles/components/Tracker.css'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
 
-const Tracker = ({ factions, setFactions }) => {
+const Tracker = ({ factions, setFactions, units, setUnits }) => {
   const params = useParams()
 
   const [isAddFactionModalOpen, setIsAddFactionModalOpen] = useState(false)
@@ -14,6 +14,9 @@ const Tracker = ({ factions, setFactions }) => {
   const [inputEditFaction, setInputEditFaction] = useState('')
   const [isDeleteFactionModalOpen, setIsDeleteFactionModalOpen] = useState(false)
   const [selectedFactionIndex, setSelectedFactionIndex] = useState(-1)
+  const [isEditFactionOn, setIsEditFactionOn] = useState(false)
+
+  const [isEditUnitsOn, setIsEditUnitsOn] = useState(false)
 
   const openAddFactionModal = (i) => {
     setSelectedFactionIndex(i)
@@ -100,15 +103,49 @@ const Tracker = ({ factions, setFactions }) => {
     }
   }, [])
 
+  const toggleEditFaction = () => {
+    setIsEditFactionOn(prev => !prev)
+  }
+
+  const toggleEditUnits = () => {
+    setIsEditUnitsOn(prev => !prev)
+  }
+
   return (
     <div>
-      <button onClick={openAddFactionModal}>Add Faction</button>
+      <button onClick={toggleEditFaction}>Toggle Edit Factions</button>
+      {isEditFactionOn? (<button onClick={openAddFactionModal}>Add Faction</button>) : null}
       <div className='faction-list'>
       {factions.map((f, i) => (
         <div className='faction-item' key={i}>
+          {f.icon ? (
+            <img src={require(`../images/${f.icon}`)} alt='' height={18} width={30} />
+          ) : null}
           <p style={{ color: f.color }}>{f.name}</p>
-          <button onClick={() => openEditFactionModal(i)}>Edit</button>
-          <button onClick={() => openDeleteFactionModal(i)}>Delete</button>
+          {isEditFactionOn ? (
+            <>
+              <button onClick={() => openEditFactionModal(i)}>Edit</button>
+              <button onClick={() => openDeleteFactionModal(i)}>Delete</button>
+            </>
+          ) : null}
+        </div>
+      ))}
+      </div>
+
+      <button onClick={toggleEditUnits}>Toggle Edit Units</button>
+      {isEditUnitsOn ? (
+        <button>Add Unit</button>
+      ) : null}
+      <div className='unit-list'>
+      {units.map((u, i) => (
+        <div className='unit-item' key={i}>
+          <p style={{ color: u.color }}>{u.experience} {u.name}</p>
+          {isEditUnitsOn ? (
+            <>
+              <button>Edit</button>
+              <button>Delete</button>
+            </>
+          ) : null}
         </div>
       ))}
       </div>
