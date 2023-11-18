@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom'
 import { socket } from '../connections/socket'
 import Modal from '../components/Modal'
 import Board from '../components/Board'
+import '../styles/pages/Battle.css'
+import Tracker from '../components/Tracker'
 
 const Battle = () => {
   //
@@ -68,11 +70,11 @@ const Battle = () => {
 
   // RENDER
   return (
-    <div>
+    <div className='page-battle'>
       {username !== '' ? (
         <>
           <Board board={board} setBoard={setBoard} />
-          <div>Tracker</div>
+          <Tracker factions={factions} setFactions={setFactions} />
           <div>Log</div>
           <div>Chat</div>
         </>
