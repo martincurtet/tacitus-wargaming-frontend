@@ -4,5 +4,14 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 5px;
+  column-gap: 5px;
+}
+
+.unit-list {}
+
+.unit-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 5px;
 }
