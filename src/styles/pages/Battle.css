@@ -1,0 +1,6 @@
+.page-battle {
+  display: grid;
+  grid-template-areas:
+    "auto auto"
+    "auto auto";
+}
