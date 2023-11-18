@@ -1,8 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Modal from './Modal'
 import '../styles/components/Tracker.css'
+import { socket } from '../connections/socket'
+import { useParams } from 'react-router-dom'
 
 const Tracker = ({ factions, setFactions }) => {
+  const params = useParams()
+
   const [isAddFactionModalOpen, setIsAddFactionModalOpen] = useState(false)
   const [inputAddFaction, setInputAddFaction] = useState('')
   const [inputFactionColor, setInputFactionColor] = useState('#777777')
@@ -78,6 +82,23 @@ const Tracker = ({ factions, setFactions }) => {
     setFactions(factions.filter((f, i) => i !== selectedFactionIndex))
     setIsDeleteFactionModalOpen(false)
   }
+
+  useEffect(() => {
+    if (factions.length !== 0 && !isAddFactionModalOpen && !isEditFactionModalOpen && !isDeleteFactionModalOpen) {
+      socket.emit('update-factions', { uuid: params.battleuuid, factions: factions })
+    }
+  }, [isAddFactionModalOpen, isEditFactionModalOpen, isDeleteFactionModalOpen])
+
+  useEffect(() => {
+    socket.on('factions-updated', (data) => {
+      console.log('factions updated')
+      setFactions(data.factions)
+    })
+
+    return () => {
+      socket.off('factions-updated')
+    }
+  }, [])
 
   return (
     <div>
