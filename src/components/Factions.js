@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Modal from './Modal'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
+import '../styles/components/Factions.css'
 
 const Factions = ({ factions, setFactions }) => {
   const params = useParams()

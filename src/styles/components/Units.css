@@ -1,0 +1,65 @@
+.unit-store {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 5px;
+
+  width: 500px;
+  height: 100px;
+}
+
+.unit-item {
+  cursor: pointer;
+  padding: 5px;
+  background-color: pink;
+}
+
+.unit-item[tooltip] {
+  position: relative;
+}
+
+.unit-item[tooltip]:hover::after {
+  content: attr(tooltip);
+  background-color: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: pre-wrap;
+  z-index: 1;
+  width: 100px;
+}
+
+.faction-panels {
+  display: flex;
+  flex-direction: row;
+}
+
+.faction-panel {
+  /* display: flex;
+  flex-direction: column;
+  align-items: center; */
+  width: 300px;
+  padding: 5px;
+}
+
+.faction-panel-title {
+  font-weight: bold;
+  font-size: large;
+  text-align: center;
+}
+
+.faction-unit {
+  background-color: lightblue;
+}
+
+.faction-unit input {
+  width: 40px;
+}
+
+.small-input {
+  width: 40px;
+}
