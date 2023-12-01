@@ -14,7 +14,7 @@ const Log = ({ log, setLog }) => {
   return (
     <div>
       {log.map(l => (
-        <p>{l.log}</p>
+        <p key={l.timestamp}>{l.log}</p>
       ))}
     </div>
   )
