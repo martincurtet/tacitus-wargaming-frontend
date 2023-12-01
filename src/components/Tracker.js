@@ -1,35 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Factions from './Factions'
-import '../styles/components/Tracker.css'
+import Units from './Units'
 
-const Tracker = ({ factions, setFactions, units, setUnits }) => {
-  const [isEditUnitsOn, setIsEditUnitsOn] = useState(false)
-
-  const toggleEditUnits = () => {
-    setIsEditUnitsOn(prev => !prev)
-  }
-
+const Tracker = ({ factions, setFactions, unitShop, units, setUnits }) => {
   return (
     <div>
-      <Factions factions={factions} setFactions={setFactions} />
-
-      <button onClick={toggleEditUnits}>Toggle Edit Units</button>
-      {isEditUnitsOn ? (
-        <button>Add Unit</button>
-      ) : null}
-      <div className='unit-list'>
-      {units.map((u, i) => (
-        <div className='unit-item' key={i}>
-          <p style={{ color: u.color }}>{u.experience} {u.name}</p>
-          {isEditUnitsOn ? (
-            <>
-              <button>Edit</button>
-              <button>Delete</button>
-            </>
-          ) : null}
-        </div>
-      ))}
-      </div>
+      {/* <Factions factions={factions} setFactions={setFactions} /> */}
+      <Units factions={factions} unitShop={unitShop} units={units} setUnits={setUnits} />
     </div>
   )
 }

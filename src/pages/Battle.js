@@ -22,6 +22,7 @@ const Battle = () => {
   const [factions, setFactions] = useState([])
   const [log, setLog] = useState([])
   const [messages, setMessages] = useState([])
+  const [unitShop, setUnitShop] = useState([])
   const [units, setUnits] = useState([])
   const [users, setUsers] = useState([])
 
@@ -56,6 +57,7 @@ const Battle = () => {
       setFactions(data.factions)
       setLog(data.log)
       setMessages(data.messages)
+      setUnitShop(data.unitShop)
       setUnits(data.units)
       setUsers(data.users)
     })
@@ -76,7 +78,7 @@ const Battle = () => {
       {username !== '' ? (
         <>
           <Board board={board} setBoard={setBoard} />
-          <Tracker factions={factions} setFactions={setFactions} units={units} setUnits={setUnits} />
+          <Tracker factions={factions} setFactions={setFactions} unitShop={unitShop} units={units} setUnits={setUnits} />
           <Log log={log} setLog={setLog} />
           <Chat messages={messages} setMessages={setMessages} />
         </>
