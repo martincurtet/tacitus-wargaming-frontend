@@ -77,7 +77,7 @@ const Battle = () => {
     <div className='page-battle'>
       {username !== '' ? (
         <>
-          <Board board={board} setBoard={setBoard} />
+          <Board board={board} setBoard={setBoard} units={units} setUnits={setUnits} />
           <Tracker factions={factions} setFactions={setFactions} unitShop={unitShop} units={units} setUnits={setUnits} />
           <Log log={log} setLog={setLog} />
           <Chat messages={messages} setMessages={setMessages} />

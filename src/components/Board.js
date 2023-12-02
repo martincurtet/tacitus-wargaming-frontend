@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import Tile from './Tile'
-import '../styles/components/Board.css'
-import Modal from './Modal'
 import { cellRange, integerToLetter, terrainToHex } from '../functions/functions'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
+import Tile from './Tile'
+import Modal from './Modal'
+import '../styles/components/Board.css'
 
-const Board = ({ board, setBoard }) => {
+import { DndContext } from '@dnd-kit/core'
+import Droppable from './dndComponents/Droppable'
+import Draggable from './dndComponents/Draggable'
+
+const Board = ({ board, setBoard, units, setUnits }) => {
   const params = useParams()
 
   // BOARD SIZE VARIABLES
@@ -63,11 +67,17 @@ const Board = ({ board, setBoard }) => {
     let tempTiles = []
     for (let r = 0; r <= board['rows']; r++) {
       for (let c = 0; c <= board['columns']; c++) {
+        const tile = board[`${integerToLetter(c)}${r}`] || null
         let tileContent = (c === 0 && r === 0) ? '' : c === 0 ? r : r === 0 ? integerToLetter(c) : ''
         let tileColor = '#d9ead3'
+        let tileIcon = ''
         if (c === 0 || r === 0) tileColor = '#ffffff'
-        if (board[`${integerToLetter(c)}${r}`]) {
-          tileColor = terrainToHex(board[`${integerToLetter(c)}${r}`].terrain)
+        if (tile?.terrain) {
+          tileColor = terrainToHex(tile.terrain)
+        }
+        if (tile?.unit) {
+          console.log(`Unit: ${tile.unit}`)
+          tileIcon = units.find(u => u.code === tile.unit).icon
         }
         tempTiles.push(
           <Tile
@@ -77,6 +87,7 @@ const Board = ({ board, setBoard }) => {
             color={tileColor}
             setStartingTile={setStartingTile}
             setFinishingTile={setFinishingTile}
+            icon={tileIcon}
           />
         )
       }
@@ -93,6 +104,35 @@ const Board = ({ board, setBoard }) => {
     setIsPaintOn(prev => !prev)
   }
 
+  const handleDragEnd = (e) => {
+    const { over } = e
+    if (over === null) return
+    console.log(`Moving unit ${e.active.id} to tile ${over.id}`)
+    let tempBoard = board
+    if (tempBoard[over.id]) {
+      tempBoard[over.id] = { ...tempBoard[over.id], unit: tempBoard[e.active.id].unit }
+      tempBoard[e.active.id] = {}
+    } else {
+      tempBoard[over.id] = { unit: tempBoard[e.active.id].unit }
+      tempBoard[e.active.id] = {}
+    }
+    socket.emit('update-board', { uuid: params.battleuuid, board: tempBoard })
+  }
+
+  const isUnitOnBoard = (unitCode) => {
+    // console.log(`checking ${unitCode}`)
+    for (const key in board) {
+      if (board.hasOwnProperty(key) && board[key].unit === unitCode) {
+        return true
+      }
+    }
+    return false
+  }
+
+  useEffect(() => {
+    // console.log(isUnitOnBoard('KAR-SPE-0'))
+  }, [units])
+
   useEffect(() => {
     generateTiles()
   }, [board, isPaintOn])
@@ -102,7 +142,7 @@ const Board = ({ board, setBoard }) => {
       const cells = cellRange(startingTile, finishingTile)
       let tempBoard = board
       cells.forEach(cell => {
-        tempBoard[cell] = { terrain: inputTerrain }
+        tempBoard[cell] = { ...tempBoard[cell], terrain: inputTerrain }
       })
       socket.emit('update-board', { uuid: params.battleuuid, board: tempBoard })
     }
@@ -111,7 +151,19 @@ const Board = ({ board, setBoard }) => {
   // RENDER
   return (
     <div className='board'>
+      <DndContext onDragEnd={handleDragEnd}>
       <button onClick={toggleToolbar}>Toggle Board Toolbar</button>
+        <div className='unit-drop'>
+          <Droppable id={'drop-zone'}>
+          {units.map(u => (
+            isUnitOnBoard(u.code) ? null :(
+              <Draggable id={u.code} key={u.code}>
+                <img src={require(`../images/${u.icon}`)} alt='' width={32} height={32} />
+              </Draggable>
+            )
+          ))}
+          </Droppable>
+        </div>
       {isToolbarOpen ? (
         <div className='board-toolbar'>
           <button onClick={openBoardSizeModal}>Edit Size</button>
@@ -145,6 +197,7 @@ const Board = ({ board, setBoard }) => {
       >
         {tiles}
       </div>
+      </DndContext>
 
       <Modal
         isOpen={isBoardSizeModalOpen}

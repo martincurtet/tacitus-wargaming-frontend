@@ -26,6 +26,11 @@ const Units = ({ factions, unitShop, units, setUnits }) => {
     setIsUnitManagerModalOpen(false)
   }
 
+  const cancelUnitManagerModal = () => {
+    setUnitManagerUnits(units)
+    closeUnitManagerModal()
+  }
+
   const submitUnitManagerModal = () => {
     setUnits(unitManagerUnits)
     closeUnitManagerModal()
@@ -49,6 +54,7 @@ const Units = ({ factions, unitShop, units, setUnits }) => {
           veterancy: '0',
           identifier: '', // check if faction+veterancy+unit already exists
           faction: factions.find(f => f.code === factionCode).name,
+          icon: unitShop.find(u => u.code === unitCode).icon,
           men: '20', // default value?
           hdPerMen: hdPerMen,
           maxHd: parseInt(hdPerMen) * 20,
@@ -88,7 +94,6 @@ const Units = ({ factions, unitShop, units, setUnits }) => {
 
   useEffect(() => {
     setUnitManagerUnits(units)
-    console.log(units)
   }, [units])
 
   return (
@@ -112,7 +117,7 @@ const Units = ({ factions, unitShop, units, setUnits }) => {
 
       <Modal
         isOpen={isUnitManagerModalOpen}
-        onCancel={closeUnitManagerModal}
+        onCancel={cancelUnitManagerModal}
         onSubmit={submitUnitManagerModal}
        >
         <DndContext onDragEnd={handleDragEnd}>
@@ -146,7 +151,7 @@ const Units = ({ factions, unitShop, units, setUnits }) => {
                             type='number'
                             value={u.men}
                             onChange={(e) => menChange(u.code, parseInt(e.target.value))}
-                          /> men {u.maxHd} HD</div>
+                          /> men {u.maxHd} HD <button>x</button></div>
                         </div>
                         // </Draggable>
                       )
