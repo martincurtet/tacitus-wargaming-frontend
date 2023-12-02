@@ -6,3 +6,13 @@
 .paint-cursor {
   cursor: url("../../images/paintbrush.png") 0 16, default;
 }
+
+.unit-drop {
+  border: solid 1px grey;
+  border-radius: 10px;
+  padding: 10px;
+
+  display: flex;
+  flex-direction: row;
+  height: 32px;
+}

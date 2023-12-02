@@ -4,6 +4,11 @@
   align-items: center;
 }
 
+.tile :first-child {
+  width: 40px;
+  height: 40px;
+}
+
 .red-border {
   border: solid 1px red; 
 }
