@@ -3,7 +3,7 @@ import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
 import { formatTimestamp } from '../functions/functions'
 
-const Chat = ({ messages, setMessages }) => {
+const Chat = ({ messages, setMessages, setLog }) => {
   const params = useParams()
   const [inputMessage, setInputMessage] = useState('')
 
@@ -19,6 +19,7 @@ const Chat = ({ messages, setMessages }) => {
   useEffect(() => {
     socket.on('message-sent', (data) => {
       setMessages(data.messages)
+      setLog(data.log)
     })
 
     return () => {

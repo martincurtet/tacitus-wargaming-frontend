@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { socket } from '../connections/socket'
+
 import '../styles/pages/Home.css'
 
 const Home = () => {
-  //
+  // VARIABLES - STATES
   const navigate = useNavigate()
 
-  //
+  // FUNCTIONS
   const createRoom = () => {
     socket.connect()
     socket.emit('create-room')

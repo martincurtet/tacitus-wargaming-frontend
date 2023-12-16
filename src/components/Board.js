@@ -2,15 +2,18 @@ import React, { useEffect, useState } from 'react'
 import { cellRange, integerToLetter, terrainToHex } from '../functions/functions'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
-import Tile from './Tile'
+
 import Modal from './Modal'
-import '../styles/components/Board.css'
+import Tile from './Tile'
 
 import { DndContext } from '@dnd-kit/core'
 import Droppable from './dndComponents/Droppable'
 import Draggable from './dndComponents/Draggable'
 
-const Board = ({ board, setBoard, units, setUnits }) => {
+import '../styles/components/Board.css'
+
+const Board = ({ board, setBoard, units, setUnits, setLog }) => {
+  //
   const params = useParams()
 
   // BOARD SIZE VARIABLES
@@ -36,29 +39,27 @@ const Board = ({ board, setBoard, units, setUnits }) => {
     setIsBoardSizeModalOpen(false)
   }
 
-  const changeInputBoardSizeC = (e) => {
-    if (/^[0-9\b]+$/.test(e.target.value) && e.target.value >= 1 && e.target.value <= 30) {
-      setInputBoardSizeC(e.target.value)
-    } else {
-      console.log(`Invalid column number`)
-    }
-  }
-
   const changeInputBoardSizeR = (e) => {
     if (/^[0-9\b]+$/.test(e.target.value) && e.target.value >= 1 && e.target.value <= 30) {
       setInputBoardSizeR(e.target.value)
     } else {
-      console.log(`Invalid row number`)
+      console.error(`Invalid row number`)
+    }
+  }
+  const changeInputBoardSizeC = (e) => {
+    if (/^[0-9\b]+$/.test(e.target.value) && e.target.value >= 1 && e.target.value <= 30) {
+      setInputBoardSizeC(e.target.value)
+    } else {
+      console.error(`Invalid column number`)
     }
   }
 
   const submitBoardSizeModal = () => {
-    console.log('submitting size modal')
-    socket.emit('update-board', { uuid: params.battleuuid, board: {
-      ...board,
-        'rows': Number(inputBoardSizeR),
-        'columns': Number(inputBoardSizeC)
-    } })
+    socket.emit('update-board-size', {
+      uuid: params.battleuuid,
+      rows: Number(inputBoardSizeR),
+      columns: Number(inputBoardSizeC)
+    })
     setIsBoardSizeModalOpen(false)
   }
 
@@ -76,7 +77,6 @@ const Board = ({ board, setBoard, units, setUnits }) => {
           tileColor = terrainToHex(tile.terrain)
         }
         if (tile?.unit) {
-          console.log(`Unit: ${tile.unit}`)
           tileIcon = units.find(u => u.code === tile.unit).icon
         }
         tempTiles.push(
@@ -105,17 +105,49 @@ const Board = ({ board, setBoard, units, setUnits }) => {
   }
 
   const handleDragEnd = (e) => {
-    const { over } = e
-    if (over === null) return
-    console.log(`Moving unit ${e.active.id} to tile ${over.id}`)
+    if (isPaintOn) return
+    // console.log(e)
+    const { over } = e // get information
+    if (over === null) return // if dropping in a non-droppable zone
+
+    if (e.active.id === over.id) return // if dropping in same zone (only for cells)
+
     let tempBoard = board
-    if (tempBoard[over.id]) {
-      tempBoard[over.id] = { ...tempBoard[over.id], unit: tempBoard[e.active.id].unit }
-      tempBoard[e.active.id] = {}
-    } else {
-      tempBoard[over.id] = { unit: tempBoard[e.active.id].unit }
-      tempBoard[e.active.id] = {}
+
+    // CASE 1 - FROM drop-zone TO cell
+    if (e.active.id.length !== 2) {
+      if (over.id === 'drop-zone') return // dropping in same zone
+      console.log('Moving unit from drop zone to cell')
+      // add to cell
+      console.log(`Adding ${e.active.id} to cell ${over.id}`)
+      tempBoard[over.id] = { ...tempBoard[over.id], unit: e.active.id }
+      // delete from drop-zone
+      console.log(`Delete ${e.active.id} from drop-zone`)
+      tempBoard['drop-zone'].splice(tempBoard['drop-zone'].indexOf(e.active.id), 1)
     }
+
+    // CASE 2 - FROM cell TO drop-zone
+    else if (over.id === 'drop-zone') {
+      console.log('Moving TO drop-zone')
+      // add to drop-zone
+      console.log(`Adding ${tempBoard[e.active.id].unit} to drop-zone`)
+      tempBoard['drop-zone'].push(tempBoard[e.active.id].unit)
+      // delete from cell
+      console.log(`Delete ${tempBoard[e.active.id].unit} from cell`)
+      delete tempBoard[e.active.id].unit
+    }
+
+    // CASE 3 - FROM cell TO cell
+    else {
+      console.log(`Moving from cell to cell`)
+      // add to new cell
+      tempBoard[over.id] = { ...tempBoard[over.id], unit: tempBoard[e.active.id].unit }
+      // delete from old cell
+      delete tempBoard[e.active.id].unit
+    }
+
+    // update socket
+    // console.log(tempBoard['drop-zone'])
     socket.emit('update-board', { uuid: params.battleuuid, board: tempBoard })
   }
 
@@ -129,17 +161,41 @@ const Board = ({ board, setBoard, units, setUnits }) => {
     return false
   }
 
+  const findUnitIcon = (unitCode) => {
+    for (const key in units) {
+      if (units.hasOwnProperty(key) && units[key].code === unitCode) {
+        return units[key].icon
+      }
+    }
+    // console.log(`Couldn't get icon for ${unitCode}`)
+    // console.log(units)
+    return 'normal.png'
+  }
+
   useEffect(() => {
-    // console.log(isUnitOnBoard('KAR-SPE-0'))
+    // console.log('the use effect that puts units on the board')
+    // find a way to not trigger if hd/casu/fatigue/notes changes
+    if (units.length !== 0) {
+      let tempBoard = board
+      tempBoard['drop-zone'] = []
+      units.map((u) => {
+        if (!isUnitOnBoard(u.code)) {
+          // console.log(`unit ${u.code} is not on board`)
+          tempBoard['drop-zone'].push(u.code)
+        }
+      })
+      socket.emit('update-board', { uuid: params.battleuuid, board: tempBoard })
+    }
   }, [units])
 
   useEffect(() => {
     generateTiles()
-  }, [board, isPaintOn])
+  }, [board])
 
   useEffect(() => {
     if (finishingTile !== null && isPaintOn) {
       const cells = cellRange(startingTile, finishingTile)
+      console.log(cells)
       let tempBoard = board
       cells.forEach(cell => {
         tempBoard[cell] = { ...tempBoard[cell], terrain: inputTerrain }
@@ -148,22 +204,45 @@ const Board = ({ board, setBoard, units, setUnits }) => {
     }
   }, [finishingTile])
 
+  // SOCKET LISTENERS
+  useEffect(() => {
+    socket.on('board-size-updated', (data) => {
+      // console.log(data.rows)
+      // console.log(data.columns)
+      setBoard(prev => ({
+        ...prev,
+        'rows': data.rows,
+        'columns': data.columns
+      }))
+      setLog(data.log)
+    })
+
+    return () => {
+      socket.off('board-size-updated')
+    }
+  }, [])
+
   // RENDER
   return (
     <div className='board'>
       <DndContext onDragEnd={handleDragEnd}>
       <button onClick={toggleToolbar}>Toggle Board Toolbar</button>
-        <div className='unit-drop'>
-          <Droppable id={'drop-zone'}>
-          {units.map(u => (
-            isUnitOnBoard(u.code) ? null :(
-              <Draggable id={u.code} key={u.code}>
-                <img src={require(`../images/${u.icon}`)} alt='' width={32} height={32} />
+        <Droppable id={'drop-zone'}>
+          <div className='unit-drop'>
+            {board['drop-zone'] !== undefined ? board['drop-zone'].map(u => (
+              <Draggable id={u} key={u} >
+                <div className='unit-drop-item' tooltip={u} >
+                  <img
+                    src={require(`../images/${findUnitIcon(u)}`)}
+                    alt=''
+                    width={32}
+                    height={32}
+                  />
+                </div>
               </Draggable>
-            )
-          ))}
-          </Droppable>
-        </div>
+            )) : null}
+          </div>
+        </Droppable>
       {isToolbarOpen ? (
         <div className='board-toolbar'>
           <button onClick={openBoardSizeModal}>Edit Size</button>
@@ -204,20 +283,20 @@ const Board = ({ board, setBoard, units, setUnits }) => {
         onCancel={closeBoardSizeModal}
         onSubmit={submitBoardSizeModal}
       >
-        <label>Number of columns</label>
-        <input
-          type='number'
-          value={inputBoardSizeC}
-          onChange={changeInputBoardSizeC}
-          min={1}
-          max={30}
-          step={1}
-        />
         <label>Number of rows</label>
         <input
           type='number'
           value={inputBoardSizeR}
           onChange={changeInputBoardSizeR}
+          min={1}
+          max={30}
+          step={1}
+        />
+        <label>Number of columns</label>
+        <input
+          type='number'
+          value={inputBoardSizeC}
+          onChange={changeInputBoardSizeC}
           min={1}
           max={30}
           step={1}

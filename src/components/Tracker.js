@@ -1,12 +1,11 @@
 import React from 'react'
-import Factions from './Factions'
 import Units from './Units'
 
-const Tracker = ({ factions, setFactions, unitShop, units, setUnits }) => {
+const Tracker = ({ setBoard, factions, setFactions, unitShop, units, setUnits, setLog }) => {
+  // TODO move some stuff back here instead of units
   return (
     <div>
-      {/* <Factions factions={factions} setFactions={setFactions} /> */}
-      <Units factions={factions} unitShop={unitShop} units={units} setUnits={setUnits} />
+      <Units setLog={setLog} setBoard={setBoard} factions={factions} unitShop={unitShop} units={units} setUnits={setUnits} />
     </div>
   )
 }

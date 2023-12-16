@@ -96,8 +96,8 @@ const Factions = ({ factions, setFactions }) => {
 
   useEffect(() => {
     socket.on('factions-updated', (data) => {
-      console.log('factions updated')
       setFactions(data.factions)
+      setLog(data.log)
     })
 
     return () => {

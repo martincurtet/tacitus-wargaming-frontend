@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { socket } from '../connections/socket'
+
 import Modal from '../components/Modal'
 import Board from '../components/Board'
-import '../styles/pages/Battle.css'
 import Tracker from '../components/Tracker'
 import Chat from '../components/Chat'
 import Log from '../components/Log'
 
+import '../styles/pages/Battle.css'
+
 const Battle = () => {
-  //
+  // PARAMS
   const params = useParams()
 
   // USERNAME VARIABLES
@@ -24,7 +26,7 @@ const Battle = () => {
   const [messages, setMessages] = useState([])
   const [unitShop, setUnitShop] = useState([])
   const [units, setUnits] = useState([])
-  const [users, setUsers] = useState([])
+  const [users, setUsers] = useState([]) // TODO add users in the chat
 
   // USERNAME FUNCTIONS
   const changeInputUsername = (e) => {
@@ -41,6 +43,7 @@ const Battle = () => {
     }
   }
 
+  // JOIN ROOM
   useEffect(() => {
     if (username !== '') {
       if (!socket.connected) {
@@ -64,6 +67,7 @@ const Battle = () => {
 
     socket.on('board-updated', (data) => {
       setBoard(data.board)
+      setLog(data.log)
     })
 
     return () => {
@@ -77,12 +81,13 @@ const Battle = () => {
     <div className='page-battle'>
       {username !== '' ? (
         <>
-          <Board board={board} setBoard={setBoard} units={units} setUnits={setUnits} />
-          <Tracker factions={factions} setFactions={setFactions} unitShop={unitShop} units={units} setUnits={setUnits} />
+          <Board board={board} setBoard={setBoard} units={units} setUnits={setUnits} setLog={setLog} />
+          <Tracker setBoard={setBoard} factions={factions} setFactions={setFactions} unitShop={unitShop} units={units} setUnits={setUnits} setLog={setLog} />
           <Log log={log} setLog={setLog} />
-          <Chat messages={messages} setMessages={setMessages} />
+          <Chat messages={messages} setMessages={setMessages} setLog={setLog} />
         </>
-      ) :  null }
+      ) : null }
+
       <Modal
         isOpen={isUsernameModalOpen}
         hasCancel={false}
