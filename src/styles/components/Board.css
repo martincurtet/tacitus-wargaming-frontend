@@ -16,3 +16,22 @@
   flex-direction: row;
   height: 32px;
 }
+
+.unit-drop-item[tooltip] {
+  position: relative;
+}
+
+.unit-drop-item[tooltip]:hover::after {
+  content: attr(tooltip);
+  background-color: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: pre-wrap;
+  z-index: 1;
+  width: max-content;
+}

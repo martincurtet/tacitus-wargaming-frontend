@@ -30,7 +30,7 @@
   transform: translateX(-50%);
   white-space: pre-wrap;
   z-index: 1;
-  width: 100px;
+  width: max-content;
 }
 
 .faction-panels {
