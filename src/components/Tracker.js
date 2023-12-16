@@ -93,8 +93,8 @@ const Tracker = ({
           icon: currentUnit.icon,
           men: '20', // default value?
           hdPerMen: currentUnit.hdPerMen,
-          maxHd: parseInt(currentUnit.hdPerMen) * 20,
-          hd: parseInt(currentUnit.hdPerMen) * 20,
+          maxHd: (parseInt(currentUnit.hdPerMen) * 20).toString(),
+          hd: (parseInt(currentUnit.hdPerMen) * 20).toString(),
           casualties: '0',
           fatigue: '0',
           notes: ''
@@ -107,7 +107,7 @@ const Tracker = ({
     // console.log(code, men)
     setUnitManagerUnits((prev) =>
       prev.map((u) =>
-        u.code === code ? {...u, men: men, maxHd: men * u.hdPerMen, hd: men * u.hdPerMen } : u
+        u.code === code ? {...u, men: men.toString(), maxHd: (men * u.hdPerMen).toString(), hd: (men * u.hdPerMen).toString() } : u
       )
     )
   }
@@ -129,7 +129,7 @@ const Tracker = ({
   }, [])
 
   return (
-    <div>
+    <div className='tracker'>
       <button onClick={openUnitManagerModal}>Unit Manager</button>
       <Units factionShop={factionShop} setFactionShop={setFactionShop} setLog={setLog} setBoard={setBoard} factions={factions} unitShop={unitShop} units={units} setUnits={setUnits} />
     

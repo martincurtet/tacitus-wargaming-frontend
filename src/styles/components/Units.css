@@ -63,3 +63,9 @@
 .small-input {
   width: 40px;
 }
+
+.tracker-units {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+}

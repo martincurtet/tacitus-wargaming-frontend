@@ -1,0 +1,42 @@
+.tracker-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+  padding: 5px;
+}
+
+/* FACTION ICON */
+.tracker-item-one {}
+
+/* NAME IDENTIFIER VETERANCY MEN LOCATION */
+.tracker-item-two {
+  display: flex;
+  flex-direction: column;
+}
+
+/* HD CASUALTIES */
+.tracker-item-three {
+  display: flex;
+  flex-direction: column;
+}
+
+.tracker-item-three textarea {
+  resize: none;
+  height: 20px;
+  width: 30px;
+}
+
+/* FATIGUE */
+.tracker-item-four {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* NOTES */
+.tracker-item-five {}
+
+.tracker-item-five textarea {
+  resize: none;
+}
