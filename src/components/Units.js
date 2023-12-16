@@ -10,7 +10,7 @@ import Droppable from './dndComponents/Droppable'
 
 import '../styles/components/Units.css'
 
-const Units = ({ setLog, setBoard, factions, unitShop, units, setUnits }) => {
+const Units = ({ factionShop, setFactionShop, setLog, setBoard, factions, unitShop, units, setUnits }) => {
   // TODO move stuff to tracker
 
   //

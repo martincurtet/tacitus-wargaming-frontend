@@ -21,6 +21,7 @@ const Battle = () => {
 
   // BATTLE VARIABLES
   const [board, setBoard] = useState({})
+  const [factionShop, setFactionShop] = useState([])
   const [factions, setFactions] = useState([])
   const [log, setLog] = useState([])
   const [messages, setMessages] = useState([])
@@ -57,6 +58,7 @@ const Battle = () => {
   useEffect(() => {
     socket.on('room-joined', (data) => {
       setBoard(data.board)
+      setFactionShop(data.factionShop)
       setFactions(data.factions)
       setLog(data.log)
       setMessages(data.messages)
@@ -82,7 +84,7 @@ const Battle = () => {
       {username !== '' ? (
         <>
           <Board board={board} setBoard={setBoard} units={units} setUnits={setUnits} setLog={setLog} />
-          <Tracker setBoard={setBoard} factions={factions} setFactions={setFactions} unitShop={unitShop} units={units} setUnits={setUnits} setLog={setLog} />
+          <Tracker setBoard={setBoard} factionShop={factionShop} setFactionShop={setFactionShop} factions={factions} setFactions={setFactions} unitShop={unitShop} units={units} setUnits={setUnits} setLog={setLog} />
           <Log log={log} setLog={setLog} />
           <Chat messages={messages} setMessages={setMessages} setLog={setLog} />
         </>
