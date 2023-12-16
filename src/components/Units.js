@@ -5,54 +5,25 @@ import { debounce } from '../functions/functions'
 
 import '../styles/components/Units.css'
 
-const Units = ({ factionShop, setFactionShop, setLog, setBoard, factions, unitShop, units, setUnits }) => {
+const Units = ({
+    setLog,
+    factions,
+    units, setUnits
+  }) => {
   // TODO move stuff to tracker
 
   //
   const params = useParams()
 
-  // const veterancies = [
-  //   { id: 0, name: 'Militia', icon: require('../images/militia.png'), next: 1 },
-  //   { id: 1, name: 'Normal', icon: require('../images/normal.png'), next: 2 },
-  //   { id: 2, name: 'Veteran', icon: require('../images/veteran.png'), next: 3 },
-  //   { id: 3, name: 'Elite', icon: require('../images/elite.png'), next: 0 }
-  // ]
-
   const hdChange = (code, hd) => {
     console.log(code, hd)
-    // min max values of hd
-    // DONT UPDATE UNIT, SEND CHANGE
-    // setUnits((prev) =>
-    //   prev.map((u) =>
-    //     u.code === code ? {...u, hd: hd } : u
-    //   )
-    // )
     let tempUnit = units.find(u => u.code === code)
     tempUnit.hd = hd
     unitInformationChange(code, tempUnit)
   }
 
-  const casualtiesChange = (code, casualties) => {
-    console.log(code, casualties)
-    // DONT UPDATE UNIT, SEND CHANGE
-    // setUnits((prev) =>
-    //   prev.map((u) =>
-    //     u.code === code ? {...u, casualties: casualties } : u
-    //   )
-    // )
-    let tempUnit = units.find(u => u.code === code)
-    tempUnit.casualties = casualties
-    unitInformationChange(code, tempUnit)
-  }
-
   const fatigueChange = (code, fatigue) => {
     console.log(code, fatigue)
-    // DONT UPDATE UNIT, SEND CHANGE
-    // setUnits((prev) =>
-    //   prev.map((u) =>
-    //     u.code === code ? {...u, fatigue: fatigue } : u
-    //   )
-    // )
     let tempUnit = units.find(u => u.code === code)
     tempUnit.fatigue = fatigue
     unitInformationChange(code, tempUnit)
@@ -90,10 +61,8 @@ const Units = ({ factionShop, setFactionShop, setLog, setBoard, factions, unitSh
       <div>
       {units.map((u, i) => (
         <div key={u.code}>
-          {/* indicate faction by icon */}
           <p>
             <img src={require(`../images/${factions.find(f => f.name === u.faction).icon}`)} alt='' height={18} width={30} />
-            {/* {veterancies[u.veterancy].name} */}
             {u.name} {u.identifier} {u.men} men
             <input
               className='small-input'
@@ -104,15 +73,7 @@ const Units = ({ factionShop, setFactionShop, setLog, setBoard, factions, unitSh
               max={u.maxHd}
               step={1}
             /> / {u.maxHd} HD
-            <input
-              className='small-input'
-              type='number'
-              value={u.casualties}
-              onChange={(e) => casualtiesChange(u.code, e.target.value)}
-              min={0}
-              max={u.men}
-              step={1}
-            /> casualties
+            {u.casualties} casualties
             <input
               className='small-input'
               type='number'
