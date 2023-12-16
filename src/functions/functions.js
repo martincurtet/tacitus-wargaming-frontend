@@ -3,7 +3,7 @@ const integerToLetter = (n) => {
     return null
   }
 
-  if (n == 0) return 0
+  if (n === 0) return 0
 
   let result = ''
   while (n > 0) {
@@ -33,7 +33,7 @@ const terrainToHex = (t) => {
 }
 
 const cellRange = (start, end) => {
-  if (start == end) return [start]
+  if (start === end) return [start]
 
   const parseCoordinates = (coord) => {
     const match = coord.match(/([A-Z]*)([0-9]+)/)
@@ -86,10 +86,20 @@ function formatTimestamp(timestamp, format) {
   return format.replace(regex, match => formats[match] || match)
 }
 
+const debounce = (func, delay) => {
+  let timeoutId
+  return function (...args) {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(() => {
+      func(...args)
+    }, delay)
+  }
+}
 
 module.exports = {
   integerToLetter,
   terrainToHex,
   cellRange,
-  formatTimestamp
+  formatTimestamp,
+  debounce
 }
