@@ -12,9 +12,15 @@ import Draggable from './dndComponents/Draggable'
 
 import '../styles/components/Board.css'
 
-const Board = ({ board, setBoard, units, setUnits, setLog }) => {
+const Board = ({
+    board, setBoard,
+    units, setUnits,
+    setLog
+  }) => {
+
   //
   const params = useParams()
+  const MAX_GRID_SIZE = Number(process.env.REACT_APP_MAX_GRID_SIZE)
 
   // BOARD SIZE VARIABLES
   const [isBoardSizeModalOpen, setIsBoardSizeModalOpen] = useState(false)
@@ -40,14 +46,22 @@ const Board = ({ board, setBoard, units, setUnits, setLog }) => {
   }
 
   const changeInputBoardSizeR = (e) => {
-    if (/^[0-9\b]+$/.test(e.target.value) && e.target.value >= 1 && e.target.value <= 30) {
+    if (
+      /^[0-9\b]+$/.test(e.target.value)
+      && e.target.value >= 1
+      && e.target.value <= MAX_GRID_SIZE
+    ) {
       setInputBoardSizeR(e.target.value)
     } else {
       console.error(`Invalid row number`)
     }
   }
   const changeInputBoardSizeC = (e) => {
-    if (/^[0-9\b]+$/.test(e.target.value) && e.target.value >= 1 && e.target.value <= 30) {
+    if (
+      /^[0-9\b]+$/.test(e.target.value)
+      && e.target.value >= 1
+      && e.target.value <= MAX_GRID_SIZE
+    ) {
       setInputBoardSizeC(e.target.value)
     } else {
       console.error(`Invalid column number`)
@@ -289,7 +303,7 @@ const Board = ({ board, setBoard, units, setUnits, setLog }) => {
           value={inputBoardSizeR}
           onChange={changeInputBoardSizeR}
           min={1}
-          max={30}
+          max={MAX_GRID_SIZE}
           step={1}
         />
         <label>Number of columns</label>
@@ -298,7 +312,7 @@ const Board = ({ board, setBoard, units, setUnits, setLog }) => {
           value={inputBoardSizeC}
           onChange={changeInputBoardSizeC}
           min={1}
-          max={30}
+          max={MAX_GRID_SIZE}
           step={1}
         />
       </Modal>
