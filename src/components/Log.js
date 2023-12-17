@@ -12,9 +12,9 @@ const Log = ({ log, setLog }) => {
   //   }
   // }, [])
   return (
-    <div>
+    <div className='log'>
       {log.map(l => (
-        <p key={l.timestamp}>{l.log}</p>
+        <p key={l.timestamp}>[{l.timestamp}] {l.log}</p>
       ))}
     </div>
   )
