@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { socket } from '../connections/socket'
+import '../styles/components/Log.css'
 
 const Log = ({ log, setLog }) => {
   // useEffect(() => {

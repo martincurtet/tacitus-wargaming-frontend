@@ -8,6 +8,8 @@ import { DndContext } from '@dnd-kit/core'
 import Draggable from './dndComponents/Draggable'
 import Droppable from './dndComponents/Droppable'
 
+import '../styles/components/Tracker.css'
+
 const Tracker = ({
     setBoard,
     factionShop, setFactionShop,

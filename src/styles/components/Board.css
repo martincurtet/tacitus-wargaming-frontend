@@ -1,6 +1,13 @@
+.board {
+  justify-self: left;
+}
+
 .board-grid {
   display: grid;
   user-select: none;
+  max-width: 1098px;
+  max-height: 1098px;
+  overflow: scroll;
 }
 
 .paint-cursor {
