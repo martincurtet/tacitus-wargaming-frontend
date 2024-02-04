@@ -1,0 +1,10 @@
+@font-face {
+  font-family: 'Fundamento';
+  src: url(../fonts/Fondamento-Regular.woff) format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Fundamento', sans-serif;
+}
