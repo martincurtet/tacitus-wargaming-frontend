@@ -4,7 +4,7 @@ import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
 import '../styles/components/Factions.css'
 
-const Factions = ({ factions, setFactions }) => {
+const Factions = ({ factionShop, factions, setFactions, setLog }) => {
   const params = useParams()
 
   const [isEditFactionOn, setIsEditFactionOn] = useState(false)

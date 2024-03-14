@@ -4,14 +4,14 @@
   flex-wrap: wrap;
   gap: 5px;
 
-  width: 500px;
-  height: 100px;
+  width: auto;
+  height: auto;
 }
 
 .unit-item {
   cursor: pointer;
   padding: 5px;
-  background-color: pink;
+  /* background-color: pink; */
 }
 
 .unit-item[tooltip] {

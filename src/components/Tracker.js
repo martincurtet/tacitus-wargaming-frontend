@@ -9,6 +9,7 @@ import Draggable from './dndComponents/Draggable'
 import Droppable from './dndComponents/Droppable'
 
 import '../styles/components/Tracker.css'
+import Factions from './Factions'
 
 const Tracker = ({
     setBoard,
@@ -21,6 +22,9 @@ const Tracker = ({
 
   //
   const params = useParams()
+
+  // FACTIONS
+  const [selectedFaction, setSelectedFaction] = useState([])
 
   // UNIT MANAGER VARIABLES
   const [isUnitManagerModalOpen, setIsUnitManagerModalOpen] = useState(false)
@@ -130,8 +134,30 @@ const Tracker = ({
     }
   }, [])
 
+  const handleSelectFaction = (e) => {
+    setSelectedFaction(e.target.value)
+  }
+
+  const addFaction = () => {
+    const newFaction = factionShop.find(f => f.code == selectedFaction)
+    setFactions((prev) => [...prev, newFaction])
+  }
+
+  const deleteFaction = (code) => {
+    setFactions(factions.filter(f => f.code !== code))
+  }
+
+  const deleteUnit = (code) => {
+    setUnitManagerUnits(unitManagerUnits.filter(u => u.code !== code))
+  }
+
   return (
     <div className='tracker'>
+      {/* <Factions
+        factionShop={factionShop}
+        factions={factions} setFactions={setFactions}
+        setLog={setLog}
+      /> */}
       <button onClick={openUnitManagerModal}>Unit Manager</button>
       <Units factionShop={factionShop} setFactionShop={setFactionShop} setLog={setLog} setBoard={setBoard} factions={factions} unitShop={unitShop} units={units} setUnits={setUnits} />
     
@@ -152,12 +178,22 @@ const Tracker = ({
               </Draggable>
             ))}
           </div>
-          <button>Add Faction</button>
+
+          <select onChange={handleSelectFaction}>
+            <option disabled selected value>Choose a faction</option>
+            {factionShop.map((f) =>
+              <option value={f.code}>{f.name}</option>
+            )}
+          </select><button onClick={addFaction}>Add</button>
+
           <div className='faction-panels'>
             {factions.map((f) => (
               <Droppable key={f.code} id={f.code}>
                 <div className='faction-panel'>
-                  <div className='faction-panel-title'>{f.name}</div>
+                  <div className='faction-panel-title'>
+                    <img src={require(`../images/${f.icon}`)} alt='' height={18} width={30} />
+                    {f.name}<button onClick={() => deleteFaction(f.code)}>x</button>
+                  </div>
                   {unitManagerUnits.map((u) => {
                     if (u.faction === f.name) {
                       return (
@@ -169,7 +205,7 @@ const Tracker = ({
                             type='number'
                             value={u.men}
                             onChange={(e) => menChange(u.code, parseInt(e.target.value))}
-                          /> men {u.maxHd} HD <button>x</button></div>
+                          /> men {u.maxHd} HD <button onClick={() => deleteUnit(u.code)}>x</button></div>
                         </div>
                         // </Draggable>
                       )

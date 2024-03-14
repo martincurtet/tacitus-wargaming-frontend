@@ -110,7 +110,7 @@ const Unit = ({
       <div className='tracker-item-four'>
         <div>Fatigue</div>
         <div>
-          <button onClick={() => fatigueChange(-2)}>-</button>
+          <button onClick={() => fatigueChange(-1)}>-</button>
           {/* <input
             className='small-input'
             type='number'
@@ -121,7 +121,7 @@ const Unit = ({
             step={1}
           /> */}
           {unitData.fatigue}
-          <button onClick={() => fatigueChange(1)}>+</button>
+          <button onClick={() => fatigueChange(2)}>+</button>
         </div>
       </div>
       <div className='tracker-item-five'>
