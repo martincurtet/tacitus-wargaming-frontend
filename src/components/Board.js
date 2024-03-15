@@ -93,17 +93,13 @@ const Board = ({
         if (tile?.unit) {
           tileIcon = units.find(u => u.code === tile.unit).icon
         }
-        tempTiles.push(
-          <Tile
-            key={`r${r}c${c}`}
-            coordinates={`${integerToLetter(c)}${r}`}
-            content={tileContent}
-            color={tileColor}
-            setStartingTile={setStartingTile}
-            setFinishingTile={setFinishingTile}
-            icon={tileIcon}
-          />
-        )
+        tempTiles.push({
+          key: `r${r}c${c}`,
+          coordinates: `${integerToLetter(c)}${r}`,
+          content: tileContent,
+          color: tileColor,
+          icon: tileIcon
+        })
       }
     }
     setTiles(tempTiles)
@@ -290,7 +286,17 @@ const Board = ({
           gridTemplateRows: `repeat(${board['rows']+1}, ${tileSize}px)`,
         }}
       >
-        {tiles}
+        {tiles.map((t, i) => (
+          <Tile
+            key={t.key}
+            coordinates={t.coordinates}
+            content={t.content}
+            color={t.color}
+            setStartingTile={setStartingTile}
+            setFinishingTile={setFinishingTile}
+            icon={t.icon}
+          />
+        ))}
       </div>
       </DndContext>
 
