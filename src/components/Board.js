@@ -122,43 +122,34 @@ const Board = ({
 
     if (e.active.id === over.id) return // if dropping in same zone (only for cells)
 
-    let tempBoard = board
+    let unitCode
+    let startingCell
+    let droppingCell
 
     // CASE 1 - FROM drop-zone TO cell
     if (e.active.id.length !== 2) {
       if (over.id === 'drop-zone') return // dropping in same zone
-      console.log('Moving unit from drop zone to cell')
-      // add to cell
-      console.log(`Adding ${e.active.id} to cell ${over.id}`)
-      tempBoard[over.id] = { ...tempBoard[over.id], unit: e.active.id }
-      // delete from drop-zone
-      console.log(`Delete ${e.active.id} from drop-zone`)
-      tempBoard['drop-zone'].splice(tempBoard['drop-zone'].indexOf(e.active.id), 1)
+      unitCode = e.active.id
+      startingCell = 'drop-zone'
+      droppingCell = over.id
     }
 
     // CASE 2 - FROM cell TO drop-zone
     else if (over.id === 'drop-zone') {
-      console.log('Moving TO drop-zone')
-      // add to drop-zone
-      console.log(`Adding ${tempBoard[e.active.id].unit} to drop-zone`)
-      tempBoard['drop-zone'].push(tempBoard[e.active.id].unit)
-      // delete from cell
-      console.log(`Delete ${tempBoard[e.active.id].unit} from cell`)
-      delete tempBoard[e.active.id].unit
+      unitCode = board[e.active.id].unit
+      startingCell = e.active.id
+      droppingCell = 'drop-zone'
     }
 
     // CASE 3 - FROM cell TO cell
     else {
-      console.log(`Moving from cell to cell`)
-      // add to new cell
-      tempBoard[over.id] = { ...tempBoard[over.id], unit: tempBoard[e.active.id].unit }
-      // delete from old cell
-      delete tempBoard[e.active.id].unit
+      unitCode = board[e.active.id].unit
+      startingCell = e.active.id
+      droppingCell = over.id
     }
 
     // update socket
-    // console.log(tempBoard['drop-zone'])
-    socket.emit('update-board', { uuid: params.battleuuid, board: tempBoard })
+    socket.emit('update-board-unit', { uuid: params.battleuuid, unitCode: unitCode, startingCell: startingCell, droppingCell: droppingCell })
   }
 
   const isUnitOnBoard = (unitCode) => {
@@ -227,10 +218,15 @@ const Board = ({
       setBoard(data.board)
       setLog(data.log)
     })
+    socket.on('board-unit-updated', (data) => {
+      setBoard(data.board)
+      setLog(data.log)
+    })
 
     return () => {
       socket.off('board-size-updated')
       socket.off('board-terrain-updated')
+      socket.off('board-unit-updated')
     }
   }, [])
 
