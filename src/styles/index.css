@@ -5,6 +5,22 @@
   font-style: normal;
 }
 
+*, *:before, *:after {
+
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Fundamento', sans-serif;
+}
+
+input {
+  padding: 5px;
+}
+
+input:focus {
+  outline: none;
 }

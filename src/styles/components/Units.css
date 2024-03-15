@@ -33,33 +33,6 @@
   width: max-content;
 }
 
-.faction-panels {
-  display: flex;
-  flex-direction: row;
-}
-
-.faction-panel {
-  /* display: flex;
-  flex-direction: column;
-  align-items: center; */
-  width: 300px;
-  padding: 5px;
-}
-
-.faction-panel-title {
-  font-weight: bold;
-  font-size: large;
-  text-align: center;
-}
-
-.faction-unit {
-  background-color: lightblue;
-}
-
-.faction-unit input {
-  width: 40px;
-}
-
 .small-input {
   width: 40px;
 }

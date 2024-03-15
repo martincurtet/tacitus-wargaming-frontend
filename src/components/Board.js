@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 
 import Modal from './Modal'
 import Tile from './Tile'
+import Button from './Button'
 
 import { DndContext } from '@dnd-kit/core'
 import Droppable from './dndComponents/Droppable'
@@ -234,27 +235,27 @@ const Board = ({
   return (
     <div className='board'>
       <DndContext onDragEnd={handleDragEnd}>
-      <button onClick={toggleToolbar}>Toggle Board Toolbar</button>
-        <Droppable id={'drop-zone'}>
-          <div className='unit-drop'>
-            {board['drop-zone'] !== undefined ? board['drop-zone'].map(u => (
-              <Draggable id={u} key={u} >
-                <div className='unit-drop-item' tooltip={u} >
-                  <img
-                    src={require(`../images/${findUnitIcon(u)}`)}
-                    alt=''
-                    width={32}
-                    height={32}
-                  />
-                </div>
-              </Draggable>
-            )) : null}
-          </div>
-        </Droppable>
+      <div className='board-toolbar'>
+      <Button
+        color='beige'
+        onClick={toggleToolbar}
+      >
+        Toggle Board Toolbar
+      </Button>
       {isToolbarOpen ? (
         <div className='board-toolbar'>
-          <button onClick={openBoardSizeModal}>Edit Size</button>
-          <button onClick={togglePaint}>Toggle Paint</button>
+          <Button
+            color='beige'
+            onClick={openBoardSizeModal}
+          >
+            Edit Size
+          </Button>
+          <Button
+            color='beige'
+            onClick={togglePaint}
+          >
+            Toggle Paint
+          </Button>
           {isPaintOn ? (
             <select
               onChange={e => setInputTerrain(e.target.value)}
@@ -275,6 +276,23 @@ const Board = ({
           ) : null}
         </div>
       ) : null}
+      </div>
+      <Droppable id={'drop-zone'}>
+        <div className='unit-drop'>
+          {board['drop-zone'] !== undefined ? board['drop-zone'].map(u => (
+            <Draggable id={u} key={u} >
+              <div className='unit-drop-item' tooltip={u} >
+                <img
+                  src={require(`../images/${findUnitIcon(u)}`)}
+                  alt=''
+                  width={32}
+                  height={32}
+                />
+              </div>
+            </Draggable>
+          )) : null}
+        </div>
+      </Droppable>
       <div
         className={`board-grid ${isPaintOn ? 'paint-cursor' : ''}`}
         style={{

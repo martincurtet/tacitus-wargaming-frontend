@@ -1,5 +1,6 @@
 import React from 'react'
 import '../styles/components/Modal.css'
+import Button from './Button'
 
 const Modal = ({ isOpen, hasCancel=true, onCancel, onSubmit, children }) => {
   return isOpen ? (
@@ -7,8 +8,13 @@ const Modal = ({ isOpen, hasCancel=true, onCancel, onSubmit, children }) => {
       <div className='modal'>
         {children}
         <div className='modal-buttons'>
-          {hasCancel && <button onClick={onCancel}>Cancel</button>}
-          <button onClick={onSubmit}>Submit</button>
+          {hasCancel && <Button color='blue' onClick={onCancel}>Cancel</Button>}
+          <Button
+            color='green'
+            onClick={onSubmit}
+          >
+            Submit
+          </Button>
         </div>
       </div>
     </div>

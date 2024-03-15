@@ -95,7 +95,7 @@ const Battle = () => {
         hasCancel={false}
         onSubmit={submitUsernameModal}
       >
-        <div>Choose a username</div>
+        <h3>Choose a username</h3>
         <input
           type='text'
           value={inputUsername}

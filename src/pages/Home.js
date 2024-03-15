@@ -4,6 +4,8 @@ import { socket } from '../connections/socket'
 
 import '../styles/pages/Home.css'
 
+import Button from '../components/Button'
+
 const Home = () => {
   // VARIABLES - STATES
   const navigate = useNavigate()
@@ -29,11 +31,36 @@ const Home = () => {
   return (
     <div className='page-home'>
       <h1>Tacitus Wargaming</h1>
-      <button
+      <Button
         onClick={createRoom}
+        color='beige'
       >
         Create Room
-      </button>
+      </Button>
+
+      <div style={{ height: '50px' }}></div>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
+        <Button color='beige' size='large'>Beige</Button>
+        <Button color='blue' size='large'>Blue</Button>
+        <Button color='green' size='large'>Green</Button>
+        <Button color='red' size='large'>Red</Button>
+      </div>
+
+      <div style={{ height: '50px' }}></div>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
+        <Button color='beige'>Beige</Button>
+        <Button color='blue'>Blue</Button>
+        <Button color='green'>Green</Button>
+        <Button color='red'>Red</Button>
+      </div>
+
+      <div style={{ height: '50px' }}></div>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
+        <Button color='beige' size='small'>Beige</Button>
+        <Button color='blue' size='small'>Blue</Button>
+        <Button color='green' size='small'>Green</Button>
+        <Button color='red' size='small'>Red</Button>
+      </div>
     </div>
   )
 }

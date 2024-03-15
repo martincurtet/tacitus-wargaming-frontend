@@ -2,3 +2,9 @@
   max-height: 300px;
   overflow-y: scroll;
 }
+
+.chat-send {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+}

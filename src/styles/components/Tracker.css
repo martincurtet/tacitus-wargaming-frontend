@@ -2,3 +2,55 @@
   justify-self: right;
   width: 50vw;
 }
+
+.tracker-toolbar {
+  display: flex;
+  flex-direction: row;
+}
+
+.tracker-toolbar .button {
+  align-self: flex-start;
+}
+
+.faction-panels {
+  display: flex;
+  flex-direction: row;
+}
+
+.faction-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: solid 1px lightgrey;
+  border-radius: 5px;
+  min-height: 100px;
+  gap: 2px;
+  width: 300px;
+  padding: 5px;
+}
+
+.faction-panel-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+  font-weight: bold;
+  font-size: large;
+}
+
+.faction-unit {
+  align-self: flex-start;
+  width: 100%;
+}
+
+.faction-unit input {
+  width: 40px;
+  padding: 1px;
+  text-align: center;
+}
+
+.faction-unit-name {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { socket } from '../connections/socket'
 import Modal from './Modal'
 import Units from './Units'
+import Button from './Button'
 
 import { DndContext } from '@dnd-kit/core'
 import Draggable from './dndComponents/Draggable'
@@ -158,7 +159,9 @@ const Tracker = ({
         factions={factions} setFactions={setFactions}
         setLog={setLog}
       /> */}
-      <button onClick={openUnitManagerModal}>Unit Manager</button>
+      <div className='tracker-toolbar'>
+        <Button color='beige' onClick={openUnitManagerModal}>Unit Manager</Button>
+      </div>
       <Units factionShop={factionShop} setFactionShop={setFactionShop} setLog={setLog} setBoard={setBoard} factions={factions} unitShop={unitShop} units={units} setUnits={setUnits} />
     
       <Modal
@@ -184,7 +187,7 @@ const Tracker = ({
             {factionShop.map((f) =>
               <option value={f.code} key={f.code}>{f.name}</option>
             )}
-          </select><button onClick={addFaction}>Add</button>
+          </select><Button color='beige' onClick={addFaction}>Add</Button>
 
           <div className='faction-panels'>
             {factions.map((f) => (
@@ -192,20 +195,28 @@ const Tracker = ({
                 <div className='faction-panel'>
                   <div className='faction-panel-title'>
                     <img src={require(`../images/${f.icon}`)} alt='' height={18} width={30} />
-                    {f.name}<button onClick={() => deleteFaction(f.code)}>x</button>
+                    {f.name}
+                    <Button
+                      color='none'
+                      size='small'
+                      onClick={() => deleteFaction(f.code)}
+                    >X</Button>
                   </div>
                   {unitManagerUnits.map((u) => {
                     if (u.faction === f.name) {
                       return (
                         // <Draggable id={`${f.name}${u.name}`} key={u.name}>
                         <div key={u.code} className='faction-unit'>
-                          {u.name} {u.identifier}
+                          <div className='faction-unit-name'>
+                            <div>{u.name} {u.identifier}</div>
+                            <Button color='none' size='small' onClick={() => deleteUnit(u.code)}>x</Button>
+                          </div>
                           <div>
                           <input
                             type='number'
                             value={u.men}
                             onChange={(e) => menChange(u.code, parseInt(e.target.value))}
-                          /> men {u.maxHd} HD <button onClick={() => deleteUnit(u.code)}>x</button></div>
+                          /> men {u.maxHd} HD </div>
                         </div>
                         // </Draggable>
                       )
