@@ -9,7 +9,6 @@ import Draggable from './dndComponents/Draggable'
 import Droppable from './dndComponents/Droppable'
 
 import '../styles/components/Tracker.css'
-import Factions from './Factions'
 
 const Tracker = ({
     setBoard,
@@ -45,6 +44,7 @@ const Tracker = ({
   }
 
   const submitUnitManagerModal = () => {
+    socket.emit('update-factions', { uuid: params.battleuuid, factions: factions })
     socket.emit('update-units', { uuid: params.battleuuid, units: unitManagerUnits })
     closeUnitManagerModal()
   }

@@ -207,14 +207,10 @@ const Board = ({
   }, [board])
 
   useEffect(() => {
+    // PAINTING FUNCTION
     if (finishingTile !== null && isPaintOn) {
       const cells = cellRange(startingTile, finishingTile)
-      console.log(cells)
-      let tempBoard = board
-      cells.forEach(cell => {
-        tempBoard[cell] = { ...tempBoard[cell], terrain: inputTerrain }
-      })
-      socket.emit('update-board', { uuid: params.battleuuid, board: tempBoard })
+      socket.emit('update-board-terrain', { uuid: params.battleuuid, terrain: inputTerrain, zone: cells })
     }
   }, [finishingTile])
 
@@ -230,9 +226,15 @@ const Board = ({
       }))
       setLog(data.log)
     })
+    socket.on('board-terrain-updated', (data) => {
+      console.log(data.board)
+      setBoard(data.board)
+      setLog(data.log)
+    })
 
     return () => {
       socket.off('board-size-updated')
+      socket.off('board-terrain-updated')
     }
   }, [])
 
