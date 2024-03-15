@@ -227,7 +227,7 @@ const Board = ({
       setLog(data.log)
     })
     socket.on('board-terrain-updated', (data) => {
-      console.log(data.board)
+      // console.log(data.board)
       setBoard(data.board)
       setLog(data.log)
     })

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { socket } from '../connections/socket'
 import '../styles/components/Log.css'
+import { formatTimestamp } from '../functions/functions'
 
 const Log = ({ log, setLog }) => {
   // useEffect(() => {
@@ -15,7 +16,7 @@ const Log = ({ log, setLog }) => {
   return (
     <div className='log'>
       {log.map(l => (
-        <p key={l.timestamp}>[{l.timestamp}] {l.log}</p>
+        <p key={l.timestamp}>[{formatTimestamp(l.timestamp, 'hh:min:ss')}] {l.log}</p>
       ))}
     </div>
   )

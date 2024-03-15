@@ -3,6 +3,8 @@ import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
 import { formatTimestamp } from '../functions/functions'
 
+import '../styles/components/Chat.css'
+
 const Chat = ({ messages, setMessages, setLog }) => {
   const params = useParams()
   const [inputMessage, setInputMessage] = useState('')
@@ -28,7 +30,7 @@ const Chat = ({ messages, setMessages, setLog }) => {
   }, [])
 
   return (
-    <div>
+    <div className='chat'>
       {messages.map(m => (
         <p key={m.timestamp}>{formatTimestamp(m.timestamp, 'hh:min:ss')} {m.username === 'System' ? null : `${m.username}:`} {m.message}</p>
       ))}
