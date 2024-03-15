@@ -109,7 +109,7 @@ const Unit = ({
       </div>
       <div className='tracker-item-four'>
         <div>Fatigue</div>
-        <div>
+        <div className='fatigue-controls'>
           <button onClick={() => fatigueChange(-1)}>-</button>
           {/* <input
             className='small-input'

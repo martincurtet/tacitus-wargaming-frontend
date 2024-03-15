@@ -172,7 +172,7 @@ const Tracker = ({
               <Draggable id={u.code} key={u.code}>
                 <div className='unit-item' tooltip={`${u.name}\nHD per men: ${u.hdPerMen}`}>
                   {u.icon ? (
-                    <img src={require(`../images/${u.icon}`)} alt='' height={32} width={32} />
+                    <img src={require(`../images/${u.icon}`)} alt='' height={48} width={48} />
                   ) : null}
                 </div>
               </Draggable>
@@ -182,7 +182,7 @@ const Tracker = ({
           <select onChange={handleSelectFaction}>
             <option disabled selected value>Choose a faction</option>
             {factionShop.map((f) =>
-              <option value={f.code}>{f.name}</option>
+              <option value={f.code} key={f.code}>{f.name}</option>
             )}
           </select><button onClick={addFaction}>Add</button>
 

@@ -7,24 +7,27 @@
 }
 
 /* FACTION ICON */
-.tracker-item-one {}
+.tracker-item-one {
+  width: 30px;
+}
 
 /* NAME IDENTIFIER VETERANCY MEN LOCATION */
 .tracker-item-two {
   display: flex;
   flex-direction: column;
+  width: 400px;
 }
 
 /* HD CASUALTIES */
 .tracker-item-three {
   display: flex;
   flex-direction: column;
+  width: 250px;
 }
 
 .tracker-item-three textarea {
   resize: none;
   height: 20px;
-  width: 30px;
 }
 
 /* FATIGUE */
@@ -32,6 +35,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 120px;
+}
+
+.fatigue-controls {
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
 }
 
 /* NOTES */
