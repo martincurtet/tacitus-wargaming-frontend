@@ -25,6 +25,7 @@ const Tracker = ({
 
   // FACTIONS
   const [selectedFaction, setSelectedFaction] = useState([])
+  const [unitManagerFactions, setUnitManagerFactions] = useState([])
 
   // UNIT MANAGER VARIABLES
   const [isUnitManagerModalOpen, setIsUnitManagerModalOpen] = useState(false)
@@ -41,12 +42,14 @@ const Tracker = ({
 
   const cancelUnitManagerModal = () => {
     setUnitManagerUnits(units)
+    setUnitManagerFactions(factions)
     closeUnitManagerModal()
   }
 
   const submitUnitManagerModal = () => {
-    socket.emit('update-factions', { uuid: params.battleuuid, factions: factions })
-    socket.emit('update-units', { uuid: params.battleuuid, units: unitManagerUnits })
+    socket.emit('update-factions-units', { uuid: params.battleuuid, factions: unitManagerFactions, units: unitManagerUnits })
+    // socket.emit('update-factions', { uuid: params.battleuuid, factions: unitManagerFactions })
+    // socket.emit('update-units', { uuid: params.battleuuid, units: unitManagerUnits })
     closeUnitManagerModal()
   }
 
@@ -88,7 +91,7 @@ const Tracker = ({
 
     setUnitManagerUnits(prev => {
       let currentUnit = unitShop.find(u => u.code === unitCode)
-      let currentFaction = factions.find(f => f.code === factionCode)
+      let currentFaction = factionShop.find(f => f.code === factionCode)
       return [
         ...prev,
         {
@@ -124,14 +127,28 @@ const Tracker = ({
   }, [units])
 
   useEffect(() => {
-    socket.on('units-updated', (data) => {
+    // socket.on('units-updated', (data) => {
+    //   setUnits(data.units)
+    //   setBoard(data.board)
+    //   setLog(data.log)
+    // })
+
+    // socket.on('factions-updated', (data) => {
+    //   setFactions(data.factions)
+    //   setLog(data.log)
+    // })
+
+    socket.on('factions-units-updated', (data) => {
+      setFactions(data.factions)
       setUnits(data.units)
       setBoard(data.board)
       setLog(data.log)
     })
 
     return () => {
-      socket.off('units-updated')
+      // socket.off('units-updated')
+      // socket.off('factions-updated')
+      socket.off('factions-units-updated')
     }
   }, [])
 
@@ -141,11 +158,11 @@ const Tracker = ({
 
   const addFaction = () => {
     const newFaction = factionShop.find(f => f.code == selectedFaction)
-    setFactions((prev) => [...prev, newFaction])
+    setUnitManagerFactions((prev) => [...prev, newFaction])
   }
 
   const deleteFaction = (code) => {
-    setFactions(factions.filter(f => f.code !== code))
+    setUnitManagerFactions(unitManagerFactions.filter(f => f.code !== code))
   }
 
   const deleteUnit = (code) => {
@@ -162,7 +179,12 @@ const Tracker = ({
       <div className='tracker-toolbar'>
         <Button color='beige' onClick={openUnitManagerModal}>Unit Manager</Button>
       </div>
-      <Units factionShop={factionShop} setFactionShop={setFactionShop} setLog={setLog} setBoard={setBoard} factions={factions} unitShop={unitShop} units={units} setUnits={setUnits} />
+      <Units
+        setLog={setLog}
+        factions={factions}
+        units={units}
+        setUnits={setUnits}
+      />
     
       <Modal
         isOpen={isUnitManagerModalOpen}
@@ -182,15 +204,18 @@ const Tracker = ({
             ))}
           </div>
 
+          <div className='faction-add-buttons'>
           <select onChange={handleSelectFaction}>
             <option disabled selected value>Choose a faction</option>
             {factionShop.map((f) =>
               <option value={f.code} key={f.code}>{f.name}</option>
             )}
-          </select><Button color='beige' onClick={addFaction}>Add</Button>
+          </select>
+          <Button color='beige' onClick={addFaction}>Add</Button>
+          </div>
 
           <div className='faction-panels'>
-            {factions.map((f) => (
+            {unitManagerFactions.map((f) => (
               <Droppable key={f.code} id={f.code}>
                 <div className='faction-panel'>
                   <div className='faction-panel-title'>

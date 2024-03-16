@@ -3,6 +3,7 @@ import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
 import { debounce } from '../functions/functions'
 import '../styles/components/Unit.css'
+import Button from './Button'
 
 const Unit = ({
     setLog,
@@ -18,8 +19,7 @@ const Unit = ({
 
   // CHANGE HD FUNCTIONS
   const hdChange = (hd) => {
-    if (hd < 0 || hd > unitData.maxHd) {
-      console.log(`out of normal values: ${hd}`)
+    if (parseInt(hd) < 0 || parseInt(hd) > parseInt(unitData.maxHd)) {
       setInputHd(unitData.hd)
     } else {
       let tempUnit = unitData
@@ -37,7 +37,6 @@ const Unit = ({
 
   // CHANGE FATIGUE FUNCTIONS
   const fatigueChange = (fatigueIncrement) => {
-    // fatigue can't drop to 0 if it's 1
     let tempUnit = unitData
     let newFatigue = Number(tempUnit.fatigue) + Number(fatigueIncrement)
     if (newFatigue < 0 || newFatigue > 100) return
@@ -110,7 +109,7 @@ const Unit = ({
       <div className='tracker-item-four'>
         <div>Fatigue</div>
         <div className='fatigue-controls'>
-          <button onClick={() => fatigueChange(-1)}>-</button>
+          <Button color='green' size='small' onClick={() => fatigueChange(-1)}>b</Button>
           {/* <input
             className='small-input'
             type='number'
@@ -121,7 +120,7 @@ const Unit = ({
             step={1}
           /> */}
           {unitData.fatigue}
-          <button onClick={() => fatigueChange(2)}>+</button>
+          <Button color='red' size='small' onClick={() => fatigueChange(2)}>s</Button>
         </div>
       </div>
       <div className='tracker-item-five'>

@@ -121,13 +121,11 @@ const Board = ({
     const { over } = e // get information
     if (over === null) return // if dropping in a non-droppable zone
 
-    if (e.active.id === over.id) return // if dropping in same zone (only for cells)
-
     let unitCode
     let startingCell
     let droppingCell
 
-    // CASE 1 - FROM drop-zone TO cell
+    // CASE 1 - from drop-zone to cell
     if (e.active.id.length !== 2) {
       if (over.id === 'drop-zone') return // dropping in same zone
       unitCode = e.active.id
@@ -135,32 +133,28 @@ const Board = ({
       droppingCell = over.id
     }
 
-    // CASE 2 - FROM cell TO drop-zone
+    // CASE 2 - from cell to drop-zone
     else if (over.id === 'drop-zone') {
       unitCode = board[e.active.id].unit
       startingCell = e.active.id
       droppingCell = 'drop-zone'
     }
 
-    // CASE 3 - FROM cell TO cell
+    // CASE 3 - from cell to cell
     else {
+      if (e.active.id === over.id) return // same cell
       unitCode = board[e.active.id].unit
       startingCell = e.active.id
       droppingCell = over.id
     }
 
+    // check if cell is occupied
+    if (board[droppingCell]?.unit !== undefined) {
+      return
+    }
+
     // update socket
     socket.emit('update-board-unit', { uuid: params.battleuuid, unitCode: unitCode, startingCell: startingCell, droppingCell: droppingCell })
-  }
-
-  const isUnitOnBoard = (unitCode) => {
-    // console.log(`checking ${unitCode}`)
-    for (const key in board) {
-      if (board.hasOwnProperty(key) && board[key].unit === unitCode) {
-        return true
-      }
-    }
-    return false
   }
 
   const findUnitIcon = (unitCode) => {
@@ -173,22 +167,6 @@ const Board = ({
     // console.log(units)
     return 'normal.png'
   }
-
-  useEffect(() => {
-    // console.log('the use effect that puts units on the board')
-    // find a way to not trigger if hd/casu/fatigue/notes changes
-    if (units.length !== 0) {
-      let tempBoard = board
-      tempBoard['drop-zone'] = []
-      units.map((u) => {
-        if (!isUnitOnBoard(u.code)) {
-          // console.log(`unit ${u.code} is not on board`)
-          tempBoard['drop-zone'].push(u.code)
-        }
-      })
-      socket.emit('update-board', { uuid: params.battleuuid, board: tempBoard })
-    }
-  }, [units])
 
   useEffect(() => {
     generateTiles()

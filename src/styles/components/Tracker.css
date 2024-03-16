@@ -12,6 +12,12 @@
   align-self: flex-start;
 }
 
+.faction-add-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+}
+
 .faction-panels {
   display: flex;
   flex-direction: row;

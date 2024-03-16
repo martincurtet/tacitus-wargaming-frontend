@@ -3,7 +3,7 @@
   flex-direction: row;
   align-items: center;
   gap: 7px;
-  padding: 7px;
+  padding: 7px 13px 7px 7px;
 }
 
 /* FACTION ICON */
@@ -15,7 +15,7 @@
 .tracker-item-two {
   display: flex;
   flex-direction: column;
-  width: 400px;
+  width: 500px;
 }
 
 /* HD CASUALTIES */
@@ -41,6 +41,7 @@
 .fatigue-controls {
   display: flex;
   flex-direction: row;
+  align-items: center;
   gap: 3px;
 }
 

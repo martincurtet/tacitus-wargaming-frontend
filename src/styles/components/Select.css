@@ -1,0 +1,28 @@
+select {
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: solid 1px #ccc;
+  background-color: #fff;
+  color: #333;
+  font-family: 'Fundamento';
+  font-size: medium;
+}
+
+select:hover {
+  border-color: #aaa;
+}
+
+select:active {
+  border-color: #666;
+}
+
+option {
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+option:hover {
+  background-color: #f0f0f0;
+}

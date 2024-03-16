@@ -8,7 +8,6 @@ const Units = ({
     factions,
     units, setUnits
   }) => {
-  // TODO move stuff to tracker
 
   return (
     <div className='tracker-units'>
@@ -16,7 +15,7 @@ const Units = ({
       <Unit
         setLog={setLog}
         factions={factions}
-        units={units} setUnits={setUnits}
+        setUnits={setUnits}
         unitData={u}
       />
     ))}

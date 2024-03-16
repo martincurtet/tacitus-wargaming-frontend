@@ -6,5 +6,12 @@
 .chat-send {
   display: flex;
   flex-direction: row;
+  justify-content: right;
   gap: 2px;
+  padding-right: 13px;
+}
+
+.chat-send input {
+  padding: 0;
+  flex-grow: 2;
 }

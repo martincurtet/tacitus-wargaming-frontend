@@ -2,9 +2,10 @@ import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { socket } from '../connections/socket'
 
-import '../styles/pages/Home.css'
-
 import Button from '../components/Button'
+
+import '../styles/pages/Home.css'
+import '../styles/components/Select.css'
 
 const Home = () => {
   // VARIABLES - STATES
@@ -37,30 +38,6 @@ const Home = () => {
       >
         Create Room
       </Button>
-
-      <div style={{ height: '50px' }}></div>
-      <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
-        <Button color='beige' size='large'>Beige</Button>
-        <Button color='blue' size='large'>Blue</Button>
-        <Button color='green' size='large'>Green</Button>
-        <Button color='red' size='large'>Red</Button>
-      </div>
-
-      <div style={{ height: '50px' }}></div>
-      <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
-        <Button color='beige'>Beige</Button>
-        <Button color='blue'>Blue</Button>
-        <Button color='green'>Green</Button>
-        <Button color='red'>Red</Button>
-      </div>
-
-      <div style={{ height: '50px' }}></div>
-      <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
-        <Button color='beige' size='small'>Beige</Button>
-        <Button color='blue' size='small'>Blue</Button>
-        <Button color='green' size='small'>Green</Button>
-        <Button color='red' size='small'>Red</Button>
-      </div>
     </div>
   )
 }
