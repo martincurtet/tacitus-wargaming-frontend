@@ -158,6 +158,8 @@ const Tracker = ({
 
   const addFaction = () => {
     const newFaction = factionShop.find(f => f.code == selectedFaction)
+    let existingFaction = (unitManagerFactions.find(f => f.code == newFaction.code))
+    if (existingFaction !== undefined) return
     setUnitManagerFactions((prev) => [...prev, newFaction])
   }
 
