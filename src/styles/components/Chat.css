@@ -1,6 +1,7 @@
 .chat {
   max-height: 300px;
   overflow-y: scroll;
+  margin-right: 26px;
 }
 
 .chat-send {
