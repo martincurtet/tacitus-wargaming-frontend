@@ -21,7 +21,7 @@ const Board = ({
 
   //
   const params = useParams()
-  const MAX_GRID_SIZE = Number(process.env.REACT_APP_MAX_GRID_SIZE)
+  const MAX_GRID_SIZE = Number(process.env.REACT_APP_MAX_GRID_SIZE) || 40
 
   // BOARD SIZE VARIABLES
   const [isBoardSizeModalOpen, setIsBoardSizeModalOpen] = useState(false)
