@@ -6,13 +6,15 @@ import '../styles/components/Units.css'
 const Units = ({
     setLog,
     factions,
-    units, setUnits
+    units, 
+    setUnits
   }) => {
 
   return (
     <div className='tracker-units'>
     {units.map((u) => (
       <Unit
+        key={u.code}
         setLog={setLog}
         factions={factions}
         setUnits={setUnits}
