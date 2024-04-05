@@ -96,7 +96,7 @@ const debounce = (func, delay) => {
   }
 }
 
-module.exports = {
+export {
   integerToLetter,
   terrainToHex,
   cellRange,
