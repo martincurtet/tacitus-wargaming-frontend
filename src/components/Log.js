@@ -16,7 +16,7 @@ const Log = ({ log, setLog }) => {
   return (
     <div className='log'>
       {log.map(l => (
-        <p key={l.timestamp}>[{formatTimestamp(l.timestamp, 'hh:min:ss')}] {l.log}</p>
+        <p>[{formatTimestamp(l.timestamp, 'hh:min:ss')}] {l.log}</p>
       ))}
     </div>
   )
