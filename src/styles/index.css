@@ -15,7 +15,7 @@
 
 body {
   font-family: 'Fundamento', sans-serif;
-  background-color: whitesmoke;
+  background-color: #E5D3B3;
 }
 
 input {
@@ -25,3 +25,19 @@ input {
 input:focus {
   outline: none;
 }
+
+.card-border {
+  border-width: .5rem;
+  border-color: #664229;
+  border-style: double;
+  padding: 2rem;
+}
+
+/* palette */
+/*
+#B99976
+#D2B48C
+#E5D3B3
+#987554
+#664229
+*/

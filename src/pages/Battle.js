@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { socket } from '../connections/socket'
 
@@ -9,15 +9,19 @@ import Chat from '../components/Chat'
 import Log from '../components/Log'
 
 import '../styles/pages/Battle.css'
+import { UserContext } from '../context/UserContext'
 
 const Battle = () => {
   // PARAMS
   const params = useParams()
 
   // USERNAME VARIABLES
+  const [user, setUser] = useContext(UserContext)
   const [username, setUsername] = useState('')
-  const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(true)
-  const [inputUsername, setInputUsername] = useState('Tacitus')
+  const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(user.username === '')
+  const [inputUsername, setInputUsername] = useState('')
+
+  console.log(user.username)
 
   // BATTLE VARIABLES
   const [board, setBoard] = useState({})
@@ -37,22 +41,23 @@ const Battle = () => {
   }
 
   const submitUsernameModal = () => {
-    if(inputUsername.length > 0 && inputUsername.length <= 20) {
-      setUsername(inputUsername)
-      setInputUsername('')
-      setIsUsernameModalOpen(false)
-    }
+    setUser({
+      ...user,
+      username: inputUsername
+    })
+    setInputUsername('')
+    setIsUsernameModalOpen(false)
   }
 
   // JOIN ROOM
   useEffect(() => {
-    if (username !== '') {
+    if (user.username !== '') {
       if (!socket.connected) {
         socket.connect()
       }
-      socket.emit('join-room', { uuid: params.battleuuid, username: username })
+      socket.emit('join-room', { uuid: params.battleuuid, username: user.username })
     }
-  }, [username, params])
+  }, [user.username, params])
 
   // SOCKET LISTENERS
   useEffect(() => {
@@ -81,7 +86,7 @@ const Battle = () => {
   // RENDER
   return (
     <div className='page-battle'>
-      {username !== '' ? (
+      {user.username !== '' ? (
         <>
           <Board board={board} setBoard={setBoard} units={units} setUnits={setUnits} setLog={setLog} />
           <Tracker setBoard={setBoard} factionShop={factionShop} setFactionShop={setFactionShop} factions={factions} setFactions={setFactions} unitShop={unitShop} units={units} setUnits={setUnits} setLog={setLog} />
