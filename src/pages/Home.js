@@ -12,7 +12,7 @@ const Home = () => {
   // VARIABLES - STATES
   const navigate = useNavigate()
   const [user, setUser] = useContext(UserContext)
-  const [inputUsername, setInputUsername] = useState('')
+  const [inputUsername, setInputUsername] = useState('Tacitus')
   const [validUsername, setValidUsername] = useState(false)
   const [userTyped, setUserTyped] = useState(false)
 
@@ -31,27 +31,35 @@ const Home = () => {
   }
 
   const createRoom = () => {
-    // if (validUsername) {
-      socket.connect()
-      socket.emit('create-room', { username: inputUsername })
-    // }
+    socket.connect()
+    socket.emit('create-room', { username: inputUsername })
   }
 
   // SOCKET LISTENERS
   useEffect(() => {
     socket.on('room-created', (data) => {
-      // add user info to context
+      console.log(`isUserHost is: '${data.isUserHost}', it is: ${data.isUserHost === 'true'}`)
+      // Set Local Data
+      localStorage.setItem('twUserData', JSON.stringify({
+        userUuid: data.userUuid,
+        username: data.username,
+        userColor: data.userColor,
+        isUserHost: data.isUserHost === 'true'
+      }))
+      // Set Context Data
       setUser({
-        ...user,
-        username: data.username
+        userUuid: data.userUuid,
+        username: data.username,
+        userColor: data.userColor,
+        isUserHost: data.isUserHost === 'true'
       })
-      navigate(`/${data.uuid}`)
+      navigate(`/${data.roomUuid}`)
     })
 
     return () => {
       socket.off('room-created')
     }
-  }, [navigate])
+  }, [])
 
   // RENDER
   return (

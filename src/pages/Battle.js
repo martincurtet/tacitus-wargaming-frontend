@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { socket } from '../connections/socket'
+import { UserContext } from '../context/UserContext'
 
 import Modal from '../components/Modal'
 import Board from '../components/Board'
@@ -9,7 +10,6 @@ import Chat from '../components/Chat'
 import Log from '../components/Log'
 
 import '../styles/pages/Battle.css'
-import { UserContext } from '../context/UserContext'
 
 const Battle = () => {
   // PARAMS
@@ -17,11 +17,8 @@ const Battle = () => {
 
   // USERNAME VARIABLES
   const [user, setUser] = useContext(UserContext)
-  const [username, setUsername] = useState('')
   const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(user.username === '')
   const [inputUsername, setInputUsername] = useState('')
-
-  console.log(user.username)
 
   // BATTLE VARIABLES
   const [board, setBoard] = useState({})
@@ -49,19 +46,49 @@ const Battle = () => {
     setIsUsernameModalOpen(false)
   }
 
+  // LOAD LOCAL DATA
+  // useEffect(() => {
+  //   if (user.userUuid !== '') {
+  //     const twUserData = JSON.parse(localStorage.getItem('twUserData'))
+  //     setUser(twUserData)
+  //   }
+  // }, [])
+
   // JOIN ROOM
-  useEffect(() => {
-    if (user.username !== '') {
-      if (!socket.connected) {
-        socket.connect()
-      }
-      socket.emit('join-room', { uuid: params.battleuuid, username: user.username })
-    }
-  }, [user.username, params])
+  // useEffect(() => {
+  //   if (user.username !== '') {
+  //     if (!socket.connected) {
+  //       socket.connect()
+  //     }
+  //     console.log('Emitting join-room')
+  //     socket.emit('join-room', {
+  //       roomUuid: params.battleuuid,
+  //       userUuid: user.userUuid,
+  //       username: user.username
+  //     })
+  //   }
+  // }, [user.username, params])
 
   // SOCKET LISTENERS
   useEffect(() => {
     socket.on('room-joined', (data) => {
+      console.log(data)
+      // Set Local Data
+      localStorage.setItem('twUserData', JSON.stringify({
+        userUuid: data.userUuid,
+        username: data.username,
+        userColor: data.userColor,
+        isUserHost: data.isUserHost
+      }))
+      // Set Context Data
+      setUser({
+        ...user,
+        userUuid: data.userUuid,
+        username: data.username,
+        userColor: data.userColor,
+        isUserHost: data.isUserHost
+      })
+      // Set State Data
       setBoard(data.board)
       setFactionShop(data.factionShop)
       setFactions(data.factions)
@@ -86,14 +113,21 @@ const Battle = () => {
   // RENDER
   return (
     <div className='page-battle'>
-      {user.username !== '' ? (
+      <div>Battle Page</div>
+      <div>Context:
+        <p>{user.userUuid || 'no userUuid'}</p>
+        <p>{user.username || 'no username'}</p>
+        <p>{user.userColor || 'no color'}</p>
+        <p>{user.isUserHost ? 'host' : 'player'}</p>
+      </div>
+      {/* {user.username !== '' ? (
         <>
           <Board board={board} setBoard={setBoard} units={units} setUnits={setUnits} setLog={setLog} />
           <Tracker setBoard={setBoard} factionShop={factionShop} setFactionShop={setFactionShop} factions={factions} setFactions={setFactions} unitShop={unitShop} units={units} setUnits={setUnits} setLog={setLog} />
           <Log log={log} setLog={setLog} />
           <Chat messages={messages} setMessages={setMessages} setLog={setLog} />
         </>
-      ) : null }
+      ) : null } */}
 
       <Modal
         isOpen={isUsernameModalOpen}
