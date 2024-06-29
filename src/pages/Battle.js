@@ -55,19 +55,20 @@ const Battle = () => {
   // }, [])
 
   // JOIN ROOM
-  // useEffect(() => {
-  //   if (user.username !== '') {
-  //     if (!socket.connected) {
-  //       socket.connect()
-  //     }
-  //     console.log('Emitting join-room')
-  //     socket.emit('join-room', {
-  //       roomUuid: params.battleuuid,
-  //       userUuid: user.userUuid,
-  //       username: user.username
-  //     })
-  //   }
-  // }, [user.username, params])
+  useEffect(() => {
+    if (user.username !== '') {
+      if (!socket.connected) {
+        console.log('Connecting')
+        socket.connect()
+      }
+      console.log('Emitting join-room')
+      socket.emit('join-room', {
+        roomUuid: params.battleuuid,
+        userUuid: user.userUuid,
+        username: user.username
+      })
+    }
+  }, [user.username, params])
 
   // SOCKET LISTENERS
   useEffect(() => {
@@ -120,14 +121,14 @@ const Battle = () => {
         <p>{user.userColor || 'no color'}</p>
         <p>{user.isUserHost ? 'host' : 'player'}</p>
       </div>
-      {/* {user.username !== '' ? (
+      {user.username !== '' ? (
         <>
-          <Board board={board} setBoard={setBoard} units={units} setUnits={setUnits} setLog={setLog} />
-          <Tracker setBoard={setBoard} factionShop={factionShop} setFactionShop={setFactionShop} factions={factions} setFactions={setFactions} unitShop={unitShop} units={units} setUnits={setUnits} setLog={setLog} />
+          {/* <Board board={board} setBoard={setBoard} units={units} setUnits={setUnits} setLog={setLog} /> */}
+          {/* <Tracker setBoard={setBoard} factionShop={factionShop} setFactionShop={setFactionShop} factions={factions} setFactions={setFactions} unitShop={unitShop} units={units} setUnits={setUnits} setLog={setLog} /> */}
           <Log log={log} setLog={setLog} />
           <Chat messages={messages} setMessages={setMessages} setLog={setLog} />
         </>
-      ) : null } */}
+      ) : null }
 
       <Modal
         isOpen={isUsernameModalOpen}
