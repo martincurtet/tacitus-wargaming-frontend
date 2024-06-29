@@ -12,6 +12,11 @@
   margin: -1px -1px;
 }
 
+.button-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .small-button {
   font-size: 12px;
   padding: 5px 10px;
@@ -37,17 +42,17 @@
 }
 
 .button-beige {
-  background-color: antiquewhite;
-  border: solid 1px rgb(184, 172, 157);
+  background-color: #D2B48C;
+  border: solid 1px #664229;
 }
 
 .button-beige:hover {
-  border: solid 2px rgb(184, 172, 157);
+  border: solid 2px #664229;
 }
 
 .button-beige:active {
-  background-color: rgb(184, 172, 157);
-  border: solid 2px rgb(184, 172, 157);
+  background-color: #664229;
+  border: solid 2px #664229;
 }
 
 .button-green {
