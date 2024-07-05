@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { socket } from '../connections/socket'
 import { UserContext } from '../context/UserContext'
 
+import Setup from '../components/Setup'
 import Modal from '../components/Modal'
 import Board from '../components/Board'
 import Tracker from '../components/Tracker'
@@ -114,21 +115,27 @@ const Battle = () => {
   // RENDER
   return (
     <div className='page-battle'>
-      <div>Battle Page</div>
-      <div>Context:
+      {/* <div>Battle Page</div> */}
+      {/* <div>Context:
         <p>{user.userUuid || 'no userUuid'}</p>
         <p>{user.username || 'no username'}</p>
         <p>{user.userColor || 'no color'}</p>
         <p>{user.isUserHost ? 'host' : 'player'}</p>
-      </div>
-      {user.username !== '' ? (
+      </div> */}
+      {/* {user.username !== '' ? (
         <>
-          {/* <Board board={board} setBoard={setBoard} units={units} setUnits={setUnits} setLog={setLog} /> */}
-          {/* <Tracker setBoard={setBoard} factionShop={factionShop} setFactionShop={setFactionShop} factions={factions} setFactions={setFactions} unitShop={unitShop} units={units} setUnits={setUnits} setLog={setLog} /> */}
+          <Board board={board} setBoard={setBoard} units={units} setUnits={setUnits} setLog={setLog} />
+          <Tracker setBoard={setBoard} factionShop={factionShop} setFactionShop={setFactionShop} factions={factions} setFactions={setFactions} unitShop={unitShop} units={units} setUnits={setUnits} setLog={setLog} />
           <Log log={log} setLog={setLog} />
           <Chat messages={messages} setMessages={setMessages} setLog={setLog} />
         </>
-      ) : null }
+      ) : null } */}
+
+      <Setup
+        users={users}
+        factions={factions}
+        step={1}
+      />
 
       <Modal
         isOpen={isUsernameModalOpen}

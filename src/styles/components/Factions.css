@@ -1,8 +1,61 @@
-.faction-list {}
+.factions {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
 
-.faction-item {
+.no-faction {
+  border: solid 1px grey;
+  border-radius: 1rem;
+  padding: 1rem;
+  width: 100%;
+}
+
+.faction-list {
   display: flex;
   flex-direction: row;
+  gap: .25rem;
   align-items: center;
-  column-gap: 5px;
+}
+
+.faction-item {
+  position: relative;
+  border: solid 1px;
+  border-radius: 1rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  min-height: 200px;
+  min-width: 200px;
+}
+
+.faction-item hr {
+  width: 100%;
+}
+
+.faction-edit {
+  position: absolute;
+  top: .75rem;
+  right: 1rem;
+}
+
+.faction-delete {
+  position: absolute;
+  top: .75rem;
+  right: 3rem;
+}
+
+.faction-user {
+  /* align-self: center; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.faction-user input {
+  width: 4ch;
+  text-align: center;
 }
