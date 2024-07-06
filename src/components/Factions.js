@@ -78,6 +78,7 @@ const Factions = ({ users, setUsers, factionShop, factions, setFactions, setLog 
       setLog(data.log)
     })
     socket.on('faction-removed', (data) => {
+      setUsers(data.users)
       setFactions(data.factions)
       setLog(data.log)
     })
