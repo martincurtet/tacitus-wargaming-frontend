@@ -11,9 +11,6 @@ const Factions = ({ users, factionShop, factions, setFactions, setLog }) => {
   const [isAddFactionModalOpen, setIsAddFactionModalOpen] = useState(false)
   const [inputFactionCode, setInputFactionCode] = useState('')
 
-  // const [inputFactionColor, setInputFactionColor] = useState('#777777')
-  // const [isEditFactionModalOpen, setIsEditFactionModalOpen] = useState(false)
-  // const [inputEditFaction, setInputEditFaction] = useState('')
   const [isRemoveFactionModalOpen, setIsRemoveFactionModalOpen] = useState(false)
   const [selectedFactionIndex, setSelectedFactionIndex] = useState(-1)
 
@@ -32,30 +29,17 @@ const Factions = ({ users, factionShop, factions, setFactions, setLog }) => {
   }
 
   const addFaction = () => {
-    // check for existing code and name
     if (inputFactionCode !== '') {
-      socket.emit('add-faction', {
-        roomUuid: params.battleuuid,
-        factionCode: inputFactionCode,
-      })
-      closeAddFactionModal()
+      let exists = factions.find(f => f.code === inputFactionCode)
+      if (!exists) {
+        socket.emit('add-faction', {
+          roomUuid: params.battleuuid,
+          factionCode: inputFactionCode,
+        })
+        closeAddFactionModal()
+      }
     }
   }
-
-  // EDIT FACTION
-  // const openEditFactionModal = (i) => {
-  //   setSelectedFactionIndex(i)
-  //   setInputEditFaction(factions[i].name)
-  //   setInputFactionColor(factions[i].color)
-  //   setIsEditFactionModalOpen(true)
-  // }
-
-  // const closeEditFactionModal = () => {
-  //   setSelectedFactionIndex(-1)
-  //   setInputEditFaction('')
-  //   setInputFactionColor('#777777')
-  //   setIsEditFactionModalOpen(false)
-  // }
 
   // REMOVE FACTION
   const openRemoveFactionModal = (i) => {
@@ -75,32 +59,6 @@ const Factions = ({ users, factionShop, factions, setFactions, setLog }) => {
     })
     closeRemoveFactionModal()
   }
-
-  // const changeInputFactionColor = (e) => {
-  //   setInputFactionColor(e.target.value)
-  // }
-
-  // const changeInputEditFaction = (e) => {
-  //   setInputEditFaction(e.target.value)
-  // }
-
-  // const editFaction = () => {
-  //   setFactions((prev) => {
-  //     const tempArray = [...prev]
-  //     tempArray[selectedFactionIndex] = { name: inputEditFaction, color: inputFactionColor }
-  //     return tempArray
-  //   })
-  //   setInputEditFaction('')
-  //   setIsEditFactionModalOpen(false)
-  // }
-
-
-
-  // useEffect(() => {
-  //   if (factions.length !== 0 && !isAddFactionModalOpen && !isEditFactionModalOpen && !isRemoveFactionModalOpen) {
-  //     socket.emit('update-factions', { uuid: params.battleuuid, factions: factions })
-  //   }
-  // }, [isAddFactionModalOpen, isEditFactionModalOpen, isRemoveFactionModalOpen])
 
   useEffect(() => {
     socket.on('faction-added', (data) => {
@@ -136,12 +94,9 @@ const Factions = ({ users, factionShop, factions, setFactions, setLog }) => {
             className='faction-item'
             style={{ borderColor: f.color }}
             onClick={() => {console.log(`clicked on faction ${f.name}`)}}
-            onMouseEnter={() => { console.log(`enter ${f.name}`) }}
-            onMouseLeave={() => { console.log(`leave ${f.name}`) }}
           >
             {f.name}
             <div className='faction-buttons'>
-              {/* <Button className='faction-edit' size='small' onClick={() => openEditFactionModal(i)}>/</Button> */}
               <Button className='faction-remove' size='small' onClick={() => openRemoveFactionModal(i)}>x</Button>
             </div>
             <hr></hr>
@@ -169,32 +124,25 @@ const Factions = ({ users, factionShop, factions, setFactions, setLog }) => {
         isOpen={isAddFactionModalOpen}
         onCancel={closeAddFactionModal}
         onSubmit={addFaction}
+        submitText='Add'
       >
         Add faction:
         <select onChange={changeInputFactionCode}>
           <option value='' disabled selected>Select a faction</option>
-          {/* disable when already here */}
-          {factionShop.map(f => (
-            <option key={f.code} value={f.code}>{f.name}</option>
-          ))}
+          {factionShop.map(f => {
+            let exists = factions.find(fa => fa.code === f.code)
+            return (
+            <option key={f.code} value={f.code} disabled={exists}>{f.name}</option>
+          )})}
         </select>
       </Modal>
   
-      {/* <Modal
-        isOpen={isEditFactionModalOpen}
-        onCancel={closeEditFactionModal}
-        // onSubmit={editFaction}
-        onSubmit={() => {}}
-      >
-        Edit faction:
-        <input type='text' value={inputEditFaction} onChange={changeInputEditFaction} />
-        <input type='color' value={inputFactionColor} onChange={changeInputFactionColor} />
-      </Modal> */}
-
       <Modal
         isOpen={isRemoveFactionModalOpen}
         onCancel={closeRemoveFactionModal}
         onSubmit={removeFaction}
+        submitColor='red'
+        submitText='Remove'
       >
         Are you sure you want to remove "{factions[selectedFactionIndex]?.name}"?
       </Modal>
