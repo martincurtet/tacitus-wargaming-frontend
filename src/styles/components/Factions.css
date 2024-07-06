@@ -59,10 +59,10 @@
   right: 1rem;
 }
 
-.faction-delete {
+.faction-remove {
   position: absolute;
-  top: .75rem;
-  right: 3rem;
+  top: .5rem;
+  right: 1rem;
 }
 
 .faction-user {
