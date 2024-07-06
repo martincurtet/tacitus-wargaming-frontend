@@ -1,7 +1,7 @@
 .factions {
   display: flex;
   flex-direction: column;
-  gap: .5rem;
+  gap: 1rem;
 }
 
 .no-faction {
@@ -11,10 +11,15 @@
   width: 100%;
 }
 
+.no-faction:hover {
+  cursor: pointer;
+  box-shadow: 8px 4px 4px grey;
+}
+
 .faction-list {
   display: flex;
   flex-direction: row;
-  gap: .25rem;
+  gap: 1rem;
   align-items: center;
 }
 
@@ -28,10 +33,24 @@
   /* align-items: center; */
   min-height: 200px;
   min-width: 200px;
+  gap: .25rem;
+}
+
+.faction-item:hover {
+  cursor: pointer;
+  box-shadow: 8px 4px 4px grey;
 }
 
 .faction-item hr {
   width: 100%;
+}
+
+.faction-buttons {
+  display: none;
+}
+
+.faction-item:hover .faction-buttons {
+  display: block;
 }
 
 .faction-edit {

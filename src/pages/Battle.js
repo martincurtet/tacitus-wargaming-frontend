@@ -132,9 +132,10 @@ const Battle = () => {
       ) : null } */}
 
       <Setup
-        users={users}
-        factions={factions}
         step={1}
+        users={users}
+        factionShop={factionShop} factions={factions} setFactions={setFactions}
+        setLog={setLog}
       />
 
       <Modal

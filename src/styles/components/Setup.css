@@ -4,6 +4,22 @@
   align-items: center;
 }
 
+.stepper {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.step-bold {
+  font-weight: bold;
+}
+
 .setup-box {
   display: flex;
   flex-direction: column;

@@ -5,22 +5,19 @@ import { useParams } from 'react-router-dom'
 import '../styles/components/Factions.css'
 import Button from './Button'
 
-const Factions = ({ factionShop, users, factions, setFactions, setLog }) => {
+const Factions = ({ users, factionShop, factions, setFactions, setLog }) => {
   const params = useParams()
 
-  const [isEditFactionOn, setIsEditFactionOn] = useState(false)
   const [isAddFactionModalOpen, setIsAddFactionModalOpen] = useState(false)
-  const [inputAddFaction, setInputAddFaction] = useState('')
+  const [inputFactionCode, setInputFactionCode] = useState('')
+
   const [inputFactionColor, setInputFactionColor] = useState('#777777')
   const [isEditFactionModalOpen, setIsEditFactionModalOpen] = useState(false)
   const [inputEditFaction, setInputEditFaction] = useState('')
   const [isDeleteFactionModalOpen, setIsDeleteFactionModalOpen] = useState(false)
   const [selectedFactionIndex, setSelectedFactionIndex] = useState(-1)
 
-  // const toggleEditFaction = () => {
-  //   setIsEditFactionOn(prev => !prev)
-  // }
-
+  // ADD FACTION MODAL
   const openAddFactionModal = (i) => {
     setSelectedFactionIndex(i)
     setIsAddFactionModalOpen(true)
@@ -28,10 +25,25 @@ const Factions = ({ factionShop, users, factions, setFactions, setLog }) => {
 
   const closeAddFactionModal = () => {
     setSelectedFactionIndex(-1)
-    setInputAddFaction('')
     setIsAddFactionModalOpen(false)
   }
 
+  const changeInputFactionCode = (e) => {
+    console.log(`changing to ${e.target.value}`)
+    setInputFactionCode(e.target.value)
+  }
+
+  const addFaction = () => {
+    if (inputFactionCode !== '') {
+      socket.emit('add-faction', {
+        roomUuid: params.battleuuid,
+        factionCode: inputFactionCode,
+      })
+      setIsAddFactionModalOpen(false)
+    }
+  }
+
+  // EDIT FACTION
   const openEditFactionModal = (i) => {
     setSelectedFactionIndex(i)
     setInputEditFaction(factions[i].name)
@@ -56,18 +68,8 @@ const Factions = ({ factionShop, users, factions, setFactions, setLog }) => {
     setIsDeleteFactionModalOpen(false)
   }
 
-  const changeInputAddFaction = (e) => {
-    setInputAddFaction(e.target.value)
-  }
-
   const changeInputFactionColor = (e) => {
     setInputFactionColor(e.target.value)
-  }
-
-  const addFaction = () => {
-    setFactions((prev) => [...prev, { name: inputAddFaction, color: inputFactionColor }])
-    setInputAddFaction('')
-    setIsAddFactionModalOpen(false)
   }
 
   const changeInputEditFaction = (e) => {
@@ -95,21 +97,21 @@ const Factions = ({ factionShop, users, factions, setFactions, setLog }) => {
   //   }
   // }, [isAddFactionModalOpen, isEditFactionModalOpen, isDeleteFactionModalOpen])
 
-  // useEffect(() => {
-  //   socket.on('factions-updated', (data) => {
-  //     setFactions(data.factions)
-  //     setLog(data.log)
-  //   })
+  useEffect(() => {
+    socket.on('faction-added', (data) => {
+      setFactions(data.factions)
+      setLog(data.log)
+    })
 
-  //   return () => {
-  //     socket.off('factions-updated')
-  //   }
-  // }, [])
+    return () => {
+      socket.off('faction-added')
+    }
+  }, [])
 
   return (
     <div className='factions'>
-      <div className='no-faction'>
-        <div>Unassigned Players:</div>
+      <div className='no-faction' onClick={() => {console.log(`clicked on no faction`)}}>
+        <div>Unassigned users:</div>
         {users.map(u => {
           if (u.faction === '') {
             return (
@@ -123,10 +125,15 @@ const Factions = ({ factionShop, users, factions, setFactions, setLog }) => {
           <div
             className='faction-item'
             style={{ borderColor: f.color }}
+            onClick={() => {console.log(`clicked on faction ${f.name}`)}}
+            onMouseEnter={() => { console.log(`enter ${f.name}`) }}
+            onMouseLeave={() => { console.log(`leave ${f.name}`) }}
           >
             {f.name}
-            <Button className='faction-edit' size='small' onClick={() => openEditFactionModal(i)}>/</Button>
-            <Button className='faction-delete' size='small' onClick={() => openDeleteFactionModal(i)}>x</Button>
+            <div className='faction-buttons'>
+              <Button className='faction-edit' size='small' onClick={() => openEditFactionModal(i)}>/</Button>
+              <Button className='faction-delete' size='small' onClick={() => openDeleteFactionModal(i)}>x</Button>
+            </div>
             <hr></hr>
             {users.map(u => {
               if (u.faction === f.code) {
@@ -148,34 +155,18 @@ const Factions = ({ factionShop, users, factions, setFactions, setLog }) => {
         <Button size='small' onClick={openAddFactionModal}>+</Button>
       </div>
 
-      {/* <button onClick={toggleEditFaction}>Toggle Edit Factions</button>
-      {isEditFactionOn? (<button onClick={openAddFactionModal}>Add Faction</button>) : null}
-      <div className='faction-list'>
-      {factions.map((f, i) => (
-        <div className='faction-item' key={i}>
-          {f.icon ? (
-            <img src={require(`../images/${f.icon}`)} alt='' height={18} width={30} />
-          ) : null}
-          <p style={{ color: f.color }}>{f.name}</p>
-          {isEditFactionOn ? (
-            <>
-              <button onClick={() => openEditFactionModal(i)}>Edit</button>
-              <button onClick={() => openDeleteFactionModal(i)}>Delete</button>
-            </>
-          ) : null}
-        </div>
-      ))}
-      </div> */}
-
       <Modal
         isOpen={isAddFactionModalOpen}
         onCancel={closeAddFactionModal}
-        // onSubmit={addFaction}
-        onSubmit={() => {}}
+        onSubmit={addFaction}
       >
         Add faction:
-        <input type='text' value={inputAddFaction} onChange={changeInputAddFaction} />
-        <input type='color' value={inputFactionColor} onChange={changeInputFactionColor} />
+        <select onChange={changeInputFactionCode}>
+          <option value='' disabled selected>Select a faction</option>
+          {factionShop.map(f => (
+            <option key={f.code} value={f.code}>{f.name}</option>
+          ))}
+        </select>
       </Modal>
   
       <Modal

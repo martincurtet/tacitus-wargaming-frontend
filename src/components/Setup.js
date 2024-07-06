@@ -4,7 +4,7 @@ import Button from './Button'
 
 import '../styles/components/Setup.css'
 
-const Setup = ({ step, users, factions }) => {
+const Setup = ({ step, users, factionShop, factions, setFactions, setLog }) => {
   //
   const [stateStep, setStateStep] = useState(1)
 
@@ -22,7 +22,8 @@ const Setup = ({ step, users, factions }) => {
         return (
           <Factions
             users={users}
-            factions={factions}
+            factionShop={factionShop} factions={factions} setFactions={setFactions}
+            setLog={setLog}
           />
         )
       case 2:
@@ -52,12 +53,21 @@ const Setup = ({ step, users, factions }) => {
     setStateStep(prev => prev + 1)
   }
 
+  console.log(stateStep)
+
   // RENDER
   return (
     <div className='setup'>
-      <div>stepper steps and stuff</div>
+      <div className='stepper'>
+        {Object.entries(stepTitles).map(([id, name]) => (
+          <div key={id} className={`step ${stateStep === parseInt(id) ? 'step-bold': ''}`}>
+            <span>{id}</span>
+            <span>{name}</span>
+          </div>
+        ))}
+      </div>
       <div className='setup-box'>
-        <div className='setup-title'>{stepTitles[stateStep]}</div>
+        <h2 className='setup-title'>{stepTitles[stateStep]}</h2>
         {renderStepContent()}
         {/* <button onClick={prevStep}>Back</button> */}
         <div className='setup-buttons'>
