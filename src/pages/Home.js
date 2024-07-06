@@ -38,9 +38,8 @@ const Home = () => {
   // SOCKET LISTENERS
   useEffect(() => {
     socket.on('room-created', (data) => {
-      console.log(`isUserHost is: '${data.isUserHost}', it is: ${data.isUserHost === 'true'}`)
       // Set Local Data
-      localStorage.setItem('twUserData', JSON.stringify({
+      sessionStorage.setItem('twUserData', JSON.stringify({
         userUuid: data.userUuid,
         username: data.username,
         userColor: data.userColor,

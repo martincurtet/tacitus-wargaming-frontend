@@ -4,7 +4,7 @@ import Button from './Button'
 
 import '../styles/components/Setup.css'
 
-const Setup = ({ step, users, factionShop, factions, setFactions, setLog }) => {
+const Setup = ({ step, users, setUsers, factionShop, factions, setFactions, setLog }) => {
   //
   const [stateStep, setStateStep] = useState(1)
 
@@ -21,7 +21,7 @@ const Setup = ({ step, users, factionShop, factions, setFactions, setLog }) => {
       case 1:
         return (
           <Factions
-            users={users}
+            users={users} setUsers={setUsers}
             factionShop={factionShop} factions={factions} setFactions={setFactions}
             setLog={setLog}
           />
@@ -52,8 +52,6 @@ const Setup = ({ step, users, factionShop, factions, setFactions, setLog }) => {
   const nextStep = () => {
     setStateStep(prev => prev + 1)
   }
-
-  console.log(stateStep)
 
   // RENDER
   return (

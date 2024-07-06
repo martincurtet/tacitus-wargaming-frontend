@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Modal from './Modal'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
-import '../styles/components/Factions.css'
+import { UserContext } from '../context/UserContext'
+
 import Button from './Button'
 
-const Factions = ({ users, factionShop, factions, setFactions, setLog }) => {
+import '../styles/components/Factions.css'
+
+const Factions = ({ users, setUsers, factionShop, factions, setFactions, setLog }) => {
   const params = useParams()
+  const [user, setUser] = useContext(UserContext)
 
   const [isAddFactionModalOpen, setIsAddFactionModalOpen] = useState(false)
   const [inputFactionCode, setInputFactionCode] = useState('')
@@ -24,7 +28,6 @@ const Factions = ({ users, factionShop, factions, setFactions, setLog }) => {
   }
 
   const changeInputFactionCode = (e) => {
-    console.log(`changing to ${e.target.value}`)
     setInputFactionCode(e.target.value)
   }
 
@@ -60,6 +63,15 @@ const Factions = ({ users, factionShop, factions, setFactions, setLog }) => {
     closeRemoveFactionModal()
   }
 
+  // ASSIGN FACTION TO USERS
+  const assignFactionToUser = (factionCode) => {
+    socket.emit('assign-faction', {
+      roomUuid: params.battleuuid,
+      userUuid: user.userUuid,
+      factionCode: factionCode
+    })
+  }
+
   useEffect(() => {
     socket.on('faction-added', (data) => {
       setFactions(data.factions)
@@ -69,21 +81,26 @@ const Factions = ({ users, factionShop, factions, setFactions, setLog }) => {
       setFactions(data.factions)
       setLog(data.log)
     })
+    socket.on('faction-assigned', (data) => {
+      setUsers(data.users)
+      setLog(data.log)
+    })
 
     return () => {
       socket.off('faction-added')
       socket.off('faction-removed')
+      socket.off('faction-assigned')
     }
   }, [])
 
   return (
     <div className='factions'>
-      <div className='no-faction' onClick={() => {console.log(`clicked on no faction`)}}>
+      <div className='no-faction' onClick={() => {assignFactionToUser('')}}>
         <div>Unassigned users:</div>
         {users.map(u => {
           if (u.faction === '') {
             return (
-              <span>{u.username}</span>
+              <span><span className={`status-dot ${u.currentSocketId === '' ? 'dis' : ''}connected`}></span>{u.username} </span>
             )
           }
         })}
@@ -93,7 +110,7 @@ const Factions = ({ users, factionShop, factions, setFactions, setLog }) => {
           <div
             className='faction-item'
             style={{ borderColor: f.color }}
-            onClick={() => {console.log(`clicked on faction ${f.name}`)}}
+            onClick={() => {assignFactionToUser(f.code)}}
           >
             {f.name}
             <div className='faction-buttons'>
@@ -104,7 +121,8 @@ const Factions = ({ users, factionShop, factions, setFactions, setLog }) => {
               if (u.faction === f.code) {
                 return (
                   <div className='faction-user'>
-                    {u.username}
+                    <span className={`status-dot ${u.currentSocketId === '' ? 'dis' : ''}connected`}></span>
+                    <span>{u.username}</span>
                     <input
                       type='number'
                       min={1}

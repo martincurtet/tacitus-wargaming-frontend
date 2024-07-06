@@ -50,7 +50,7 @@ const Battle = () => {
   // LOAD LOCAL DATA
   // useEffect(() => {
   //   if (user.userUuid !== '') {
-  //     const twUserData = JSON.parse(localStorage.getItem('twUserData'))
+  //     const twUserData = JSON.parse(sessionStorage.getItem('twUserData'))
   //     setUser(twUserData)
   //   }
   // }, [])
@@ -59,10 +59,8 @@ const Battle = () => {
   useEffect(() => {
     if (user.username !== '') {
       if (!socket.connected) {
-        console.log('Connecting')
         socket.connect()
       }
-      console.log('Emitting join-room')
       socket.emit('join-room', {
         roomUuid: params.battleuuid,
         userUuid: user.userUuid,
@@ -74,9 +72,8 @@ const Battle = () => {
   // SOCKET LISTENERS
   useEffect(() => {
     socket.on('room-joined', (data) => {
-      console.log(data)
       // Set Local Data
-      localStorage.setItem('twUserData', JSON.stringify({
+      sessionStorage.setItem('twUserData', JSON.stringify({
         userUuid: data.userUuid,
         username: data.username,
         userColor: data.userColor,
@@ -101,14 +98,30 @@ const Battle = () => {
       setUsers(data.users)
     })
 
-    socket.on('board-updated', (data) => {
-      setBoard(data.board)
+    socket.on('user-joined', (data) => {
+      console.log(data.users)
+      setMessages(data.messages)
+      setUsers(data.users)
       setLog(data.log)
     })
 
+    socket.on('user-left', (data) => {
+      console.log(data.users)
+      setMessages(data.messages)
+      setUsers(data.users)
+      setLog(data.log)
+    })
+
+    // socket.on('board-updated', (data) => {
+    //   setBoard(data.board)
+    //   setLog(data.log)
+    // })
+
     return () => {
       socket.off('room-joined')
-      socket.off('board-updated')
+      socket.off('user-joined')
+      socket.off('user-left')
+      // socket.off('board-updated')
     }
   }, [])
 
@@ -133,7 +146,7 @@ const Battle = () => {
 
       <Setup
         step={1}
-        users={users}
+        users={users} setUsers={setUsers}
         factionShop={factionShop} factions={factions} setFactions={setFactions}
         setLog={setLog}
       />
