@@ -5,10 +5,10 @@ import { UserContext } from '../context/UserContext'
 
 import Setup from '../components/Setup'
 import Modal from '../components/Modal'
-import Board from '../components/Board'
-import Tracker from '../components/Tracker'
-import Chat from '../components/Chat'
-import Log from '../components/Log'
+// import Board from '../components/Board'
+// import Tracker from '../components/Tracker'
+// import Chat from '../components/Chat'
+// import Log from '../components/Log'
 
 import '../styles/pages/Battle.css'
 
@@ -99,14 +99,12 @@ const Battle = () => {
     })
 
     socket.on('user-joined', (data) => {
-      console.log(data.users)
       setMessages(data.messages)
       setUsers(data.users)
       setLog(data.log)
     })
 
     socket.on('user-left', (data) => {
-      console.log(data.users)
       setMessages(data.messages)
       setUsers(data.users)
       setLog(data.log)
