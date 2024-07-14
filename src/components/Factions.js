@@ -48,16 +48,14 @@ const Factions = ({ users, setUsers, factionShop, factions, setFactions, setLog 
 
   // CHANGE USER STRAT ABILITY
   const handleInputStratAbility = (value, userUuid) => {
-    // update state AND send socket event
-    // setInputFactionCode(prev => ({
-    //   ...prev,
-    //   userUuid: value
-    // }))
-    socket.emit('change-strat-ability', {
-      roomUuid: params.battleuuid,
-      userUuid: userUuid,
-      stratAbility: value
-    })
+    const stratAbility = parseInt(value, 10)
+    if (!isNaN(stratAbility) && stratAbility >= 0 && stratAbility <= 5) {
+      socket.emit('change-strat-ability', {
+        roomUuid: params.battleuuid,
+        userUuid: userUuid,
+        stratAbility: value
+      })
+    }
   }
 
   // REMOVE FACTION
@@ -107,6 +105,7 @@ const Factions = ({ users, setUsers, factionShop, factions, setFactions, setLog 
         userFaction: assignedUser.faction
       })
       setUsers(data.users)
+      setFactions(data.factions)
       setLog(data.log)
       setInputStratAbility(() => {
         const initialState = {}
@@ -119,6 +118,7 @@ const Factions = ({ users, setUsers, factionShop, factions, setFactions, setLog 
 
     socket.on('strat-ability-changed', (data) => {
       setUsers(data.users)
+      setFactions(data.factions)
       setLog(data.log)
       setInputStratAbility(() => {
         const initialState = {}
@@ -172,7 +172,7 @@ const Factions = ({ users, setUsers, factionShop, factions, setFactions, setLog 
                     <span>{u.username}</span>
                     <input
                       type='number'
-                      value={inputStratAbility[u.userUuid]}
+                      value={inputStratAbility[u.userUuid] || 0}
                       onChange={e => handleInputStratAbility(e.target.value, u.userUuid)}
                       min={1}
                       step={1}
