@@ -15,6 +15,8 @@ const Factions = ({ users, setUsers, factionShop, factions, setFactions, setLog 
   const [isAddFactionModalOpen, setIsAddFactionModalOpen] = useState(false)
   const [inputFactionCode, setInputFactionCode] = useState('')
 
+  const [inputStratAbility, setInputStratAbility] = useState({})
+
   const [isRemoveFactionModalOpen, setIsRemoveFactionModalOpen] = useState(false)
   const [selectedFactionIndex, setSelectedFactionIndex] = useState(-1)
 
@@ -42,6 +44,20 @@ const Factions = ({ users, setUsers, factionShop, factions, setFactions, setLog 
         closeAddFactionModal()
       }
     }
+  }
+
+  // CHANGE USER STRAT ABILITY
+  const handleInputStratAbility = (value, userUuid) => {
+    // update state AND send socket event
+    // setInputFactionCode(prev => ({
+    //   ...prev,
+    //   userUuid: value
+    // }))
+    socket.emit('change-strat-ability', {
+      roomUuid: params.battleuuid,
+      userUuid: userUuid,
+      stratAbility: value
+    })
   }
 
   // REMOVE FACTION
@@ -92,12 +108,32 @@ const Factions = ({ users, setUsers, factionShop, factions, setFactions, setLog 
       })
       setUsers(data.users)
       setLog(data.log)
+      setInputStratAbility(() => {
+        const initialState = {}
+        data.users.forEach(u => {
+          initialState[u.userUuid] = parseInt(u.stratAbility) || 0
+        })
+        return initialState
+      })
+    })
+
+    socket.on('strat-ability-changed', (data) => {
+      setUsers(data.users)
+      setLog(data.log)
+      setInputStratAbility(() => {
+        const initialState = {}
+        data.users.forEach(u => {
+          initialState[u.userUuid] = parseInt(u.stratAbility) || 0
+        })
+        return initialState
+      })
     })
 
     return () => {
       socket.off('faction-added')
       socket.off('faction-removed')
       socket.off('faction-assigned')
+      socket.off('strat-ability-changed')
     }
   }, [setFactions, setLog, setUser, setUsers, user])
 
@@ -121,7 +157,7 @@ const Factions = ({ users, setUsers, factionShop, factions, setFactions, setLog 
             style={{ borderColor: f.color }}
             onClick={() => {assignFactionToUser(f.code)}}
           >
-            {f.name}
+            {f.name} ({f.stratAbility})
             {user.isUserHost && (
               <div className='faction-buttons'>
                 <Button className='faction-remove' size='small' onClick={() => openRemoveFactionModal(i)}>x</Button>
@@ -136,6 +172,8 @@ const Factions = ({ users, setUsers, factionShop, factions, setFactions, setLog 
                     <span>{u.username}</span>
                     <input
                       type='number'
+                      value={inputStratAbility[u.userUuid]}
+                      onChange={e => handleInputStratAbility(e.target.value, u.userUuid)}
                       min={1}
                       step={1}
                       max={5}
