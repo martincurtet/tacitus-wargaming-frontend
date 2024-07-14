@@ -171,6 +171,7 @@ const Factions = ({ users, setUsers, factionShop, factions, setFactions, setLog 
                     <span className={`status-dot ${u.currentSocketId === '' ? 'dis' : ''}connected`}></span>
                     <span>{u.username}</span>
                     <input
+                      disabled={!user.isUserHost && u.userUuid !== user.userUuid}
                       type='number'
                       value={inputStratAbility[u.userUuid] || 0}
                       onChange={e => handleInputStratAbility(e.target.value, u.userUuid)}
