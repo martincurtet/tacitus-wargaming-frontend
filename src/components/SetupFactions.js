@@ -8,7 +8,7 @@ import Button from './Button'
 
 import '../styles/components/Factions.css'
 
-const Factions = ({ users, setUsers, factionShop, factions, setFactions, setLog }) => {
+const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, setLog }) => {
   const params = useParams()
   const [user, setUser] = useContext(UserContext)
 
@@ -222,4 +222,4 @@ const Factions = ({ users, setUsers, factionShop, factions, setFactions, setLog 
   )
 }
 
-export default Factions
+export default SetupFactions

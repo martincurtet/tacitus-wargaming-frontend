@@ -2,13 +2,20 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { socket } from '../connections/socket'
 
-import Factions from './Factions'
+import SetupFactions from './SetupFactions'
 import Button from './Button'
 import Modal from './Modal'
+import Units from './Units'
 
 import '../styles/components/Setup.css'
 
-const Setup = ({ step, setStep, users, setUsers, factionShop, factions, setFactions, setLog }) => {
+const Setup = ({
+  step, setStep,
+  users, setUsers,
+  factionShop, factions, setFactions,
+  unitShop, units, setUnits,
+  setLog
+}) => {
   //
   const params = useParams()
 
@@ -36,7 +43,7 @@ const Setup = ({ step, setStep, users, setUsers, factionShop, factions, setFacti
     switch (step) {
       case 1:
         return (
-          <Factions
+          <SetupFactions
             users={users} setUsers={setUsers}
             factionShop={factionShop} factions={factions} setFactions={setFactions}
             setLog={setLog}
