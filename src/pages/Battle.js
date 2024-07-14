@@ -22,6 +22,7 @@ const Battle = () => {
   const [inputUsername, setInputUsername] = useState('')
 
   // BATTLE VARIABLES
+  const [step, setStep] = useState(1)
   const [board, setBoard] = useState({})
   const [factionShop, setFactionShop] = useState([])
   const [factions, setFactions] = useState([])
@@ -88,6 +89,7 @@ const Battle = () => {
         isUserHost: data.isUserHost
       })
       // Set State Data
+      setStep(data.step)
       setBoard(data.board)
       setFactionShop(data.factionShop)
       setFactions(data.factions)
@@ -143,7 +145,7 @@ const Battle = () => {
       ) : null } */}
 
       <Setup
-        step={1}
+        step={step} setStep={setStep}
         users={users} setUsers={setUsers}
         factionShop={factionShop} factions={factions} setFactions={setFactions}
         setLog={setLog}

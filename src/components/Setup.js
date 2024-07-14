@@ -1,12 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { socket } from '../connections/socket'
+
 import Factions from './Factions'
 import Button from './Button'
+import Modal from './Modal'
 
 import '../styles/components/Setup.css'
 
-const Setup = ({ step, users, setUsers, factionShop, factions, setFactions, setLog }) => {
+const Setup = ({ step, setStep, users, setUsers, factionShop, factions, setFactions, setLog }) => {
   //
-  const [stateStep, setStateStep] = useState(1)
+  const params = useParams()
 
   //
   const stepTitles = {
@@ -16,8 +20,20 @@ const Setup = ({ step, users, setUsers, factionShop, factions, setFactions, setL
     4: 'Board'
   }
 
+  // NEXT STEP CONFIRM MODAL
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
+
+  const openNextStepModal = () => {
+    setIsConfirmModalOpen(true)
+  }
+
+  const closeNextStepModal = () => {
+    setIsConfirmModalOpen(false)
+  }
+
+  //
   const renderStepContent = () => {
-    switch (stateStep) {
+    switch (step) {
       case 1:
         return (
           <Factions
@@ -45,34 +61,55 @@ const Setup = ({ step, users, setUsers, factionShop, factions, setFactions, setL
     }
   }
 
-  const prevStep = () => {
-    setStateStep(prev => prev - 1)
-  }
+  // const prevStep = () => {
+  //   // setStateStep(prev => prev - 1)
+  // }
 
   const nextStep = () => {
-    setStateStep(prev => prev + 1)
+    // setStateStep(prev => prev + 1)
+    socket.emit('next-step', { roomUuid: params.battleuuid })
+    closeNextStepModal()
   }
+
+  //
+  useEffect(() => {
+    socket.on('step-next', (data) => {
+      setStep(data.step)
+    })
+
+    return () => {
+      socket.off('step-next')
+    }
+  }, [])
 
   // RENDER
   return (
     <div className='setup'>
       <div className='stepper'>
         {Object.entries(stepTitles).map(([id, name]) => (
-          <div key={id} className={`step ${stateStep === parseInt(id) ? 'step-bold': ''}`}>
+          <div key={id} className={`step ${step === parseInt(id) ? 'step-bold': ''}`}>
             <span>{id}</span>
             <span>{name}</span>
           </div>
         ))}
       </div>
       <div className='setup-box'>
-        <h2 className='setup-title'>{stepTitles[stateStep]}</h2>
+        <h2 className='setup-title'>{stepTitles[step]}</h2>
         {renderStepContent()}
         {/* <button onClick={prevStep}>Back</button> */}
         <div className='setup-buttons'>
-          <Button onClick={nextStep}>Confirm</Button>
-          <Button onClick={prevStep}>Back</Button>
+          <Button onClick={openNextStepModal}>Confirm</Button>
+          {/* <Button onClick={prevStep}>Back</Button> */}
         </div>
       </div>
+
+      <Modal
+        isOpen={isConfirmModalOpen}
+        onCancel={closeNextStepModal}
+        onSubmit={nextStep}
+      >
+        Are you sure you want to move to the next step?
+      </Modal>
     </div>
   )
 }
