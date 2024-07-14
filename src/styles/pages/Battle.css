@@ -1,9 +1,9 @@
-.page-battle {
+/* .page-battle {
   display: grid;
   grid-template-areas:
     "auto auto"
     "auto auto";
-}
+} */
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,

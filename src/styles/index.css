@@ -41,3 +41,18 @@ input:focus {
 #987554
 #664229
 */
+
+.status-dot {
+  width: 10px; /* Size of the dot */
+  height: 10px; /* Size of the dot */
+  border-radius: 50%; /* Makes the div a circle */
+  display: inline-block; /* Allows the dots to be inline with text */
+}
+
+.connected {
+  background-color: green; /* Green dot for connected status */
+}
+
+.disconnected {
+  background-color: red; /* Red dot for disconnected status */
+}

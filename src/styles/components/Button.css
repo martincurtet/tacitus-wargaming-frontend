@@ -17,6 +17,10 @@
   pointer-events: none;
 }
 
+.button-circle {
+  border-radius: 50%;
+}
+
 .small-button {
   font-size: 12px;
   padding: 5px 10px;

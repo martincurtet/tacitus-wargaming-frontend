@@ -3,11 +3,12 @@ import { useParams } from 'react-router-dom'
 import { socket } from '../connections/socket'
 import { UserContext } from '../context/UserContext'
 
+import Setup from '../components/Setup'
 import Modal from '../components/Modal'
-import Board from '../components/Board'
-import Tracker from '../components/Tracker'
-import Chat from '../components/Chat'
-import Log from '../components/Log'
+// import Board from '../components/Board'
+// import Tracker from '../components/Tracker'
+// import Chat from '../components/Chat'
+// import Log from '../components/Log'
 
 import '../styles/pages/Battle.css'
 
@@ -21,6 +22,7 @@ const Battle = () => {
   const [inputUsername, setInputUsername] = useState('')
 
   // BATTLE VARIABLES
+  const [step, setStep] = useState(1)
   const [board, setBoard] = useState({})
   const [factionShop, setFactionShop] = useState([])
   const [factions, setFactions] = useState([])
@@ -49,7 +51,7 @@ const Battle = () => {
   // LOAD LOCAL DATA
   // useEffect(() => {
   //   if (user.userUuid !== '') {
-  //     const twUserData = JSON.parse(localStorage.getItem('twUserData'))
+  //     const twUserData = JSON.parse(sessionStorage.getItem('twUserData'))
   //     setUser(twUserData)
   //   }
   // }, [])
@@ -58,10 +60,8 @@ const Battle = () => {
   useEffect(() => {
     if (user.username !== '') {
       if (!socket.connected) {
-        console.log('Connecting')
         socket.connect()
       }
-      console.log('Emitting join-room')
       socket.emit('join-room', {
         roomUuid: params.battleuuid,
         userUuid: user.userUuid,
@@ -73,9 +73,8 @@ const Battle = () => {
   // SOCKET LISTENERS
   useEffect(() => {
     socket.on('room-joined', (data) => {
-      console.log(data)
       // Set Local Data
-      localStorage.setItem('twUserData', JSON.stringify({
+      sessionStorage.setItem('twUserData', JSON.stringify({
         userUuid: data.userUuid,
         username: data.username,
         userColor: data.userColor,
@@ -90,6 +89,7 @@ const Battle = () => {
         isUserHost: data.isUserHost
       })
       // Set State Data
+      setStep(data.step)
       setBoard(data.board)
       setFactionShop(data.factionShop)
       setFactions(data.factions)
@@ -100,35 +100,56 @@ const Battle = () => {
       setUsers(data.users)
     })
 
-    socket.on('board-updated', (data) => {
-      setBoard(data.board)
+    socket.on('user-joined', (data) => {
+      setMessages(data.messages)
+      setUsers(data.users)
       setLog(data.log)
     })
 
+    socket.on('user-left', (data) => {
+      setMessages(data.messages)
+      setUsers(data.users)
+      setLog(data.log)
+    })
+
+    // socket.on('board-updated', (data) => {
+    //   setBoard(data.board)
+    //   setLog(data.log)
+    // })
+
     return () => {
       socket.off('room-joined')
-      socket.off('board-updated')
+      socket.off('user-joined')
+      socket.off('user-left')
+      // socket.off('board-updated')
     }
   }, [])
 
   // RENDER
   return (
     <div className='page-battle'>
-      <div>Battle Page</div>
-      <div>Context:
+      {/* <div>Battle Page</div> */}
+      {/* <div>Context:
         <p>{user.userUuid || 'no userUuid'}</p>
         <p>{user.username || 'no username'}</p>
         <p>{user.userColor || 'no color'}</p>
         <p>{user.isUserHost ? 'host' : 'player'}</p>
-      </div>
-      {user.username !== '' ? (
+      </div> */}
+      {/* {user.username !== '' ? (
         <>
-          {/* <Board board={board} setBoard={setBoard} units={units} setUnits={setUnits} setLog={setLog} /> */}
-          {/* <Tracker setBoard={setBoard} factionShop={factionShop} setFactionShop={setFactionShop} factions={factions} setFactions={setFactions} unitShop={unitShop} units={units} setUnits={setUnits} setLog={setLog} /> */}
+          <Board board={board} setBoard={setBoard} units={units} setUnits={setUnits} setLog={setLog} />
+          <Tracker setBoard={setBoard} factionShop={factionShop} setFactionShop={setFactionShop} factions={factions} setFactions={setFactions} unitShop={unitShop} units={units} setUnits={setUnits} setLog={setLog} />
           <Log log={log} setLog={setLog} />
           <Chat messages={messages} setMessages={setMessages} setLog={setLog} />
         </>
-      ) : null }
+      ) : null } */}
+
+      <Setup
+        step={step} setStep={setStep}
+        users={users} setUsers={setUsers}
+        factionShop={factionShop} factions={factions} setFactions={setFactions}
+        setLog={setLog}
+      />
 
       <Modal
         isOpen={isUsernameModalOpen}

@@ -4,10 +4,11 @@ const emptyUserData = {
   userUuid: '',
   username: '',
   userColor: '',
-  isUserHost: false
+  isUserHost: false,
+  userFaction: ''
 }
 
-const defaultUserData = JSON.parse(localStorage.getItem('twUserData') ?? JSON.stringify(emptyUserData))
+const defaultUserData = JSON.parse(sessionStorage.getItem('twUserData') ?? JSON.stringify(emptyUserData))
 
 const UserContext = createContext()
 

@@ -20,12 +20,12 @@
 
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 1rem;
   align-items: center;
 }
 
 .modal-buttons {
   display: flex;
   flex-direction: row;
-  gap: 2px;
+  gap: .5rem;
 }

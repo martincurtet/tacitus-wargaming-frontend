@@ -1,156 +1,222 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Modal from './Modal'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
+import { UserContext } from '../context/UserContext'
+
+import Button from './Button'
+
 import '../styles/components/Factions.css'
 
-const Factions = ({ factionShop, factions, setFactions, setLog }) => {
+const Factions = ({ users, setUsers, factionShop, factions, setFactions, setLog }) => {
   const params = useParams()
+  const [user, setUser] = useContext(UserContext)
 
-  const [isEditFactionOn, setIsEditFactionOn] = useState(false)
   const [isAddFactionModalOpen, setIsAddFactionModalOpen] = useState(false)
-  const [inputAddFaction, setInputAddFaction] = useState('')
-  const [inputFactionColor, setInputFactionColor] = useState('#777777')
-  const [isEditFactionModalOpen, setIsEditFactionModalOpen] = useState(false)
-  const [inputEditFaction, setInputEditFaction] = useState('')
-  const [isDeleteFactionModalOpen, setIsDeleteFactionModalOpen] = useState(false)
+  const [inputFactionCode, setInputFactionCode] = useState('')
+
+  const [inputStratAbility, setInputStratAbility] = useState({})
+
+  const [isRemoveFactionModalOpen, setIsRemoveFactionModalOpen] = useState(false)
   const [selectedFactionIndex, setSelectedFactionIndex] = useState(-1)
 
-  const toggleEditFaction = () => {
-    setIsEditFactionOn(prev => !prev)
-  }
-
-  const openAddFactionModal = (i) => {
-    setSelectedFactionIndex(i)
+  // ADD FACTION MODAL
+  const openAddFactionModal = () => {
     setIsAddFactionModalOpen(true)
   }
 
   const closeAddFactionModal = () => {
-    setSelectedFactionIndex(-1)
-    setInputAddFaction('')
     setIsAddFactionModalOpen(false)
   }
 
-  const openEditFactionModal = (i) => {
-    setSelectedFactionIndex(i)
-    setInputEditFaction(factions[i].name)
-    setInputFactionColor(factions[i].color)
-    setIsEditFactionModalOpen(true)
-  }
-
-  const closeEditFactionModal = () => {
-    setSelectedFactionIndex(-1)
-    setInputEditFaction('')
-    setInputFactionColor('#777777')
-    setIsEditFactionModalOpen(false)
-  }
-
-  const openDeleteFactionModal = (i) => {
-    setSelectedFactionIndex(i)
-    setIsDeleteFactionModalOpen(true)
-  }
-
-  const closeDeleteFactionModal = () => {
-    setSelectedFactionIndex(-1)
-    setIsDeleteFactionModalOpen(false)
-  }
-
-  const changeInputAddFaction = (e) => {
-    setInputAddFaction(e.target.value)
-  }
-
-  const changeInputFactionColor = (e) => {
-    setInputFactionColor(e.target.value)
+  const changeInputFactionCode = (e) => {
+    setInputFactionCode(e.target.value)
   }
 
   const addFaction = () => {
-    setFactions((prev) => [...prev, { name: inputAddFaction, color: inputFactionColor }])
-    setInputAddFaction('')
-    setIsAddFactionModalOpen(false)
-  }
-
-  const changeInputEditFaction = (e) => {
-    setInputEditFaction(e.target.value)
-  }
-
-  const editFaction = () => {
-    setFactions((prev) => {
-      const tempArray = [...prev]
-      tempArray[selectedFactionIndex] = { name: inputEditFaction, color: inputFactionColor }
-      return tempArray
-    })
-    setInputEditFaction('')
-    setIsEditFactionModalOpen(false)
-  }
-
-  const deleteFaction = () => {
-    setFactions(factions.filter((f, i) => i !== selectedFactionIndex))
-    setIsDeleteFactionModalOpen(false)
-  }
-
-  useEffect(() => {
-    if (factions.length !== 0 && !isAddFactionModalOpen && !isEditFactionModalOpen && !isDeleteFactionModalOpen) {
-      socket.emit('update-factions', { uuid: params.battleuuid, factions: factions })
+    if (inputFactionCode !== '') {
+      let exists = factions.find(f => f.code === inputFactionCode)
+      if (!exists) {
+        socket.emit('add-faction', {
+          roomUuid: params.battleuuid,
+          factionCode: inputFactionCode,
+        })
+        closeAddFactionModal()
+      }
     }
-  }, [isAddFactionModalOpen, isEditFactionModalOpen, isDeleteFactionModalOpen])
+  }
+
+  // CHANGE USER STRAT ABILITY
+  const handleInputStratAbility = (value, userUuid) => {
+    const stratAbility = parseInt(value, 10)
+    if (!isNaN(stratAbility) && stratAbility >= 0 && stratAbility <= 5) {
+      socket.emit('change-strat-ability', {
+        roomUuid: params.battleuuid,
+        userUuid: userUuid,
+        stratAbility: value
+      })
+    }
+  }
+
+  // REMOVE FACTION
+  const openRemoveFactionModal = (i) => {
+    setSelectedFactionIndex(i)
+    setIsRemoveFactionModalOpen(true)
+  }
+
+  const closeRemoveFactionModal = () => {
+    setSelectedFactionIndex(-1)
+    setIsRemoveFactionModalOpen(false)
+  }
+
+  const removeFaction = () => {
+    socket.emit('remove-faction', {
+      roomUuid: params.battleuuid,
+      factionCode: factions[selectedFactionIndex].code,
+    })
+    closeRemoveFactionModal()
+  }
+
+  // ASSIGN FACTION TO USERS
+  const assignFactionToUser = (factionCode) => {
+    if (user.userFaction !== factionCode) {
+      socket.emit('assign-faction', {
+        roomUuid: params.battleuuid,
+        userUuid: user.userUuid,
+        factionCode: factionCode
+      })
+    }
+  }
 
   useEffect(() => {
-    socket.on('factions-updated', (data) => {
+    socket.on('faction-added', (data) => {
       setFactions(data.factions)
       setLog(data.log)
     })
+    socket.on('faction-removed', (data) => {
+      setUsers(data.users)
+      setFactions(data.factions)
+      setLog(data.log)
+    })
+    socket.on('faction-assigned', (data) => {
+      let assignedUser = data.users.find(u => u.userUuid === user.userUuid)
+      setUser({
+        ...user,
+        userFaction: assignedUser.faction
+      })
+      setUsers(data.users)
+      setFactions(data.factions)
+      setLog(data.log)
+      setInputStratAbility(() => {
+        const initialState = {}
+        data.users.forEach(u => {
+          initialState[u.userUuid] = parseInt(u.stratAbility) || 0
+        })
+        return initialState
+      })
+    })
+
+    socket.on('strat-ability-changed', (data) => {
+      setUsers(data.users)
+      setFactions(data.factions)
+      setLog(data.log)
+      setInputStratAbility(() => {
+        const initialState = {}
+        data.users.forEach(u => {
+          initialState[u.userUuid] = parseInt(u.stratAbility) || 0
+        })
+        return initialState
+      })
+    })
 
     return () => {
-      socket.off('factions-updated')
+      socket.off('faction-added')
+      socket.off('faction-removed')
+      socket.off('faction-assigned')
+      socket.off('strat-ability-changed')
     }
-  }, [])
+  }, [setFactions, setLog, setUser, setUsers, user])
 
   return (
-    <div>
-      <button onClick={toggleEditFaction}>Toggle Edit Factions</button>
-      {isEditFactionOn? (<button onClick={openAddFactionModal}>Add Faction</button>) : null}
-      <div className='faction-list'>
-      {factions.map((f, i) => (
-        <div className='faction-item' key={i}>
-          {f.icon ? (
-            <img src={require(`../images/${f.icon}`)} alt='' height={18} width={30} />
-          ) : null}
-          <p style={{ color: f.color }}>{f.name}</p>
-          {isEditFactionOn ? (
-            <>
-              <button onClick={() => openEditFactionModal(i)}>Edit</button>
-              <button onClick={() => openDeleteFactionModal(i)}>Delete</button>
-            </>
-          ) : null}
-        </div>
-      ))}
+    <div className='factions'>
+      <div className='no-faction' onClick={() => {assignFactionToUser('')}}>
+        <div>Unassigned users:</div>
+        {users.map(u => {
+          if (u.faction === '') {
+            return (
+              <span key={u.userUuid}><span className={`status-dot ${u.currentSocketId === '' ? 'dis' : ''}connected`}></span>{u.username} </span>
+            )
+          } else { return null }
+        })}
       </div>
+      <div className='faction-list'>
+        {factions.map((f, i) => (
+          <div
+            key={f.code}
+            className='faction-item'
+            style={{ borderColor: f.color }}
+            onClick={() => {assignFactionToUser(f.code)}}
+          >
+            {f.name} ({f.stratAbility})
+            {user.isUserHost && (
+              <div className='faction-buttons'>
+                <Button className='faction-remove' size='small' onClick={() => openRemoveFactionModal(i)}>x</Button>
+              </div>
+            )}
+            <hr></hr>
+            {users.map(u => {
+              if (u.faction === f.code) {
+                return (
+                  <div className='faction-user' key={u.userUuid}>
+                    <span className={`status-dot ${u.currentSocketId === '' ? 'dis' : ''}connected`}></span>
+                    <span>{u.username}</span>
+                    <input
+                      disabled={!user.isUserHost && u.userUuid !== user.userUuid}
+                      type='number'
+                      value={inputStratAbility[u.userUuid] || 0}
+                      onChange={e => handleInputStratAbility(e.target.value, u.userUuid)}
+                      min={1}
+                      step={1}
+                      max={5}
+                    />
+                  </div>
+                )
+              } else {
+                return null
+              }
+            })}
+          </div>
+        ))}
+        {user.isUserHost && (
+          <Button size='small' onClick={openAddFactionModal}>+</Button>
+        )}
+      </div>
+
       <Modal
         isOpen={isAddFactionModalOpen}
         onCancel={closeAddFactionModal}
         onSubmit={addFaction}
+        submitText='Add'
       >
         Add faction:
-        <input type='text' value={inputAddFaction} onChange={changeInputAddFaction} />
-        <input type='color' value={inputFactionColor} onChange={changeInputFactionColor} />
+        <select onChange={changeInputFactionCode}>
+          <option value='' disabled selected>Select a faction</option>
+          {factionShop.map(f => {
+            let exists = factions.find(fa => fa.code === f.code)
+            return (
+            <option key={f.code} value={f.code} disabled={exists}>{f.name}</option>
+          )})}
+        </select>
       </Modal>
   
       <Modal
-        isOpen={isEditFactionModalOpen}
-        onCancel={closeEditFactionModal}
-        onSubmit={editFaction}
+        isOpen={isRemoveFactionModalOpen}
+        onCancel={closeRemoveFactionModal}
+        onSubmit={removeFaction}
+        submitColor='red'
+        submitText='Remove'
       >
-        Edit faction:
-        <input type='text' value={inputEditFaction} onChange={changeInputEditFaction} />
-        <input type='color' value={inputFactionColor} onChange={changeInputFactionColor} />
-      </Modal>
-
-      <Modal
-        isOpen={isDeleteFactionModalOpen}
-        onCancel={closeDeleteFactionModal}
-        onSubmit={deleteFaction}
-      >
-        Are you sure you want to delete "{factions[selectedFactionIndex]?.name}"?
+        Are you sure you want to remove "{factions[selectedFactionIndex]?.name}"?
       </Modal>
     </div>
   )
