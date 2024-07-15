@@ -147,6 +147,7 @@ const Battle = () => {
       <Setup
         step={step} setStep={setStep}
         users={users} setUsers={setUsers}
+        unitShop={unitShop} units={units} setUnits={setUnits}
         factionShop={factionShop} factions={factions} setFactions={setFactions}
         setLog={setLog}
       />

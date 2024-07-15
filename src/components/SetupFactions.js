@@ -6,7 +6,7 @@ import { UserContext } from '../context/UserContext'
 
 import Button from './Button'
 
-import '../styles/components/Factions.css'
+import '../styles/components/SetupFactions.css'
 
 const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, setLog }) => {
   const params = useParams()
@@ -138,7 +138,7 @@ const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, se
   }, [setFactions, setLog, setUser, setUsers, user])
 
   return (
-    <div className='factions'>
+    <div className='setup-factions'>
       <div className='no-faction' onClick={() => {assignFactionToUser('')}}>
         <div>Unassigned users:</div>
         {users.map(u => {
