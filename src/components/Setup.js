@@ -52,7 +52,7 @@ const Setup = ({
       case 2:
         return (
           <SetupUnits
-            unitShop={unitShop} units={units}
+            unitShop={unitShop} units={units} setUnits={setUnits}
             factions={factions}
           />
         )
