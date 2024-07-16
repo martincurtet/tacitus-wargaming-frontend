@@ -10,6 +10,9 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
   const params = useParams()
   const [user, setUser] = useContext(UserContext)
   const [indexFactionSelected, setIndexFactionSelected] = useState(0)
+  const [inputMen, setInputMen] = useState({})
+
+  const DEFAULT_MEN_VALUE = Number(process.env.DEFAULT_MEN_VALUE) || 20
 
   // FUNCTIONS
   const selectFaction = (factionCode) => {
@@ -55,8 +58,15 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
     })
   }
 
-  const menChange = () => {
-    console.log('men change')
+  const handleInputMen = (unitCode, identifier, value) => {
+    const men = parseInt(value, 10)
+    console.log(`men change ${unitCode}-${identifier} ${men}`)
+    socket.emit('change-men', {
+      roomUuid: params.battleuuid,
+      unitCode: unitCode,
+      identifier: identifier,
+      men: men
+    })
   }
 
   // SOCKET LISTENER
@@ -66,13 +76,24 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
     })
 
     socket.on('unit-removed', (data) => {
-      console.log(data.units)
+      setUnits(data.units)
+    })
+
+    socket.on('men-changed', (data) => {
+      setInputMen(() => {
+        let initialState = {}
+        data.units.forEach(u => {
+          initialState[`${u.unitCode}-${u.identifier}`] = parseInt(u.men) || DEFAULT_MEN_VALUE
+        })
+        return initialState
+      })
       setUnits(data.units)
     })
 
     return () => {
       socket.off('unit-added')
       socket.off('unit-removed')
+      socket.off('men-changed')
     }
   }, [])
 
@@ -114,9 +135,12 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
                     </div>
                     <div>
                     <input
+                      disabled={false}
                       type='number'
-                      value={u.men}
-                      onChange={(e) => menChange(u.unitCode, parseInt(e.target.value))}
+                      value={inputMen[`${u.unitCode}-${u.identifier}`] || 20}
+                      onChange={(e) => handleInputMen(u.unitCode, u.identifier, e.target.value)}
+                      min={0}
+                      step={1}
                     /> men {u.maxHd} HD </div>
                   </div>
                 )
