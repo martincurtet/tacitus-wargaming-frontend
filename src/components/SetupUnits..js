@@ -9,28 +9,27 @@ import '../styles/components/SetupUnits.css'
 const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
   const params = useParams()
   const [user, setUser] = useContext(UserContext)
-  const [indexFactionSelected, setIndexFactionSelected] = useState(0)
+  const [indexFactionSelected, setIndexFactionSelected] = useState(user.isUserHost ? 0 : -1)
   const [inputMen, setInputMen] = useState({})
 
   const DEFAULT_MEN_VALUE = Number(process.env.DEFAULT_MEN_VALUE) || 20
 
   // FUNCTIONS
-  const selectFaction = (factionCode) => {
-    console.log(`clicking on faction ${factionCode}`)
-    // if host, set the faction as selected
+  const selectFaction = (index) => {
+    if (user.isUserHost) {
+      setIndexFactionSelected(index)
+    }
   }
 
   const addUnit = (unitCode) => {
-    console.log(`clicking on unit ${unitCode}`)
-    // find out which faction to add it to
     let selectedFaction = ''
     if (user.userFaction === '') {
-      console.log(`user is spectator (host: ${user.isUserHost})`)
-      selectedFaction = factions[indexFactionSelected].code
+      selectedFaction = factions[indexFactionSelected]?.code
     } else {
-      console.log(`user faction is ${user.userFaction}`)
       selectedFaction = user.userFaction
-      
+    }
+    if (user.isUserHost) {
+      selectedFaction = factions[indexFactionSelected]?.code
     }
     socket.emit('add-unit', {
       roomUuid: params.battleuuid,
@@ -39,20 +38,10 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
     })
   }
 
-  const removeUnit = (unitCode, identifier) => {
-    console.log(`Deleting unit ${unitCode} ${identifier}`)
-    // find out which faction to remove it from
-    let selectedFaction = ''
-    if (user.userFaction === '') {
-      console.log(`user is spectator (host: ${user.isUserHost})`)
-      selectedFaction = factions[indexFactionSelected].code
-    } else {
-      console.log(`user faction is ${user.userFaction}`)
-      selectedFaction = user.userFaction
-    }
+  const removeUnit = (factionCode, unitCode, identifier) => {
     socket.emit('remove-unit', {
       roomUuid: params.battleuuid,
-      factionCode: selectedFaction,
+      factionCode: factionCode,
       unitCode: unitCode,
       identifier: identifier
     })
@@ -60,7 +49,6 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
 
   const handleInputMen = (unitCode, identifier, value) => {
     const men = parseInt(value, 10)
-    console.log(`men change ${unitCode}-${identifier} ${men}`)
     socket.emit('change-men', {
       roomUuid: params.battleuuid,
       unitCode: unitCode,
@@ -118,8 +106,9 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
       <div className='faction-panels'>
         {factions.map((f, i) => (
           <div
-            className='faction-panel'
-            onClick={() => selectFaction(f.code)}
+            className={`faction-panel ${!user.isUserHost && user.userFaction === '' ? '' : (!user.isUserHost && user.userFaction === f.code ? 'selected' : (factions[indexFactionSelected]?.code === f.code ? 'selected' : ''))}`}
+            style={{ borderColor: f.color }}
+            onClick={() => selectFaction(i)}
           >
             <div className='faction-panel-title'>
               <img src={require(`../images/${f.icon}`)} alt='' height={18} width={30} />
@@ -131,11 +120,11 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
                   <div key={`${u.unitCode}-${u.identifier}`} className='faction-unit'>
                     <div className='faction-unit-name'>
                       <div>{u.name} {u.identifier}</div>
-                      <Button color='none' size='small' onClick={() => removeUnit(u.unitCode, u.identifier)}>x</Button>
+                      <Button color='none' size='small' onClick={() => removeUnit(f.code, u.unitCode, u.identifier)}>x</Button>
                     </div>
                     <div>
                     <input
-                      disabled={false}
+                      disabled={!user.isUserHost && f.code !== user.userFaction}
                       type='number'
                       value={inputMen[`${u.unitCode}-${u.identifier}`] || 20}
                       onChange={(e) => handleInputMen(u.unitCode, u.identifier, e.target.value)}

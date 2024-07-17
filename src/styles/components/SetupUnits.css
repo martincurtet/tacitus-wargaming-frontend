@@ -57,6 +57,10 @@
   padding: 5px;
 }
 
+.faction-panel.selected {
+  border-width: 3px;
+}
+
 .faction-panel-title {
   display: flex;
   flex-direction: row;
