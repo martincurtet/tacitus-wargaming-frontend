@@ -47,10 +47,11 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
     })
   }
 
-  const handleInputMen = (unitCode, identifier, value) => {
+  const handleInputMen = (factionCode, unitCode, identifier, value) => {
     const men = parseInt(value, 10)
     socket.emit('change-men', {
       roomUuid: params.battleuuid,
+      factionCode: factionCode,
       unitCode: unitCode,
       identifier: identifier,
       men: men
@@ -71,7 +72,7 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
       setInputMen(() => {
         let initialState = {}
         data.units.forEach(u => {
-          initialState[`${u.unitCode}-${u.identifier}`] = parseInt(u.men) || DEFAULT_MEN_VALUE
+          initialState[`${u.factionCode}-${u.unitCode}-${u.identifier}`] = parseInt(u.men) || DEFAULT_MEN_VALUE
         })
         return initialState
       })
@@ -126,8 +127,8 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
                     <input
                       disabled={!user.isUserHost && f.code !== user.userFaction}
                       type='number'
-                      value={inputMen[`${u.unitCode}-${u.identifier}`] || 20}
-                      onChange={(e) => handleInputMen(u.unitCode, u.identifier, e.target.value)}
+                      value={inputMen[`${u.factionCode}-${u.unitCode}-${u.identifier}`] || 20}
+                      onChange={(e) => handleInputMen(f.code, u.unitCode, u.identifier, e.target.value)}
                       min={0}
                       step={1}
                     /> men {u.maxHd} HD </div>
