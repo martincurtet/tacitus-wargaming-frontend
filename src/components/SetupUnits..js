@@ -9,14 +9,14 @@ import '../styles/components/SetupUnits.css'
 const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
   const params = useParams()
   const [user, setUser] = useContext(UserContext)
-  const [indexFactionSelected, setIndexFactionSelected] = useState(user.isUserHost ? 0 : -1)
+  const [indexFactionSelected, setIndexFactionSelected] = useState(user.isHost ? 0 : -1)
   const [inputMen, setInputMen] = useState({})
 
   const DEFAULT_MEN_VALUE = Number(process.env.DEFAULT_MEN_VALUE) || 20
 
   // FUNCTIONS
   const selectFaction = (index) => {
-    if (user.isUserHost) {
+    if (user.isHost) {
       setIndexFactionSelected(index)
     }
   }
@@ -28,7 +28,7 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
     } else {
       selectedFaction = user.userFaction
     }
-    if (user.isUserHost) {
+    if (user.isHost) {
       selectedFaction = factions[indexFactionSelected]?.code
     }
     socket.emit('add-unit', {
@@ -107,13 +107,13 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
       <div className='faction-panels'>
         {factions.map((f, i) => (
           <div
-            className={`faction-panel ${!user.isUserHost && user.userFaction === '' ? '' : (!user.isUserHost && user.userFaction === f.code ? 'selected' : (factions[indexFactionSelected]?.code === f.code ? 'selected' : ''))}`}
+            className={`faction-panel ${!user.isHost && user.isSpectator ? '' : (!user.isHost && user.userFaction === f.code ? 'selected' : (factions[indexFactionSelected]?.code === f.code ? 'selected' : ''))}`}
             style={{ borderColor: f.color }}
             onClick={() => selectFaction(i)}
           >
             <div className='faction-panel-title'>
               <img src={require(`../images/${f.icon}`)} alt='' height={18} width={30} />
-              {f.name}{user.isUserHost && i === indexFactionSelected && '*'}
+              {f.name}
             </div>
             {units.map((u) => {
               if (u.factionCode === f.code) {
@@ -125,7 +125,7 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
                     </div>
                     <div>
                     <input
-                      disabled={!user.isUserHost && f.code !== user.userFaction}
+                      disabled={!user.isHost && f.code !== user.userFaction}
                       type='number'
                       value={inputMen[`${u.factionCode}-${u.unitCode}-${u.identifier}`] || 20}
                       onChange={(e) => handleInputMen(f.code, u.unitCode, u.identifier, e.target.value)}

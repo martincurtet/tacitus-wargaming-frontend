@@ -59,6 +59,7 @@
 
 .faction-panel.selected {
   border-width: 3px;
+  margin: -2px;
 }
 
 .faction-panel-title {

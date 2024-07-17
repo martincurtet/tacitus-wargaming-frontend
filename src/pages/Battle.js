@@ -78,7 +78,8 @@ const Battle = () => {
         userUuid: data.userUuid,
         username: data.username,
         userColor: data.userColor,
-        isUserHost: data.isUserHost
+        isHost: data.isHost,
+        isSpectator: data.isSpectator
       }))
       // Set Context Data
       setUser({
@@ -86,7 +87,8 @@ const Battle = () => {
         userUuid: data.userUuid,
         username: data.username,
         userColor: data.userColor,
-        isUserHost: data.isUserHost
+        isHost: data.isHost,
+        isSpectator: data.isSpectator
       })
       // Set State Data
       setStep(data.step)
@@ -133,7 +135,7 @@ const Battle = () => {
         <p>{user.userUuid || 'no userUuid'}</p>
         <p>{user.username || 'no username'}</p>
         <p>{user.userColor || 'no color'}</p>
-        <p>{user.isUserHost ? 'host' : 'player'}</p>
+        <p>{user.isHost ? 'host' : 'player'}</p>
       </div> */}
       {/* {user.username !== '' ? (
         <>

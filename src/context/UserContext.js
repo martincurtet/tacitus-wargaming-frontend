@@ -5,7 +5,8 @@ const emptyUserData = {
   username: '',
   userColor: '',
   userFaction: '',
-  isUserHost: false
+  isHost: false,
+  isSpectator: false
 }
 
 const defaultUserData = JSON.parse(sessionStorage.getItem('twUserData') ?? JSON.stringify(emptyUserData))
