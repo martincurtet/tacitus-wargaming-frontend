@@ -8,6 +8,7 @@ import Button from './Button'
 import Modal from './Modal'
 
 import '../styles/components/Setup.css'
+import SetupInitiative from './SetupInitiative'
 
 const Setup = ({
   step, setStep,
@@ -58,7 +59,10 @@ const Setup = ({
         )
       case 3:
         return (
-          <div>Initiative</div>
+          <SetupInitiative
+            units={units}
+            setUnits={setUnits}
+          />
         )
       case 4:
         return (
@@ -90,7 +94,7 @@ const Setup = ({
     return () => {
       socket.off('step-next')
     }
-  }, [])
+  }, [setStep])
 
   // RENDER
   return (

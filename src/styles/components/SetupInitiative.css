@@ -1,0 +1,32 @@
+.setup-initiative {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+}
+
+.initiative-table {
+  width: 100%;
+}
+
+.initiative-table > tr {
+  height: 2rem;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: .25rem;
+}
+
+.initiative-table > tr.even {
+  background-color: lightgrey;
+}
+
+.initiative-table > tr.odd {
+  background-color: white;
+}
+
+.row-header {
+  
+}
