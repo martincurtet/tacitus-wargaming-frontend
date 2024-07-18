@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom'
 import { socket } from '../connections/socket'
 
 import SetupFactions from './SetupFactions'
+import SetupUnits from './SetupUnits.'
 import Button from './Button'
 import Modal from './Modal'
-import Units from './Units'
 
 import '../styles/components/Setup.css'
 
@@ -51,7 +51,10 @@ const Setup = ({
         )
       case 2:
         return (
-          <div>Units</div>
+          <SetupUnits
+            unitShop={unitShop} units={units} setUnits={setUnits}
+            factions={factions}
+          />
         )
       case 3:
         return (

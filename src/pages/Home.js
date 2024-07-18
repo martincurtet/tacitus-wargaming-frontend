@@ -43,14 +43,16 @@ const Home = () => {
         userUuid: data.userUuid,
         username: data.username,
         userColor: data.userColor,
-        isUserHost: data.isUserHost
+        isHost: data.isHost,
+        isSpectator: data.isSpectator
       }))
       // Set Context Data
       setUser({
         userUuid: data.userUuid,
         username: data.username,
         userColor: data.userColor,
-        isUserHost: data.isUserHost
+        isHost: data.isHost,
+        isSpectator: data.isSpectator
       })
       navigate(`/${data.roomUuid}`)
     })

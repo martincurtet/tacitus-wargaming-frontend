@@ -6,7 +6,7 @@ import { UserContext } from '../context/UserContext'
 
 import Button from './Button'
 
-import '../styles/components/Factions.css'
+import '../styles/components/SetupFactions.css'
 
 const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, setLog }) => {
   const params = useParams()
@@ -93,16 +93,19 @@ const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, se
       setFactions(data.factions)
       setLog(data.log)
     })
+
     socket.on('faction-removed', (data) => {
       setUsers(data.users)
       setFactions(data.factions)
       setLog(data.log)
     })
+
     socket.on('faction-assigned', (data) => {
       let assignedUser = data.users.find(u => u.userUuid === user.userUuid)
       setUser({
         ...user,
-        userFaction: assignedUser.faction
+        userFaction: assignedUser.faction,
+        isSpectator: assignedUser.faction === ''
       })
       setUsers(data.users)
       setFactions(data.factions)
@@ -138,7 +141,7 @@ const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, se
   }, [setFactions, setLog, setUser, setUsers, user])
 
   return (
-    <div className='factions'>
+    <div className='setup-factions'>
       <div className='no-faction' onClick={() => {assignFactionToUser('')}}>
         <div>Unassigned users:</div>
         {users.map(u => {
@@ -158,7 +161,7 @@ const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, se
             onClick={() => {assignFactionToUser(f.code)}}
           >
             {f.name} ({f.stratAbility})
-            {user.isUserHost && (
+            {user.isHost && (
               <div className='faction-buttons'>
                 <Button className='faction-remove' size='small' onClick={() => openRemoveFactionModal(i)}>x</Button>
               </div>
@@ -171,7 +174,7 @@ const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, se
                     <span className={`status-dot ${u.currentSocketId === '' ? 'dis' : ''}connected`}></span>
                     <span>{u.username}</span>
                     <input
-                      disabled={!user.isUserHost && u.userUuid !== user.userUuid}
+                      disabled={!user.isHost && u.userUuid !== user.userUuid}
                       type='number'
                       value={inputStratAbility[u.userUuid] || 0}
                       onChange={e => handleInputStratAbility(e.target.value, u.userUuid)}
@@ -187,7 +190,7 @@ const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, se
             })}
           </div>
         ))}
-        {user.isUserHost && (
+        {user.isHost && (
           <Button size='small' onClick={openAddFactionModal}>+</Button>
         )}
       </div>

@@ -1,0 +1,89 @@
+.setup-units {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.unit-store {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 5px;
+
+  width: auto;
+  height: auto;
+}
+
+.unit-item {
+  cursor: pointer;
+  padding: 2px;
+  /* background-color: pink; */
+}
+
+.unit-item[tooltip] {
+  position: relative;
+}
+
+.unit-item[tooltip]:hover::after {
+  content: attr(tooltip);
+  background-color: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: pre-wrap;
+  z-index: 1;
+  width: max-content;
+}
+
+.faction-panels {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.faction-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: solid 1px grey;
+  border-radius: 5px;
+  min-height: 100px;
+  gap: 2px;
+  width: 300px;
+  padding: 5px;
+}
+
+.faction-panel.selected {
+  border-width: 3px;
+  margin: -2px;
+}
+
+.faction-panel-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+  font-weight: bold;
+  font-size: large;
+}
+
+.faction-unit {
+  align-self: flex-start;
+  width: 100%;
+}
+
+.faction-unit input {
+  width: 40px;
+  padding: 1px;
+  text-align: center;
+}
+
+.faction-unit-name {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
