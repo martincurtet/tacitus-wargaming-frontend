@@ -21,6 +21,9 @@ const Battle = () => {
   const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(user.username === '')
   const [inputUsername, setInputUsername] = useState('')
 
+  const [isUserFactionModalOpen, setIsUserFactionModalOpen] = useState(false)
+  const [inputUserFaction, setInputUserFaction] = useState('')
+
   // BATTLE VARIABLES
   const [step, setStep] = useState(1)
   const [board, setBoard] = useState({})
@@ -56,6 +59,28 @@ const Battle = () => {
   //   }
   // }, [])
 
+  // USER FACTION MODAL
+  const openUserFactionModal = () => {
+    setIsUserFactionModalOpen(true)
+  }
+
+  const closeUserFactionModal = () => {
+    setIsUserFactionModalOpen(false)
+  }
+
+  const handleUserFactionChange = (e) => {
+    setInputUserFaction(e.target.value)
+  }
+
+  const submitUserFactionModal = () => {
+    console.log(`sending assign faction`)
+    socket.emit('assign-faction', {
+      roomUuid: params.battleuuid,
+      userUuid: user.userUuid,
+      factionCode: inputUserFaction
+    })
+  }
+  
   // JOIN ROOM
   useEffect(() => {
     if (user.username !== '') {
@@ -69,6 +94,12 @@ const Battle = () => {
       })
     }
   }, [user.username, params])
+
+  useEffect(() => {
+    if (step > 1 && !isUsernameModalOpen && !user.isSpectator && user.userFaction === '') {
+      openUserFactionModal()
+    }
+  }, [user])
 
   // SOCKET LISTENERS
   useEffect(() => {
@@ -127,6 +158,33 @@ const Battle = () => {
     }
   }, [])
 
+  useEffect(() => {
+    socket.on('faction-assigned', (data) => {
+      console.log(`received faction assigned`)
+      let assignedUser = data.users.find(u => u.userUuid === user.userUuid)
+      setUser({
+        ...user,
+        userFaction: assignedUser.faction,
+        isSpectator: assignedUser.faction === ''
+      })
+      setUsers(data.users)
+      setFactions(data.factions)
+      setLog(data.log)
+      // setInputStratAbility(() => {
+      //   const initialState = {}
+      //   data.users.forEach(u => {
+      //     initialState[u.userUuid] = parseInt(u.stratAbility) || 0
+      //   })
+      //   return initialState
+      // })
+      closeUserFactionModal()
+    })
+
+    return () => {
+      socket.off('faction-assigned')
+    }
+  }, [user, setUser])
+
   // RENDER
   return (
     <div className='page-battle'>
@@ -165,6 +223,22 @@ const Battle = () => {
           value={inputUsername}
           onChange={changeInputUsername}
         />
+      </Modal>
+
+      <Modal
+        isOpen={isUserFactionModalOpen}
+        hasCancel={false}
+        onSubmit={submitUserFactionModal}
+      >
+        <div>Select a faction:
+          <select onChange={handleUserFactionChange}>
+            <option value='' disabled selected>Select a faction</option>
+            {factions.map(f => {
+              return (
+              <option key={f.code} value={f.code}>{f.name}</option>
+            )})}
+          </select>
+        </div>
       </Modal>
     </div>
   )

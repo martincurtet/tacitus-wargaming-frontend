@@ -93,11 +93,13 @@ const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, se
       setFactions(data.factions)
       setLog(data.log)
     })
+
     socket.on('faction-removed', (data) => {
       setUsers(data.users)
       setFactions(data.factions)
       setLog(data.log)
     })
+
     socket.on('faction-assigned', (data) => {
       let assignedUser = data.users.find(u => u.userUuid === user.userUuid)
       setUser({
