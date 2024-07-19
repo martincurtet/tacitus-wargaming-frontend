@@ -1,8 +1,9 @@
 import React from 'react'
+import UnitIcon from './UnitIcon'
 
 import '../styles/components/SetupInitiative.css'
 
-const SetupInitiative = ({ units, setUnits }) => {
+const SetupInitiative = ({ units, setUnits, factions }) => {
   // RENDER FUNCTIONS
   const renderTable = (start, end, step, origin) => {
     let tableRows = []
@@ -10,12 +11,12 @@ const SetupInitiative = ({ units, setUnits }) => {
       let unitImages = units
         .filter(u => origin ? u.initiativeRaw === i : u.initiative === i)
         .map(u => (
-          <img
-            key={`${u.factionCode}-${u.unitCode}-${u.identifier}`} // assuming each unit has a unique id
-            src={require(`../images/${u.iconName}`)}
-            onClick={() => {}}
-            className='initiative-row-image'
-            alt=''
+          <UnitIcon
+            className={'initiative-row-image'}
+            tooltip={`${u.name}\n${u.men} Men`}
+            unitIconName={u.iconName}
+            factionIconName={factions.find(f => f.code === u.factionCode).icon}
+            veterancyIconName={'militia.png'}
           />
         ))
       tableRows.push(
