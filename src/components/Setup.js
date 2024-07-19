@@ -88,6 +88,7 @@ const Setup = ({
   //
   useEffect(() => {
     socket.on('step-next', (data) => {
+      setUnits(data.units)
       setStep(data.step)
     })
 

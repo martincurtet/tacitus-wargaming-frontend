@@ -10,8 +10,13 @@
   width: 100%;
 }
 
-.initiative-table > tr {
-  height: 2rem;
+.initiative-row-image {
+  height: 2.75rem;
+  width: 2.75rem;
+}
+
+tr {
+  height: 3rem;
   width: 100%;
   display: flex;
   justify-content: flex-start;
@@ -19,14 +24,27 @@
   padding: .25rem;
 }
 
-.initiative-table > tr.even {
-  background-color: lightgrey;
+tr.even {
+  background-color: #B99979;
 }
 
-.initiative-table > tr.odd {
-  background-color: white;
+tr.odd {
+  background-color: #D2B48C;
 }
 
 .row-header {
-  
+
 }
+
+.row-units {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* #B99976
+#D2B48C
+#E5D3B3
+#987554
+#664229 */

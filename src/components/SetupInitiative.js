@@ -4,26 +4,28 @@ import '../styles/components/SetupInitiative.css'
 
 const SetupInitiative = ({ units, setUnits }) => {
   // RENDER FUNCTIONS
-  const renderTable = (start, end, step) => {
+  const renderTable = (start, end, step, origin) => {
     let tableRows = []
     for (let i = start; (step > 0 ? i < end : i > end); i += step) {
+      let unitImages = units
+        .filter(u => origin ? u.initiativeRaw === i : u.initiative === i)
+        .map(u => (
+          <img
+            key={`${u.factionCode}-${u.unitCode}-${u.identifier}`} // assuming each unit has a unique id
+            src={require(`../images/${u.iconName}`)}
+            onClick={() => {}}
+            className='initiative-row-image'
+            alt=''
+          />
+        ))
       tableRows.push(
-        <tr key={i}>
+        <tr key={i} className={`${i % 2 === 0 ? 'even' : 'odd'}`}>
           <td className='row-header'>{i}</td>
-          <td>
-            {/* {units[i]?.iconName !== undefined && (
-              <img
-                src={require(`../images/${units[i].iconName}`)}
-                onClick={() => {}}
-                alt=''
-                height={48}
-                width={48}
-              />
-            )} */}
-          </td>
+          <td className='row-units'>{unitImages}</td>
         </tr>
       )
     }
+
     return (
       <table className='initiative-table'>
         <tbody>
@@ -36,10 +38,9 @@ const SetupInitiative = ({ units, setUnits }) => {
   // RENDER
   return (
     <div className='setup-initiative'>
-      {renderTable(0, 20, 1)}
-      {renderTable(25, -5, -1)}
+      {renderTable(20, 0, -1, true)}
+      {renderTable(25, -5, -1, false)}
     </div>
   )
 }
-
 export default SetupInitiative
