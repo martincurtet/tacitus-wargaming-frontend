@@ -4,11 +4,12 @@ import { socket } from '../connections/socket'
 
 import SetupFactions from './SetupFactions'
 import SetupUnits from './SetupUnits.'
+import SetupInitiative from './SetupInitiative'
+import SetupBoard from './SetupBoard'
 import Button from './Button'
 import Modal from './Modal'
 
 import '../styles/components/Setup.css'
-import SetupInitiative from './SetupInitiative'
 
 const Setup = ({
   step, setStep,
@@ -68,7 +69,7 @@ const Setup = ({
         )
       case 4:
         return (
-          <div>Board</div>
+          <SetupBoard />
         )
       default:
         return (
