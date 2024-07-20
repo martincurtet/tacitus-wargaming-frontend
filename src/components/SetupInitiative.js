@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react'
+import { socket } from '../connections/socket'
+import { useParams } from 'react-router-dom'
+
 import UnitIcon from './UnitIcon'
 
 import '../styles/components/SetupInitiative.css'
 
 const SetupInitiative = ({ units, setUnits, factions }) => {
   //
+  const params = useParams()
   const [currentUnitIndex, setCurrentUnitIndex] = useState(0)
 
   const selectNextUnitIndex = () => {
@@ -29,23 +33,40 @@ const SetupInitiative = ({ units, setUnits, factions }) => {
   }, [units])
 
   const assignNewInitiative = (value) => {
-    console.log(` new initiative ${parseInt(value)}`)
-    // send socket event
+    socket.emit('change-initiative', {
+      roomUuid: params.battleuuid,
+      factionCode: units[currentUnitIndex].factionCode,
+      unitCode: units[currentUnitIndex].unitCode,
+      identifier: units[currentUnitIndex].identifier,
+      initiative: parseInt(value)
+    })
   }
+
+  useEffect(() => {
+    socket.on('initiative-changed', (data) => {
+      setUnits(data.units)
+    })
+
+    return () => {
+      socket.off('initiative-changed')
+    }
+  }, [])
 
   // RENDER FUNCTIONS
   const renderTable = (start, end, step, origin) => {
     let tableRows = []
     for (let i = start; (step > 0 ? i < end : i > end); i += step) {
+      let unitImages = null
+      let isHighlighted = false
       const currentUnit = units[currentUnitIndex]
-      let factionStratAbility = factions.find(f => f.code === currentUnit.factionCode).stratAbility
-      let isHighlighted = (origin && currentUnit.initiativeRaw === i) ||
+      let factionStratAbility = factions.find(f => f.code === currentUnit?.factionCode)?.stratAbility
+      isHighlighted = (origin && currentUnit?.initiativeRaw === i) ||
         (
           !origin &&
-          i >= parseInt(currentUnit.initiativeRaw - factionStratAbility) &&
-          i <= parseInt(currentUnit.initiativeRaw + factionStratAbility)
+          i >= parseInt(currentUnit?.initiativeRaw - factionStratAbility) &&
+          i <= parseInt(currentUnit?.initiativeRaw + factionStratAbility)
         )
-      let unitImages = units
+      unitImages = units
       .filter(u => origin ? u.initiativeRaw === i : u.initiative === i)
       .map(u => {
         const uniqueIdentifier = `${u.factionCode}-${u.unitCode}-${u.identifier}`
@@ -56,9 +77,10 @@ const SetupInitiative = ({ units, setUnits, factions }) => {
             unitIconName={u.iconName}
             factionIconName={factions.find(f => f.code === u.factionCode).icon}
             veterancyIconName={'militia.png'}
-            highlighted={uniqueIdentifier === `${currentUnit.factionCode}-${currentUnit.unitCode}-${currentUnit.identifier}`}
+            highlighted={uniqueIdentifier === `${currentUnit?.factionCode}-${currentUnit?.unitCode}-${currentUnit?.identifier}`}
           />
         )})
+      
       tableRows.push(
         <tr
           key={i}
