@@ -3,6 +3,10 @@
   display: inline-block;
 }
 
+.unit-image-container.highlighted {
+  border: greenyellow solid 3px;
+}
+
 .unit-image-container[tooltip] {
   position: relative;
 }
