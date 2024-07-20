@@ -80,12 +80,12 @@ const SetupInitiative = ({ units, setUnits, factions }) => {
             highlighted={uniqueIdentifier === `${currentUnit?.factionCode}-${currentUnit?.unitCode}-${currentUnit?.identifier}`}
           />
         )})
-      
+
       tableRows.push(
         <tr
           key={i}
           className={`${i % 2 === 0 ? 'even' : 'odd'}`}
-          onClick={() => assignNewInitiative(i)}
+          onClick={origin ? () => {} : () => assignNewInitiative(i)}
         >
           <td className='row-header'>{i}</td>
           <td className={`row-units ${isHighlighted ? 'highlighted' : ''}`}>{unitImages}</td>
