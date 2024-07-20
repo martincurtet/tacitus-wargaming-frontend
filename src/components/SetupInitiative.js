@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
+import { UserContext } from '../context/UserContext'
 
 import UnitIcon from './UnitIcon'
 
@@ -9,6 +10,7 @@ import '../styles/components/SetupInitiative.css'
 const SetupInitiative = ({ units, setUnits, factions }) => {
   //
   const params = useParams()
+  const [user, setUser] = useContext(UserContext)
   const [currentUnitIndex, setCurrentUnitIndex] = useState(0)
 
   const veterancyMap = {
@@ -48,13 +50,16 @@ const SetupInitiative = ({ units, setUnits, factions }) => {
   }, [units])
 
   const assignNewInitiative = (value) => {
-    socket.emit('change-initiative', {
-      roomUuid: params.battleuuid,
-      factionCode: units[currentUnitIndex].factionCode,
-      unitCode: units[currentUnitIndex].unitCode,
-      identifier: units[currentUnitIndex].identifier,
-      initiative: parseInt(value)
-    })
+    // check that user faction is correct
+    if (user.isHost || user.userFaction === units[currentUnitIndex].factionCode) {
+      socket.emit('change-initiative', {
+        roomUuid: params.battleuuid,
+        factionCode: units[currentUnitIndex].factionCode,
+        unitCode: units[currentUnitIndex].unitCode,
+        identifier: units[currentUnitIndex].identifier,
+        initiative: parseInt(value)
+      })
+    }
   }
 
   useEffect(() => {
