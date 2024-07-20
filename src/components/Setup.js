@@ -60,6 +60,7 @@ const Setup = ({
       case 3:
         return (
           <SetupInitiative
+            users={users}
             units={units} setUnits={setUnits}
             factions={factions}
           />

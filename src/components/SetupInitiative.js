@@ -7,7 +7,7 @@ import UnitIcon from './UnitIcon'
 
 import '../styles/components/SetupInitiative.css'
 
-const SetupInitiative = ({ units, setUnits, factions }) => {
+const SetupInitiative = ({ users, units, setUnits, factions }) => {
   //
   const params = useParams()
   const [user, setUser] = useContext(UserContext)
@@ -125,9 +125,27 @@ const SetupInitiative = ({ units, setUnits, factions }) => {
   // RENDER
   return (
     <div className='setup-initiative'>
-      <div className='current-unit'>
-        Current Unit Information {units[currentUnitIndex]?.factionCode}-{units[currentUnitIndex]?.unitCode}-{units[currentUnitIndex]?.identifier}
-      </div>
+      {currentUnitIndex !== -1 && (
+        <div className='current-unit'>
+          <div>
+            <img src={require(`../images/${factions.find(f => f.code === units[currentUnitIndex].factionCode).icon}`)} alt='' height={36} width={60} />
+          </div>
+          <div>{factions.find(f => f.code === units[currentUnitIndex].factionCode).name}</div>
+          <div>
+            <img src={require(`../images/${units[currentUnitIndex].iconName}`)} alt='' height={60} width={60} />
+          </div>
+          {/* <div>{units[currentUnitIndex]?.factionCode}-{units[currentUnitIndex]?.unitCode}-{units[currentUnitIndex]?.identifier}</div> */}
+          <div>{units[currentUnitIndex]?.name} {units[currentUnitIndex]?.identifier}</div>
+          <div>
+            Users:
+            {users.map(u => {
+              if (u.faction === units[currentUnitIndex].factionCode) {
+                return (<span>{u.username}</span>)
+              }
+            })}
+          </div>
+        </div>
+      )}
       <div className='initiative-tables'>
         {renderTable(20, 0, -1, true)}
         {renderTable(25, -5, -1, false)}
