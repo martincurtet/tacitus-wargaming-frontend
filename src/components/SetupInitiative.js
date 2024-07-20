@@ -11,6 +11,21 @@ const SetupInitiative = ({ units, setUnits, factions }) => {
   const params = useParams()
   const [currentUnitIndex, setCurrentUnitIndex] = useState(0)
 
+  const veterancyMap = {
+    0: {
+      iconName: 'militia.png'
+    },
+    1: {
+      iconName: 'normal.png'
+    },
+    2: {
+      iconName: 'veteran.png'
+    },
+    3: {
+      iconName: 'elite.png'
+    }
+  }
+
   const selectNextUnitIndex = () => {
     let selectedIndex = -1
     let lowestInitiativeRaw = Infinity
@@ -76,7 +91,7 @@ const SetupInitiative = ({ units, setUnits, factions }) => {
             tooltip={`${u.name}\n${u.men} Men`}
             unitIconName={u.iconName}
             factionIconName={factions.find(f => f.code === u.factionCode).icon}
-            veterancyIconName={'militia.png'}
+            veterancyIconName={veterancyMap[u.veterancy].iconName}
             highlighted={uniqueIdentifier === `${currentUnit?.factionCode}-${currentUnit?.unitCode}-${currentUnit?.identifier}`}
           />
         )})
