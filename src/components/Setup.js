@@ -19,6 +19,7 @@ const Setup = ({
 }) => {
   //
   const params = useParams()
+  const [nextStepLocked, setNextStepLocked] = useState(true)
 
   //
   const stepTitles = {
@@ -77,14 +78,42 @@ const Setup = ({
   }
 
   // const prevStep = () => {
-  //   // setStateStep(prev => prev - 1)
   // }
 
   const nextStep = () => {
-    // setStateStep(prev => prev + 1)
     socket.emit('next-step', { roomUuid: params.battleuuid })
     closeNextStepModal()
   }
+
+  useEffect(() => {
+    let isStepLocked = true
+    switch (parseInt(step)) {
+      case 1:
+        // At least one faction
+        isStepLocked = factions.length <= 0
+        break
+      case 2:
+        // At least one unit
+        isStepLocked = units.length <= 0
+        break
+      case 3:
+        // All units have been assigned initiative
+        let allUnitsAssigned = true
+        units.forEach(u => {
+          if (u.initiative === null) {
+            allUnitsAssigned = false
+          }
+        })
+        isStepLocked = !allUnitsAssigned
+        break
+      case 4:
+        // TBD
+        break
+      default:
+        break
+    }
+    setNextStepLocked(isStepLocked)
+  }, [step, factions, units])
 
   //
   useEffect(() => {
@@ -114,7 +143,12 @@ const Setup = ({
         {renderStepContent()}
         {/* <button onClick={prevStep}>Back</button> */}
         <div className='setup-buttons'>
-          <Button onClick={openNextStepModal}>Confirm</Button>
+          <Button
+            disabled={nextStepLocked}
+            onClick={openNextStepModal}
+          >
+            Confirm
+          </Button>
           {/* <Button onClick={prevStep}>Back</Button> */}
         </div>
       </div>
