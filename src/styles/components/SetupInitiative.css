@@ -1,0 +1,62 @@
+.setup-initiative {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.initiative-tables {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+
+}
+
+.initiative-table {
+  width: 100%;
+}
+
+.initiative-row-image {
+  height: 2.75rem;
+  width: 2.75rem;
+}
+
+tr {
+  height: 3rem;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: .25rem;
+}
+
+tr.even {
+  background-color: #B99979;
+}
+
+tr.odd {
+  background-color: #D2B48C;
+}
+
+.row-header {
+
+}
+
+.row-units {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.row-units.highlighted {
+  background-color: aqua;
+}
+
+/* #B99976
+#D2B48C
+#E5D3B3
+#987554
+#664229 */

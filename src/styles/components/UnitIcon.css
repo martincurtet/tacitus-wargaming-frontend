@@ -1,0 +1,50 @@
+.unit-image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.unit-image-container.highlighted {
+  border: greenyellow solid 3px;
+}
+
+.unit-image-container[tooltip] {
+  position: relative;
+}
+
+.unit-image-container[tooltip]:hover::after {
+  content: attr(tooltip);
+  background-color: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: absolute;
+  bottom: 105%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: pre-wrap;
+  z-index: 1;
+  width: max-content;
+  text-align: center;
+}
+
+.unit-image {
+  display: block;
+  width: 100%; /* Adjust as needed */
+  height: auto; /* Adjust as needed */
+}
+
+.faction-image {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 25%; /* Adjust size as needed */
+  height: auto; /* Adjust size as needed */
+}
+
+.veterancy-image {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 25%; /* Adjust size as needed */
+  height: auto; /* Adjust size as needed */
+}

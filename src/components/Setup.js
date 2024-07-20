@@ -8,6 +8,7 @@ import Button from './Button'
 import Modal from './Modal'
 
 import '../styles/components/Setup.css'
+import SetupInitiative from './SetupInitiative'
 
 const Setup = ({
   step, setStep,
@@ -18,6 +19,7 @@ const Setup = ({
 }) => {
   //
   const params = useParams()
+  const [nextStepLocked, setNextStepLocked] = useState(true)
 
   //
   const stepTitles = {
@@ -58,7 +60,11 @@ const Setup = ({
         )
       case 3:
         return (
-          <div>Initiative</div>
+          <SetupInitiative
+            users={users}
+            units={units} setUnits={setUnits}
+            factions={factions}
+          />
         )
       case 4:
         return (
@@ -72,25 +78,54 @@ const Setup = ({
   }
 
   // const prevStep = () => {
-  //   // setStateStep(prev => prev - 1)
   // }
 
   const nextStep = () => {
-    // setStateStep(prev => prev + 1)
     socket.emit('next-step', { roomUuid: params.battleuuid })
     closeNextStepModal()
   }
 
+  useEffect(() => {
+    let isStepLocked = true
+    switch (parseInt(step)) {
+      case 1:
+        // At least one faction
+        isStepLocked = factions.length <= 0
+        break
+      case 2:
+        // At least one unit
+        isStepLocked = units.length <= 0
+        break
+      case 3:
+        // All units have been assigned initiative
+        let allUnitsAssigned = true
+        units.forEach(u => {
+          if (u.initiative === null) {
+            allUnitsAssigned = false
+          }
+        })
+        isStepLocked = !allUnitsAssigned
+        break
+      case 4:
+        // TBD
+        break
+      default:
+        break
+    }
+    setNextStepLocked(isStepLocked)
+  }, [step, factions, units])
+
   //
   useEffect(() => {
     socket.on('step-next', (data) => {
+      setUnits(data.units)
       setStep(data.step)
     })
 
     return () => {
       socket.off('step-next')
     }
-  }, [])
+  }, [setStep])
 
   // RENDER
   return (
@@ -108,7 +143,12 @@ const Setup = ({
         {renderStepContent()}
         {/* <button onClick={prevStep}>Back</button> */}
         <div className='setup-buttons'>
-          <Button onClick={openNextStepModal}>Confirm</Button>
+          <Button
+            disabled={nextStepLocked}
+            onClick={openNextStepModal}
+          >
+            Confirm
+          </Button>
           {/* <Button onClick={prevStep}>Back</Button> */}
         </div>
       </div>
