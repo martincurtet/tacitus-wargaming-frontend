@@ -1,9 +1,0 @@
-.board-grid {
-  display: grid;
-  user-select: none;
-  /* max-width: 1098px; */
-  max-height: 1098px;
-  overflow: scroll;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-}

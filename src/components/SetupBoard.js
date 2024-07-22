@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
 
-import Tile from './Tile'
-
 import '../styles/components/SetupBoard.css'
 
 const SetupBoard = ({ boardSize, setBoardSize, setLog }) => {
@@ -14,7 +12,11 @@ const SetupBoard = ({ boardSize, setBoardSize, setLog }) => {
   const params = useParams()
   const [inputRowNumber, setInputRowNumber] = useState(boardSize['rowNumber'])
   const [inputColumnNumber, setInputColumnNumber] = useState(boardSize['columnNumber'])
-  const [inputTerrain, setInputTerrain] = useState('')
+  const [inputTerrain, setInputTerrain] = useState('plains')
+
+  // temp - remove when drag and drop is implemented
+  const [inputStartCell, setInputStartCell] = useState('')
+  const [inputEndCell, setInputEndCell] = useState('')
 
   const handleInputRowNumberChange = (e) => {
     const rowNumber= parseInt(e.target.value)
@@ -41,6 +43,25 @@ const SetupBoard = ({ boardSize, setBoardSize, setLog }) => {
   const handleInputTerrainChange = (e) => {
     setInputTerrain(e.target.value)
     console.log(`changing input terrain to ${e.target.value}`)
+  }
+
+  //
+  const handleInputStartCellChange = (e) => {
+    setInputStartCell(e.target.value)
+  }
+
+  const handleInputEndCellChange = (e) => {
+    setInputEndCell(e.target.value)
+  }
+
+  const handleTerrainDraw = () => {
+    console.log(`drawing ${inputTerrain} from ${inputStartCell} to ${inputEndCell}`)
+    socket.emit('update-board-terrain', {
+      roomUuid: params.battleuuid,
+      startCell: inputStartCell,
+      endCell: inputEndCell,
+      terrainType: inputTerrain
+    })
   }
 
   // SOCKET EVENTS
@@ -97,17 +118,23 @@ const SetupBoard = ({ boardSize, setBoardSize, setLog }) => {
           <option value='fire'>Fire</option>
           <option value='road'>Road</option>
         </select>
-      </div>
-      <div className='board-grid'>
-        <Tile content={''} icon={'Archer_1.png'} />
-        <Tile content={''} icon={'Archer_1.png'} />
-        <Tile content={''} icon={'Archer_1.png'} />
-        <Tile content={''} icon={'Archer_1.png'} />
-        <Tile content={''} icon={'Archer_1.png'} />
-        <Tile content={''} icon={'Archer_1.png'} />
-        <Tile content={''} icon={'Archer_1.png'} />
-        <Tile content={''} icon={'Archer_1.png'} />
-        <Tile content={''} icon={'Archer_1.png'} />
+        <div>
+          <label>Start Cell</label>
+          <input
+            type='text'
+            value={inputStartCell}
+            onChange={handleInputStartCellChange}
+          />
+        </div>
+        <div>
+          <label>End Cell</label>
+          <input
+            type='text'
+            value={inputEndCell}
+            onChange={handleInputEndCellChange}
+          />
+        </div>
+        <button onClick={handleTerrainDraw}>Draw</button>
       </div>
     </div>
   )
