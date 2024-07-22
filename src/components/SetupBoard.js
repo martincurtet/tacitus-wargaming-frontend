@@ -1,11 +1,54 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { socket } from '../connections/socket'
+import { useParams } from 'react-router-dom'
+
 import Tile from './Tile'
 
 import '../styles/components/SetupBoard.css'
 
-const SetupBoard = ({}) => {
+const SetupBoard = ({ boardSize, setBoardSize, setLog }) => {
   //
   const MAX_GRID_SIZE = Number(process.env.REACT_APP_MAX_GRID_SIZE) || 60
+
+  //
+  const params = useParams()
+  const [inputRowNumber, setInputRowNumber] = useState(boardSize['rowNumber'])
+  const [inputColumnNumber, setInputColumnNumber] = useState(boardSize['columnNumber'])
+
+  const handleInputRowNumberChange = (e) => {
+    const rowNumber= parseInt(e.target.value)
+    setInputRowNumber(rowNumber)
+    updateBoardSize(rowNumber, inputColumnNumber)
+  }
+
+  const handleInputColumnNumberChange = (e) => {
+    const columnNumber = parseInt(e.target.value)
+    setInputColumnNumber(columnNumber)
+    updateBoardSize(inputRowNumber, columnNumber)
+  }
+
+  const updateBoardSize = (rowNumber, columnNumber) => {
+    socket.emit('update-board-size', {
+      roomUuid: params.battleuuid,
+      boardSize: {
+        'rowNumber': rowNumber,
+        'columnNumber': columnNumber
+      }
+    })
+  }
+
+  useEffect(() => {
+    socket.on('board-size-updated', (data) => {
+      setBoardSize(data.boardSize)
+      setLog(data.log)
+      setInputRowNumber(data.boardSize['rowNumber'])
+      setInputColumnNumber(data.boardSize['columnNumber'])
+    })
+
+    return () => {
+      socket.off('board-size-updated')
+    }
+  }, [setBoardSize, setLog])
 
   // RENDER
   return (
@@ -14,8 +57,8 @@ const SetupBoard = ({}) => {
         <label>Number of rows</label>
         <input
           type='number'
-          // value={}
-          // onChange={}
+          value={inputRowNumber}
+          onChange={handleInputRowNumberChange}
           min={1}
           max={MAX_GRID_SIZE}
           step={1}
@@ -23,8 +66,8 @@ const SetupBoard = ({}) => {
         <label>Number of columns</label>
         <input
           type='number'
-          // value={}
-          // onChange={}
+          value={inputColumnNumber}
+          onChange={handleInputColumnNumberChange}
           min={1}
           max={MAX_GRID_SIZE}
           step={1}

@@ -15,6 +15,8 @@ import '../styles/pages/Battle.css'
 const Battle = () => {
   // PARAMS
   const params = useParams()
+  const DEFAULT_BOARD_ROW_NUMBER = Number(process.env.DEFAULT_BOARD_ROW_NUMBER) || 30
+  const DEFAULT_BOARD_COLUMN_NUMBER = Number(process.env.DEFAULT_BOARD_COLUMN_NUMBER) || 30
 
   // USERNAME VARIABLES
   const [user, setUser] = useContext(UserContext)
@@ -26,6 +28,10 @@ const Battle = () => {
 
   // BATTLE VARIABLES
   const [step, setStep] = useState(1)
+  const [boardSize, setBoardSize] = useState({
+    'rowNumber': DEFAULT_BOARD_ROW_NUMBER,
+    'columnNumber': DEFAULT_BOARD_COLUMN_NUMBER
+  })
   const [board, setBoard] = useState({})
   const [factionShop, setFactionShop] = useState([])
   const [factions, setFactions] = useState([])
@@ -33,7 +39,7 @@ const Battle = () => {
   const [messages, setMessages] = useState([])
   const [unitShop, setUnitShop] = useState([])
   const [units, setUnits] = useState([])
-  const [users, setUsers] = useState([]) // TODO add users in the chat
+  const [users, setUsers] = useState([])
 
   // USERNAME FUNCTIONS
   const changeInputUsername = (e) => {
@@ -73,7 +79,6 @@ const Battle = () => {
   }
 
   const submitUserFactionModal = () => {
-    console.log(`sending assign faction`)
     socket.emit('assign-faction', {
       roomUuid: params.battleuuid,
       userUuid: user.userUuid,
@@ -124,6 +129,7 @@ const Battle = () => {
       // Set State Data
       setStep(data.step)
       setBoard(data.board)
+      setBoardSize(data.boardSize)
       setFactionShop(data.factionShop)
       setFactions(data.factions)
       setLog(data.log)
@@ -160,7 +166,6 @@ const Battle = () => {
 
   useEffect(() => {
     socket.on('faction-assigned', (data) => {
-      console.log(`received faction assigned`)
       let assignedUser = data.users.find(u => u.userUuid === user.userUuid)
       setUser({
         ...user,
@@ -206,6 +211,7 @@ const Battle = () => {
 
       <Setup
         step={step} setStep={setStep}
+        boardSize={boardSize} setBoardSize={setBoardSize}
         users={users} setUsers={setUsers}
         unitShop={unitShop} units={units} setUnits={setUnits}
         factionShop={factionShop} factions={factions} setFactions={setFactions}

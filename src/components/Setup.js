@@ -13,6 +13,7 @@ import '../styles/components/Setup.css'
 
 const Setup = ({
   step, setStep,
+  boardSize, setBoardSize,
   users, setUsers,
   factionShop, factions, setFactions,
   unitShop, units, setUnits,
@@ -69,7 +70,10 @@ const Setup = ({
         )
       case 4:
         return (
-          <SetupBoard />
+          <SetupBoard
+            boardSize={boardSize} setBoardSize={setBoardSize}
+            setLog={setLog}
+          />
         )
       default:
         return (
