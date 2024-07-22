@@ -14,6 +14,7 @@ const SetupBoard = ({ boardSize, setBoardSize, setLog }) => {
   const params = useParams()
   const [inputRowNumber, setInputRowNumber] = useState(boardSize['rowNumber'])
   const [inputColumnNumber, setInputColumnNumber] = useState(boardSize['columnNumber'])
+  const [inputTerrain, setInputTerrain] = useState('')
 
   const handleInputRowNumberChange = (e) => {
     const rowNumber= parseInt(e.target.value)
@@ -37,6 +38,12 @@ const SetupBoard = ({ boardSize, setBoardSize, setLog }) => {
     })
   }
 
+  const handleInputTerrainChange = (e) => {
+    setInputTerrain(e.target.value)
+    console.log(`changing input terrain to ${e.target.value}`)
+  }
+
+  // SOCKET EVENTS
   useEffect(() => {
     socket.on('board-size-updated', (data) => {
       setBoardSize(data.boardSize)
@@ -75,8 +82,8 @@ const SetupBoard = ({ boardSize, setBoardSize, setLog }) => {
       </div>
       <div>
         <select
-          // onChange={e => setInputTerrain(e.target.value)}
-          // value={inputTerrain}
+          onChange={handleInputTerrainChange}
+          value={inputTerrain}
         >
           <option value='plains'>Plains</option>
           <option value='forest'>Forest</option>
