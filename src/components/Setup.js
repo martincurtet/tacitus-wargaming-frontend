@@ -74,6 +74,8 @@ const Setup = ({
           <SetupBoard
             board={board} setBoard={setBoard}
             boardSize={boardSize} setBoardSize={setBoardSize}
+            factions={factions}
+            units={units} setUnits={setUnits}
             setLog={setLog}
           />
         )

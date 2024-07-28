@@ -18,3 +18,14 @@
 .paint-cursor {
   cursor: url("../../images/paintbrush.png") 0 16, default;
 }
+
+.sidebar-units {
+  display: flex;
+  flex-direction: row;
+}
+
+.sidebar-units-image {
+  cursor: pointer;
+  height: 2.75rem;
+  width: 2.75rem;
+}

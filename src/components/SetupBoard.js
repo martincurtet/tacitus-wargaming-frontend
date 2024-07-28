@@ -3,13 +3,29 @@ import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
 import { integerToLetter } from '../functions/functions'
 
+import UnitIcon from './UnitIcon'
 import Tile from './Tile'
 
 import '../styles/components/SetupBoard.css'
 
-const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, setLog }) => {
+const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units, setUnits, setLog }) => {
   //
   const MAX_GRID_SIZE = Number(process.env.REACT_APP_MAX_GRID_SIZE) || 60
+
+  const veterancyMap = {
+    0: {
+      iconName: 'militia.png'
+    },
+    1: {
+      iconName: 'normal.png'
+    },
+    2: {
+      iconName: 'veteran.png'
+    },
+    3: {
+      iconName: 'elite.png'
+    }
+  }
 
   //
   const params = useParams()
@@ -63,6 +79,23 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, setLog }) => {
   }, [finishingTile])
 
   //
+  const renderUnits = () => {
+    // check units without coordinates
+    let unassignedUnits = []
+    units.map(u => (
+      unassignedUnits.push(
+        <UnitIcon
+          className='sidebar-units-image'
+          tooltip={`${u.factionCode}-${u.unitCode}-${u.identifier}`}
+          unitIconName={u.iconName}
+          factionIconName={factions.find(f => f.code === u.factionCode).icon}
+          veterancyIconName={veterancyMap[u.veterancy].iconName}
+        />
+      )
+    ))
+    return unassignedUnits
+  }
+
   const renderBoard = () => {
     let tiles = []
     for (let r = 0; r <= boardSize['rowNumber']; r++) {
@@ -159,7 +192,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, setLog }) => {
           </select>
         </div>
         <div className='sidebar-units'>
-          Units
+          {renderUnits()}
         </div>
       </div>
       <div
