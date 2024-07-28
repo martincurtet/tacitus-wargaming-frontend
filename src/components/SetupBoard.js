@@ -86,7 +86,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
       unassignedUnits.push(
         <UnitIcon
           className='sidebar-units-image'
-          tooltip={`${u.factionCode}-${u.unitCode}-${u.identifier}`}
+          tooltip={`${u.factionCode}-${u.unitCode}${u.identifier !== '' ? `-${u.identifier}` : ''}`}
           unitIconName={u.iconName}
           factionIconName={factions.find(f => f.code === u.factionCode).icon}
           veterancyIconName={veterancyMap[u.veterancy].iconName}
