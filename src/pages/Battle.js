@@ -211,6 +211,7 @@ const Battle = () => {
 
       <Setup
         step={step} setStep={setStep}
+        board={board} setBoard={setBoard}
         boardSize={boardSize} setBoardSize={setBoardSize}
         users={users} setUsers={setUsers}
         unitShop={unitShop} units={units} setUnits={setUnits}

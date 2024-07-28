@@ -5,7 +5,7 @@ import Draggable from './dndComponents/Draggable'
 
 import '../styles/components/Tile.css'
 
-const Tile = ({ content, coordinates, color, setStartingTile, setFinishingTile, icon }) => {
+const Tile = ({ content, coordinates, terrain, color, setStartingTile, setFinishingTile, icon }) => {
   // const [highlighted, setHighlighted] = useState(false)
 
   return (

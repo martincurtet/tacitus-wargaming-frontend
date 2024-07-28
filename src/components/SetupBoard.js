@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
+import { integerToLetter } from '../functions/functions'
+
+import Tile from './Tile'
 
 import '../styles/components/SetupBoard.css'
 
-const SetupBoard = ({ boardSize, setBoardSize, setLog }) => {
+const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, setLog }) => {
   //
   const MAX_GRID_SIZE = Number(process.env.REACT_APP_MAX_GRID_SIZE) || 60
 
@@ -12,11 +15,10 @@ const SetupBoard = ({ boardSize, setBoardSize, setLog }) => {
   const params = useParams()
   const [inputRowNumber, setInputRowNumber] = useState(boardSize['rowNumber'])
   const [inputColumnNumber, setInputColumnNumber] = useState(boardSize['columnNumber'])
+  const [paintToggle, setPaintToggle] = useState(false)
   const [inputTerrain, setInputTerrain] = useState('plains')
-
-  // temp - remove when drag and drop is implemented
-  const [inputStartCell, setInputStartCell] = useState('')
-  const [inputEndCell, setInputEndCell] = useState('')
+  const [startingTile, setStartingTile] = useState(null)
+  const [finishingTile, setFinishingTile] = useState(null)
 
   const handleInputRowNumberChange = (e) => {
     const rowNumber= parseInt(e.target.value)
@@ -40,28 +42,51 @@ const SetupBoard = ({ boardSize, setBoardSize, setLog }) => {
     })
   }
 
+  const togglePaint = () => {
+    setPaintToggle(prev => !prev)
+  }
+
   const handleInputTerrainChange = (e) => {
     setInputTerrain(e.target.value)
-    console.log(`changing input terrain to ${e.target.value}`)
   }
 
   //
-  const handleInputStartCellChange = (e) => {
-    setInputStartCell(e.target.value)
-  }
+  useEffect(() => {
+    if (finishingTile !== null && paintToggle) {
+      socket.emit('update-board-terrain', {
+        roomUuid: params.battleuuid,
+        startCell: startingTile,
+        endCell: finishingTile,
+        terrainType: inputTerrain
+      })
+    }
+  }, [finishingTile])
 
-  const handleInputEndCellChange = (e) => {
-    setInputEndCell(e.target.value)
-  }
-
-  const handleTerrainDraw = () => {
-    console.log(`drawing ${inputTerrain} from ${inputStartCell} to ${inputEndCell}`)
-    socket.emit('update-board-terrain', {
-      roomUuid: params.battleuuid,
-      startCell: inputStartCell,
-      endCell: inputEndCell,
-      terrainType: inputTerrain
-    })
+  //
+  const renderBoard = () => {
+    let tiles = []
+    for (let r = 0; r <= boardSize['rowNumber']; r++) {
+      for (let c = 0; c <= boardSize['columnNumber']; c++) {
+        const tileCoordinates = `${integerToLetter(c)}${r}`
+        const tile = board[tileCoordinates] || null
+        let tileColor = tile?.terrainColor || '#d9ead3'
+        if (c === 0 || r === 0) tileColor = '#ffffff'
+        const tileContent = (c === 0 && r === 0) ? '' : c === 0 ? r : r === 0 ? integerToLetter(c) : ''
+        tiles.push(
+          <Tile
+            key={`r${r}c${c}`}
+            coordinates={tileCoordinates}
+            content={tileContent}
+            terrain={tile?.terrainType}
+            color={tileColor}
+            setStartingTile={setStartingTile}
+            setFinishingTile={setFinishingTile}
+            icon={''}
+          />
+        )
+      }
+    }
+    return tiles
   }
 
   // SOCKET EVENTS
@@ -73,68 +98,78 @@ const SetupBoard = ({ boardSize, setBoardSize, setLog }) => {
       setInputColumnNumber(data.boardSize['columnNumber'])
     })
 
+    socket.on('board-terrain-updated', (data) => {
+      setBoard(data.board)
+      setLog(data.log)
+    })
+
     return () => {
       socket.off('board-size-updated')
+      socket.off('board-terrain-updated')
     }
   }, [setBoardSize, setLog])
 
   // RENDER
   return (
     <div className='setup-board'>
-      <div>
-        <label>Number of rows</label>
-        <input
-          type='number'
-          value={inputRowNumber}
-          onChange={handleInputRowNumberChange}
-          min={1}
-          max={MAX_GRID_SIZE}
-          step={1}
-        />
-        <label>Number of columns</label>
-        <input
-          type='number'
-          value={inputColumnNumber}
-          onChange={handleInputColumnNumberChange}
-          min={1}
-          max={MAX_GRID_SIZE}
-          step={1}
-        />
+      <div className='setup-board-sidebar'>
+        <div className='sidebar-row'>
+          <label>Number of rows</label>
+          <input
+            type='number'
+            value={inputRowNumber}
+            onChange={handleInputRowNumberChange}
+            min={1}
+            max={MAX_GRID_SIZE}
+            step={1}
+          />
+        </div>
+        <div className='sidebar-column'>
+          <label>Number of columns</label>
+          <input
+            type='number'
+            value={inputColumnNumber}
+            onChange={handleInputColumnNumberChange}
+            min={1}
+            max={MAX_GRID_SIZE}
+            step={1}
+          />
+        </div>
+        <div className='sidebar-terrain'>
+          <input
+            type='checkbox'
+            checked={paintToggle}
+            onChange={togglePaint}
+          />
+          <select
+            onChange={handleInputTerrainChange}
+            value={inputTerrain}
+          >
+            <option value='plains'>Plains</option>
+            <option value='forest'>Forest</option>
+            <option value='mud'>Mud</option>
+            <option value='jungle'>Jungle</option>
+            <option value='undergrowth'>Undergrowth</option>
+            <option value='marsh'>Marsh</option>
+            <option value='high-ground'>High Ground</option>
+            <option value='shallow-water'>Shallow Water</option>
+            <option value='deep-water'>Deep Water</option>
+            <option value='fire'>Fire</option>
+            <option value='road'>Road</option>
+          </select>
+        </div>
+        <div className='sidebar-units'>
+          Units
+        </div>
       </div>
-      <div>
-        <select
-          onChange={handleInputTerrainChange}
-          value={inputTerrain}
-        >
-          <option value='plains'>Plains</option>
-          <option value='forest'>Forest</option>
-          <option value='mud'>Mud</option>
-          <option value='jungle'>Jungle</option>
-          <option value='undergrowth'>Undergrowth</option>
-          <option value='marsh'>Marsh</option>
-          <option value='high-ground'>High Ground</option>
-          <option value='shallow-water'>Shallow Water</option>
-          <option value='deep-water'>Deep Water</option>
-          <option value='fire'>Fire</option>
-          <option value='road'>Road</option>
-        </select>
-        <div>
-          <label>Start Cell</label>
-          <input
-            type='text'
-            value={inputStartCell}
-            onChange={handleInputStartCellChange}
-          />
-        </div>
-        <div>
-          <label>End Cell</label>
-          <input
-            type='text'
-            value={inputEndCell}
-            onChange={handleInputEndCellChange}
-          />
-        </div>
-        <button onClick={handleTerrainDraw}>Draw</button>
+      <div
+        className={`setup-board-grid ${paintToggle ? 'paint-cursor' : ''}`}
+        style={{
+          gridTemplateColumns: `repeat(${boardSize['columnNumber']+1}, 40px)`,
+          gridTemplateRows: `repeat(${boardSize['rowNumber']+1}, 40px)`,
+        }}
+      >
+        {renderBoard()}
       </div>
     </div>
   )
