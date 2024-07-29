@@ -4,8 +4,15 @@ import Droppable from './dndComponents/Droppable'
 import Draggable from './dndComponents/Draggable'
 
 import '../styles/components/Tile.css'
+import UnitIcon from './UnitIcon'
 
-const Tile = ({ content, coordinates, terrain, color, setStartingTile, setFinishingTile, icon }) => {
+const Tile = ({
+    content,
+    coordinates,
+    color,
+    setStartingTile, setFinishingTile,
+    unitIconName, factionIconName, veterancyIconName
+  }) => {
   // const [highlighted, setHighlighted] = useState(false)
 
   return (
@@ -22,9 +29,13 @@ const Tile = ({ content, coordinates, terrain, color, setStartingTile, setFinish
         content
       ) : (
         <Droppable id={coordinates}>
-          {icon ? (
+          {unitIconName !== undefined && unitIconName !== '' ? (
             <Draggable id={coordinates}>
-              <img src={require(`../images/${icon}`)} alt='' width={32} height={32} />
+              <UnitIcon
+                unitIconName={unitIconName}
+                factionIconName={factionIconName}
+                veterancyIconName={veterancyIconName}
+              />
             </Draggable>
           ) : null}
         </Droppable>

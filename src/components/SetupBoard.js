@@ -3,10 +3,13 @@ import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
 import { integerToLetter } from '../functions/functions'
 
+import Draggable from './dndComponents/Draggable'
+import Droppable from './dndComponents/Droppable'
 import UnitIcon from './UnitIcon'
 import Tile from './Tile'
 
 import '../styles/components/SetupBoard.css'
+import { DndContext } from '@dnd-kit/core'
 
 const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units, setUnits, setLog }) => {
   //
@@ -82,17 +85,22 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
   const renderUnits = () => {
     // check units without coordinates
     let unassignedUnits = []
-    units.map(u => (
-      unassignedUnits.push(
-        <UnitIcon
-          className='sidebar-units-image'
-          tooltip={`${u.factionCode}-${u.unitCode}${u.identifier !== '' ? `-${u.identifier}` : ''}`}
-          unitIconName={u.iconName}
-          factionIconName={factions.find(f => f.code === u.factionCode).icon}
-          veterancyIconName={veterancyMap[u.veterancy].iconName}
-        />
-      )
-    ))
+    units.map(u => {
+      if (u.coordinates === '') {
+        return (
+          unassignedUnits.push(
+            <Draggable id={`${u.factionCode}-${u.unitCode}${u.identifier !== '' ? `-${u.identifier}` : ''}`} key={`${u.factionCode}-${u.unitCode}${u.identifier !== '' ? `-${u.identifier}` : ''}`}>
+              <UnitIcon
+                className='sidebar-units-image'
+                tooltip={`${u.factionCode}-${u.unitCode}${u.identifier !== '' ? `-${u.identifier}` : ''}`}
+                unitIconName={u.iconName}
+                factionIconName={factions.find(f => f.code === u.factionCode).icon}
+                veterancyIconName={veterancyMap[u.veterancy].iconName}
+              />
+            </Draggable>
+          )
+        )
+      }})
     return unassignedUnits
   }
 
@@ -114,12 +122,28 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
             color={tileColor}
             setStartingTile={setStartingTile}
             setFinishingTile={setFinishingTile}
-            icon={''}
+            unitIconName={tile?.unitIcon}
+            factionIconName={tile?.factionIcon}
+            veterancyIconName={tile?.veterancyIcon}
           />
         )
       }
     }
     return tiles
+  }
+
+  const handleDragEnd = (e) => {
+    // console.log('drag end')
+    // console.log(e)
+    const { active, over } = e
+    if (over === null) return
+    // console.log(over)
+    // console.log(active)
+    socket.emit('update-unit-coordinates', {
+      roomUuid: params.battleuuid,
+      unitFullCode: active.id,
+      coordinates: over.id
+    })
   }
 
   // SOCKET EVENTS
@@ -136,74 +160,87 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
       setLog(data.log)
     })
 
+    socket.on('unit-coordinates-updated', (data) => {
+      setBoard(data.board)
+      setUnits(data.units)
+      setLog(data.log)
+    })
+
     return () => {
       socket.off('board-size-updated')
       socket.off('board-terrain-updated')
+      socket.off('unit-coordinates-updated')
     }
   }, [setBoardSize, setLog])
 
   // RENDER
   return (
     <div className='setup-board'>
-      <div className='setup-board-sidebar'>
-        <div className='sidebar-row'>
-          <label>Number of rows</label>
-          <input
-            type='number'
-            value={inputRowNumber}
-            onChange={handleInputRowNumberChange}
-            min={1}
-            max={MAX_GRID_SIZE}
-            step={1}
-          />
-        </div>
-        <div className='sidebar-column'>
-          <label>Number of columns</label>
-          <input
-            type='number'
-            value={inputColumnNumber}
-            onChange={handleInputColumnNumberChange}
-            min={1}
-            max={MAX_GRID_SIZE}
-            step={1}
-          />
-        </div>
-        <div className='sidebar-terrain'>
-          <input
-            type='checkbox'
-            checked={paintToggle}
-            onChange={togglePaint}
-          />
-          <select
-            onChange={handleInputTerrainChange}
-            value={inputTerrain}
-          >
-            <option value='plains'>Plains</option>
-            <option value='forest'>Forest</option>
-            <option value='mud'>Mud</option>
-            <option value='jungle'>Jungle</option>
-            <option value='undergrowth'>Undergrowth</option>
-            <option value='marsh'>Marsh</option>
-            <option value='high-ground'>High Ground</option>
-            <option value='shallow-water'>Shallow Water</option>
-            <option value='deep-water'>Deep Water</option>
-            <option value='fire'>Fire</option>
-            <option value='road'>Road</option>
-          </select>
-        </div>
-        <div className='sidebar-units'>
-          {renderUnits()}
-        </div>
-      </div>
-      <div
-        className={`setup-board-grid ${paintToggle ? 'paint-cursor' : ''}`}
-        style={{
-          gridTemplateColumns: `repeat(${boardSize['columnNumber']+1}, 40px)`,
-          gridTemplateRows: `repeat(${boardSize['rowNumber']+1}, 40px)`,
-        }}
+      <DndContext
+        onDragEnd={handleDragEnd}
       >
-        {renderBoard()}
-      </div>
+        <div className='setup-board-sidebar'>
+          <div className='sidebar-row'>
+            <label>Number of rows</label>
+            <input
+              type='number'
+              value={inputRowNumber}
+              onChange={handleInputRowNumberChange}
+              min={1}
+              max={MAX_GRID_SIZE}
+              step={1}
+            />
+          </div>
+          <div className='sidebar-column'>
+            <label>Number of columns</label>
+            <input
+              type='number'
+              value={inputColumnNumber}
+              onChange={handleInputColumnNumberChange}
+              min={1}
+              max={MAX_GRID_SIZE}
+              step={1}
+            />
+          </div>
+          <div className='sidebar-terrain'>
+            <input
+              type='checkbox'
+              checked={paintToggle}
+              onChange={togglePaint}
+            />
+            <select
+              onChange={handleInputTerrainChange}
+              value={inputTerrain}
+            >
+              <option value='plains'>Plains</option>
+              <option value='forest'>Forest</option>
+              <option value='mud'>Mud</option>
+              <option value='jungle'>Jungle</option>
+              <option value='undergrowth'>Undergrowth</option>
+              <option value='marsh'>Marsh</option>
+              <option value='high-ground'>High Ground</option>
+              <option value='shallow-water'>Shallow Water</option>
+              <option value='deep-water'>Deep Water</option>
+              <option value='fire'>Fire</option>
+              <option value='road'>Road</option>
+            </select>
+          </div>
+          <Droppable id={'unit-unassigned'}>
+            <div className='sidebar-units'>
+              {renderUnits()}
+            </div>
+          </Droppable>
+        </div>
+        <div
+          className={`setup-board-grid ${paintToggle ? 'paint-cursor' : ''}`}
+          style={{
+            gridTemplateColumns: `repeat(${boardSize['columnNumber']+1}, 40px)`,
+            gridTemplateRows: `repeat(${boardSize['rowNumber']+1}, 40px)`,
+          }}
+        >
+          {renderBoard()}
+        </div>
+      </DndContext>
     </div>
   )
 }

@@ -116,7 +116,14 @@ const Setup = ({
         isStepLocked = !allUnitsAssigned
         break
       case 4:
-        // TBD
+        // All units have been placed on the map
+        let allUnitsPlaced = true
+        units.forEach(u => {
+          if (u.coordinates === '') {
+            allUnitsPlaced = false
+          }
+        })
+        isStepLocked = !allUnitsPlaced
         break
       default:
         break
