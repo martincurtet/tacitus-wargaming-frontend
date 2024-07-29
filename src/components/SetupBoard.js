@@ -133,16 +133,42 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
   }
 
   const handleDragEnd = (e) => {
-    // console.log('drag end')
-    // console.log(e)
+    if (paintToggle) return
+
     const { active, over } = e
     if (over === null) return
-    // console.log(over)
-    // console.log(active)
+
+    if (over.id === '00') return
+
+    let unitFullCode = ''
+    let coordinates = ''
+
+    if (active.id.length !== 2) {
+      // unit-unassigned to tile
+      console.log('case 1')
+      if (over.id === 'unit-unassigned') return
+      unitFullCode = active.id
+      coordinates = over.id
+    } else if (over.id === 'unit-unassigned') {
+      // tile to unit-unassigned (disabled)
+      console.log('case 2')
+      return
+    } else {
+      // tile to tile
+      if (active.id === over.id) return
+      console.log('case 3')
+      unitFullCode = board[active.id].unitFullCode
+      coordinates = over.id
+    }
+    
+    if (board[coordinates]?.unitFullCode !== undefined && board[coordinates]?.unitFullCode !== '') return
+
+    console.log(`sending ${unitFullCode} to ${coordinates}`)
+    //
     socket.emit('update-unit-coordinates', {
       roomUuid: params.battleuuid,
-      unitFullCode: active.id,
-      coordinates: over.id
+      unitFullCode: unitFullCode,
+      coordinates: coordinates
     })
   }
 
