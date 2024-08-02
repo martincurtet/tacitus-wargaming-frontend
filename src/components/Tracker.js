@@ -178,9 +178,9 @@ const Tracker = ({
         factions={factions} setFactions={setFactions}
         setLog={setLog}
       /> */}
-      <div className='tracker-toolbar'>
+      {/* <div className='tracker-toolbar'>
         <Button color='beige' onClick={openUnitManagerModal}>Unit Manager</Button>
-      </div>
+      </div> */}
       <Units
         setLog={setLog}
         factions={factions}
@@ -188,7 +188,7 @@ const Tracker = ({
         setUnits={setUnits}
       />
     
-      <Modal
+      {/* <Modal
         isOpen={isUnitManagerModalOpen}
         onCancel={cancelUnitManagerModal}
         onSubmit={submitUnitManagerModal}
@@ -216,7 +216,7 @@ const Tracker = ({
           <Button color='beige' onClick={addFaction}>Add</Button>
           </div>
 
-          <div className='faction-panels'>
+          {/* <div className='faction-panels'>
             {unitManagerFactions.map((f) => (
               <Droppable key={f.code} id={f.code}>
                 <div className='faction-panel'>
@@ -252,15 +252,15 @@ const Tracker = ({
                 </div>
               </Droppable>
             ))}
-          </div>
+          </div> */}
           {/* <button>Add a faction</button>
           <select>
             {factionShop.map((f) => (
               <option>{f.name}</option>
             ))}
-          </select> */}
+          </select> 
         </DndContext>
-      </Modal>
+      </Modal>*/}
     </div>
   )
 }

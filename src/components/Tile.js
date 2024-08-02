@@ -10,7 +10,7 @@ const Tile = ({
     content,
     coordinates,
     color,
-    setStartingTile, setFinishingTile,
+    setStartingTile=()=>{}, setFinishingTile=()=>{},
     unitIconName, factionIconName, veterancyIconName
   }) => {
   // const [highlighted, setHighlighted] = useState(false)

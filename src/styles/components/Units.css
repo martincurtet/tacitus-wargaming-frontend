@@ -1,4 +1,4 @@
-.unit-store {
+/* .unit-store {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -6,7 +6,7 @@
 
   width: auto;
   height: auto;
-}
+} */
 
 .unit-item {
   cursor: pointer;

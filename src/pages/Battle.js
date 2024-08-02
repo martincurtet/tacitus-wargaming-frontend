@@ -5,10 +5,10 @@ import { UserContext } from '../context/UserContext'
 
 import Setup from '../components/Setup'
 import Modal from '../components/Modal'
-// import Board from '../components/Board'
-// import Tracker from '../components/Tracker'
-// import Chat from '../components/Chat'
-// import Log from '../components/Log'
+import Board from '../components/Board'
+import Tracker from '../components/Tracker'
+import Chat from '../components/Chat'
+import Log from '../components/Log'
 
 import '../styles/pages/Battle.css'
 
@@ -209,15 +209,33 @@ const Battle = () => {
         </>
       ) : null } */}
 
-      <Setup
-        step={step} setStep={setStep}
-        board={board} setBoard={setBoard}
-        boardSize={boardSize} setBoardSize={setBoardSize}
-        users={users} setUsers={setUsers}
-        unitShop={unitShop} units={units} setUnits={setUnits}
-        factionShop={factionShop} factions={factions} setFactions={setFactions}
-        setLog={setLog}
-      />
+      {step >= 5 ? (
+        <div className='battle'>
+          <Board
+            board={board} setBoard={setBoard} boardSize={boardSize}
+            setUnits={setUnits}
+            setLog={setLog}
+          />
+          <Tracker
+            setBoard={setBoard}
+            factionShop={factionShop} setFactionShop={setFactionShop} factions={factions} setFactions={setFactions}
+            unitShop={unitShop} units={units} setUnits={setUnits}
+            setLog={setLog}
+          />
+          <Log log={log} setLog={setLog} />
+          <Chat messages={messages} setMessages={setMessages} setLog={setLog} />
+        </div>
+      ): (
+        <Setup
+          step={step} setStep={setStep}
+          board={board} setBoard={setBoard}
+          boardSize={boardSize} setBoardSize={setBoardSize}
+          users={users} setUsers={setUsers}
+          unitShop={unitShop} units={units} setUnits={setUnits}
+          factionShop={factionShop} factions={factions} setFactions={setFactions}
+          setLog={setLog}
+        />
+      )}
 
       <Modal
         isOpen={isUsernameModalOpen}
