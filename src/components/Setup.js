@@ -4,14 +4,17 @@ import { socket } from '../connections/socket'
 
 import SetupFactions from './SetupFactions'
 import SetupUnits from './SetupUnits.'
+import SetupInitiative from './SetupInitiative'
+import SetupBoard from './SetupBoard'
 import Button from './Button'
 import Modal from './Modal'
 
 import '../styles/components/Setup.css'
-import SetupInitiative from './SetupInitiative'
 
 const Setup = ({
   step, setStep,
+  board, setBoard,
+  boardSize, setBoardSize,
   users, setUsers,
   factionShop, factions, setFactions,
   unitShop, units, setUnits,
@@ -68,7 +71,13 @@ const Setup = ({
         )
       case 4:
         return (
-          <div>Board</div>
+          <SetupBoard
+            board={board} setBoard={setBoard}
+            boardSize={boardSize} setBoardSize={setBoardSize}
+            factions={factions}
+            units={units} setUnits={setUnits}
+            setLog={setLog}
+          />
         )
       default:
         return (
@@ -107,7 +116,14 @@ const Setup = ({
         isStepLocked = !allUnitsAssigned
         break
       case 4:
-        // TBD
+        // All units have been placed on the map
+        let allUnitsPlaced = true
+        units.forEach(u => {
+          if (u.coordinates === '') {
+            allUnitsPlaced = false
+          }
+        })
+        isStepLocked = !allUnitsPlaced
         break
       default:
         break
