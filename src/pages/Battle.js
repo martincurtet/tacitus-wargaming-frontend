@@ -11,6 +11,7 @@ import Chat from '../components/Chat'
 import Log from '../components/Log'
 
 import '../styles/pages/Battle.css'
+import Units from '../components/Units'
 
 const Battle = () => {
   // PARAMS
@@ -216,10 +217,15 @@ const Battle = () => {
             setUnits={setUnits}
             setLog={setLog}
           />
-          <Tracker
+          {/* <Tracker
             setBoard={setBoard}
             factionShop={factionShop} setFactionShop={setFactionShop} factions={factions} setFactions={setFactions}
             unitShop={unitShop} units={units} setUnits={setUnits}
+            setLog={setLog}
+          /> */}
+          <Units
+            factions={factions}
+            units={units} setUnits={setUnits}
             setLog={setLog}
           />
           <Log log={log} setLog={setLog} />

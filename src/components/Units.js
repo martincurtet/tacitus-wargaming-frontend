@@ -6,8 +6,7 @@ import '../styles/components/Units.css'
 const Units = ({
     setLog,
     factions,
-    units, 
-    setUnits
+    units, setUnits
   }) => {
 
   return (
