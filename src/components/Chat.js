@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
 import { formatTimestamp } from '../functions/functions'
+import { UserContext } from '../context/UserContext'
 
-import '../styles/components/Chat.css'
 import Button from './Button'
 
+import '../styles/components/Chat.css'
+
 const Chat = ({ messages, setMessages, setLog }) => {
+  //
   const params = useParams()
+  const [user, setUser] = useContext(UserContext)
   const [inputMessage, setInputMessage] = useState('')
 
   const changeInputMessage = (e) => {
@@ -16,7 +20,11 @@ const Chat = ({ messages, setMessages, setLog }) => {
 
   const sendMessage = () => {
     if (!inputMessage.trim()) return
-    socket.emit('send-message', { uuid: params.battleuuid, message: inputMessage })
+    socket.emit('send-message', {
+      roomUuid: params.battleuuid,
+      username: user.username,
+      message: inputMessage
+    })
     setInputMessage('')
   }
 
