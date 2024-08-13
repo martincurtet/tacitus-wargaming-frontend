@@ -41,4 +41,8 @@
   display: flex;
   flex-direction: column;
   padding: 5px;
+  width: 39vw;
+  overflow-y: scroll;
+  margin-right: 26px;
+  max-height: 90vh;
 }

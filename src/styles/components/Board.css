@@ -1,6 +1,6 @@
 .board {
   justify-self: left;
-  width: 60vw;
+  width: 59vw;
 
   display: flex;
   flex-direction: column;
@@ -21,7 +21,7 @@
   display: grid;
   user-select: none;
   /* max-width: 1098px; */
-  max-height: 1098px;
+  max-height: 90vh;
   overflow: scroll;
 }
 

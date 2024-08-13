@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
-import { debounce } from '../functions/functions'
-import '../styles/components/Unit.css'
+
 import Button from './Button'
+
+import '../styles/components/Unit.css'
 
 const Unit = ({
     factions,
@@ -88,7 +89,7 @@ const Unit = ({
       <div className='tracker-item-two'>
         <div>{unitData.name.split(' ').slice(1).join(' ')} {unitData.identifier}</div>
         <div>{unitData.name.split(' ')[0]} {unitData.men} men</div>
-        <div>{unitData.coordinates}</div>
+        <div>Location {unitData.coordinates}</div>
       </div>
       <div className='tracker-item-three'>
         <div>
