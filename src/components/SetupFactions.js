@@ -161,11 +161,9 @@ const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, se
             onClick={() => {assignFactionToUser(f.code)}}
           >
             {f.name} ({f.stratAbility})
-            {user.isHost && (
-              <div className='faction-buttons'>
-                <Button className='faction-remove' size='small' onClick={() => openRemoveFactionModal(i)}>x</Button>
-              </div>
-            )}
+            <div className='faction-buttons'>
+              <Button className='faction-remove' size='small' onClick={() => openRemoveFactionModal(i)}>x</Button>
+            </div>
             <hr></hr>
             {users.map(u => {
               if (u.faction === f.code) {
@@ -174,7 +172,7 @@ const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, se
                     <span className={`status-dot ${u.currentSocketId === '' ? 'dis' : ''}connected`}></span>
                     <span>{u.username}</span>
                     <input
-                      disabled={!user.isHost && u.userUuid !== user.userUuid}
+                      disabled={u.userUuid !== user.userUuid}
                       type='number'
                       value={inputStratAbility[u.userUuid] || 0}
                       onChange={e => handleInputStratAbility(e.target.value, u.userUuid)}
@@ -190,9 +188,7 @@ const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, se
             })}
           </div>
         ))}
-        {user.isHost && (
-          <Button size='small' onClick={openAddFactionModal}>+</Button>
-        )}
+        <Button size='small' onClick={openAddFactionModal}>+</Button>
       </div>
 
       <Modal

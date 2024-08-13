@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { socket } from '../connections/socket'
+import { UserContext } from '../context/UserContext'
 
 import SetupFactions from './SetupFactions'
 import SetupUnits from './SetupUnits.'
@@ -22,6 +23,7 @@ const Setup = ({
 }) => {
   //
   const params = useParams()
+  const [user, setUser] = useContext(UserContext)
   const [nextStepLocked, setNextStepLocked] = useState(true)
 
   //
@@ -96,39 +98,41 @@ const Setup = ({
 
   useEffect(() => {
     let isStepLocked = true
-    switch (parseInt(step)) {
-      case 1:
-        // At least one faction
-        isStepLocked = factions.length <= 0
-        break
-      case 2:
-        // At least one unit
-        isStepLocked = units.length <= 0
-        break
-      case 3:
-        // All units have been assigned initiative
-        let allUnitsAssigned = true
-        units.forEach(u => {
-          if (u.initiative === null) {
-            allUnitsAssigned = false
-          }
-        })
-        isStepLocked = !allUnitsAssigned
-        break
-      case 4:
-        // All units have been placed on the map
-        let allUnitsPlaced = true
-        units.forEach(u => {
-          if (u.coordinates === '') {
-            allUnitsPlaced = false
-          }
-        })
-        isStepLocked = !allUnitsPlaced
-        break
-      default:
-        break
+    if (user.isHost) {
+      switch (parseInt(step)) {
+        case 1:
+          // At least one faction
+          isStepLocked = factions.length <= 0
+          break
+        case 2:
+          // At least one unit
+          isStepLocked = units.length <= 0
+          break
+        case 3:
+          // All units have been assigned initiative
+          let allUnitsAssigned = true
+          units.forEach(u => {
+            if (u.initiative === null) {
+              allUnitsAssigned = false
+            }
+          })
+          isStepLocked = !allUnitsAssigned
+          break
+        case 4:
+          // All units have been placed on the map
+          let allUnitsPlaced = true
+          units.forEach(u => {
+            if (u.coordinates === '') {
+              allUnitsPlaced = false
+            }
+          })
+          isStepLocked = !allUnitsPlaced
+          break
+        default:
+          break
+      }
+      setNextStepLocked(isStepLocked)
     }
-    setNextStepLocked(isStepLocked)
   }, [step, factions, units])
 
   //
