@@ -4,9 +4,10 @@ import Unit from './Unit'
 import '../styles/components/Units.css'
 
 const Units = ({
-    setLog,
+    setBoard,
     factions,
-    units, setUnits
+    units, setUnits,
+    setLog
   }) => {
 
   return (
@@ -14,9 +15,10 @@ const Units = ({
     {units.map((u) => (
       <Unit
         key={u.code}
-        setLog={setLog}
+        setBoard={setBoard}
         factions={factions}
         setUnits={setUnits}
+        setLog={setLog}
         unitData={u}
       />
     ))}

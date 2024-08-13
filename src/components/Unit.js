@@ -7,6 +7,7 @@ import Button from './Button'
 import '../styles/components/Unit.css'
 
 const Unit = ({
+    setBoard,
     factions,
     setUnits,
     unitData,
@@ -16,6 +17,16 @@ const Unit = ({
   //
   const params = useParams()
   const [inputHd, setInputHd] = useState(unitData.hd)
+
+  //
+  const handleRevive = (unitData) => {
+    socket.emit('revive-unit', {
+      roomUuid: params.battleuuid,
+      factionCode: unitData.factionCode,
+      unitCode: unitData.unitCode,
+      identifier: unitData.identifier
+    })
+  }
 
   // CHANGE HD FUNCTION
   const handleInputHd = (e) => {
@@ -36,7 +47,6 @@ const Unit = ({
   const handleFatigueChange = (fatigueIncrement) => {
     let fatigue = Number(unitData.fatigue) + Number(fatigueIncrement)
     if (fatigue < 0 || fatigue > 100) return
-    console.log(fatigue)
     socket.emit('update-unit-fatigue', {
       roomUuid: params.battleuuid,
       factionCode: unitData.factionCode,
@@ -75,21 +85,41 @@ const Unit = ({
       setLog(data.log)
     })
 
+    socket.on('unit-revived', (data) => {
+      setBoard(data.board)
+      setUnits(data.units)
+      setLog(data.log)
+    })
+
     return () => {
       socket.off('unit-hd-updated')
       socket.off('unit-fatigue-updated')
       socket.off('unit-notes-updated')
+      socket.off('unit-revived')
     }
   }, [])
 
   // RENDER
   return (
-    <div key={unitData.code} className='tracker-item'>
+    <div key={unitData.code} className={`tracker-item ${unitData.isAlive ? '' : 'inactive'}`}>
       <img className='tracker-item-one' src={require(`../images/${factions.find(f => f.code === unitData.factionCode).icon}`)} alt='' height={18} width={30} />
       <div className='tracker-item-two'>
         <div>{unitData.name.split(' ').slice(1).join(' ')} {unitData.identifier}</div>
         <div>{unitData.name.split(' ')[0]} {unitData.men} men</div>
-        <div>Location {unitData.coordinates}</div>
+        {unitData.coordinates !== '' ? (
+          <div>Location {unitData.coordinates}</div>
+        ) : (
+          <div>
+            <span
+              className='revive'
+              tooltip='Revive'
+              onClick={() => handleRevive(unitData)}
+            >
+              💀
+            </span>
+          </div>
+        )}
+
       </div>
       <div className='tracker-item-three'>
         <div>

@@ -224,6 +224,7 @@ const Battle = () => {
             setLog={setLog}
           /> */}
           <Units
+            setBoard={setBoard}
             factions={factions}
             units={units} setUnits={setUnits}
             setLog={setLog}

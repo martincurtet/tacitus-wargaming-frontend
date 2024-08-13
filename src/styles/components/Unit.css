@@ -6,16 +6,45 @@
   padding: 7px 13px 7px 7px;
 }
 
+.tracker-item.inactive {
+  opacity: 0.8;
+  filter: grayscale(50%);
+}
+
 /* FACTION ICON */
 .tracker-item-one {
   width: 30px;
 }
 
 /* NAME IDENTIFIER VETERANCY MEN LOCATION */
+/* DEATH REVIVE */
 .tracker-item-two {
   display: flex;
   flex-direction: column;
   width: 500px;
+}
+
+.revive {
+  cursor: pointer;
+}
+
+.revive[tooltip] {
+  position: relative;
+}
+
+.revive[tooltip]:hover::after {
+  content: attr(tooltip);
+  background-color: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: pre-wrap;
+  z-index: 1;
+  width: max-content;
 }
 
 /* HD CASUALTIES */

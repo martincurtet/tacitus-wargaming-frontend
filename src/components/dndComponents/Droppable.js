@@ -9,7 +9,7 @@ const Droppable = ({ id, children }) => {
   }
 
   return (
-    <div ref={setNodeRef} style={style} >
+    <div id={id} ref={setNodeRef} style={style} >
       {children}
     </div>
   )

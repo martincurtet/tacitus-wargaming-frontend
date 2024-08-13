@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { integerToLetter } from '../functions/functions'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
+import { DndContext } from '@dnd-kit/core'
 
 import Tile from './Tile'
-
-import { DndContext } from '@dnd-kit/core'
 
 import '../styles/components/Board.css'
 
@@ -17,6 +16,7 @@ const Board = ({
 
   //
   const params = useParams()
+  const [selectedTile, setSelectedTile] = useState('')
 
   const handleDragEnd = (e) => {
     const { active, over } = e
@@ -36,6 +36,15 @@ const Board = ({
     })
   }
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Delete') {
+      socket.emit('kill-unit', {
+        roomUuid: params.battleuuid,
+        coordinates: selectedTile
+      })
+    }
+  }
+
   // SOCKET EVENTS
   useEffect(() => {
     socket.on('unit-coordinates-updated', (data) => {
@@ -44,8 +53,15 @@ const Board = ({
       setLog(data.log)
     })
 
+    socket.on('unit-killed', (data) => {
+      setBoard(data.board)
+      setUnits(data.units)
+      setLog(data.log)
+    })
+
     return () => {
       socket.off('unit-coordinates-updated')
+      socket.off('unit-killed')
     }
   }, [setBoard, setUnits, setLog])
 
@@ -63,12 +79,14 @@ const Board = ({
           <Tile
             key={`r${r}c${c}`}
             coordinates={tileCoordinates}
+            highlighted={tileCoordinates === selectedTile}
             content={tileContent}
             terrain={tile?.terrainType}
             color={tileColor}
             unitIconName={tile?.unitIcon}
             factionIconName={tile?.factionIcon}
             veterancyIconName={tile?.veterancyIcon}
+            setSelectedTile={setSelectedTile}
           />
         )
       }
@@ -86,6 +104,8 @@ const Board = ({
             gridTemplateColumns: `repeat(${boardSize['columnNumber']+1}, 40px)`,
             gridTemplateRows: `repeat(${boardSize['rowNumber']+1}, 40px)`,
           }}
+          onKeyDown={handleKeyDown}
+          tabIndex={-1}
         >
           {renderBoard()}
         </div>
