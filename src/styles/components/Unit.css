@@ -24,15 +24,15 @@
   width: 500px;
 }
 
-.revive {
+.emote {
   cursor: pointer;
 }
 
-.revive[tooltip] {
+.emote[tooltip] {
   position: relative;
 }
 
-.revive[tooltip]:hover::after {
+.emote[tooltip]:hover::after {
   content: attr(tooltip);
   background-color: #333;
   color: white;

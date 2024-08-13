@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
 
-import Button from './Button'
-
 import '../styles/components/Unit.css'
 
 const Unit = ({
@@ -111,7 +109,7 @@ const Unit = ({
         ) : (
           <div>
             <span
-              className='revive'
+              className='emote'
               tooltip='Revive'
               onClick={() => handleRevive(unitData)}
             >
@@ -140,9 +138,21 @@ const Unit = ({
       <div className='tracker-item-four'>
         <div>Fatigue</div>
         <div className='fatigue-controls'>
-          <Button color='green' size='small' onClick={() => handleFatigueChange(-1)}>b</Button>
+          <span
+            className='emote'
+            tooltip='Bed (-1)'
+            onClick={() => handleFatigueChange(-1)}
+          >
+            🛏️
+          </span>
           {unitData.fatigue}
-          <Button color='red' size='small' onClick={() => handleFatigueChange(2)}>s</Button>
+          <span
+            className='emote'
+            tooltip='Sword (2)'
+            onClick={() => handleFatigueChange(2)}
+          >
+            🗡️
+          </span>
         </div>
       </div>
       <div className='tracker-item-five'>
