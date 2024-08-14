@@ -9,8 +9,17 @@ import '../styles/components/Tile.css'
 const Tile = ({
     content, coordinates, highlighted, color,
     setStartingTile=()=>{}, setFinishingTile=()=>{}, setSelectedTile=()=>{},
-    unitIconName, factionIconName, veterancyIconName,
+    unitIconName, factionIconName, veterancyIconName, handleToggleMarker=()=>{}
   }) => {
+  //
+
+  const handleClick = (e) => {
+    setSelectedTile(coordinates)
+    if (e.shiftKey) {
+      console.log('Shift+Click triggered')
+      handleToggleMarker(coordinates)
+    }
+  }
 
   // RENDER
   return (
@@ -21,6 +30,7 @@ const Tile = ({
       onMouseDown={() => setStartingTile(coordinates)}
       onMouseUp={() => setFinishingTile(coordinates)}
       onDoubleClick={() => setSelectedTile(coordinates)}
+      onClick={handleClick}
     >
       {content !== '' ? (
         content

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { integerToLetter } from '../functions/functions'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
 import { DndContext } from '@dnd-kit/core'
+import { UserContext } from '../context/UserContext'
 
 import Tile from './Tile'
 
@@ -16,6 +17,7 @@ const Board = ({
 
   //
   const params = useParams()
+  const [user, setUser] = useContext(UserContext)
   const [selectedTile, setSelectedTile] = useState('')
 
   const handleDragEnd = (e) => {
@@ -45,6 +47,14 @@ const Board = ({
     }
   }
 
+  const handleToggleMarker = (coordinates) => {
+    socket.emit('toggle-marker', {
+      roomUuid: params.battleuuid,
+      userUuid: user.userUuid,
+      coordinates: coordinates
+    })
+  }
+
   // SOCKET EVENTS
   useEffect(() => {
     socket.on('unit-coordinates-updated', (data) => {
@@ -59,9 +69,15 @@ const Board = ({
       setLog(data.log)
     })
 
+    socket.on('marker-toggled', (data) =>{
+      setBoard(data.board)
+      setLog(data.log)
+    })
+
     return () => {
       socket.off('unit-coordinates-updated')
       socket.off('unit-killed')
+      socket.off('marker-toggled')
     }
   }, [setBoard, setUnits, setLog])
 
@@ -87,6 +103,7 @@ const Board = ({
             factionIconName={tile?.factionIcon}
             veterancyIconName={tile?.veterancyIcon}
             setSelectedTile={setSelectedTile}
+            handleToggleMarker={handleToggleMarker}
           />
         )
       }
