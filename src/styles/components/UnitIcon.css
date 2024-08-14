@@ -2,6 +2,8 @@
   cursor: pointer;
   position: relative;
   display: inline-block;
+  width: 100px; /* Set a fixed width for consistency, adjust as needed */
+  height: 100px; /* Set a fixed height for consistency, adjust as needed */
 }
 
 .unit-image-container.highlighted {
@@ -48,4 +50,19 @@
   right: 0;
   width: 25%; /* Adjust size as needed */
   height: auto; /* Adjust size as needed */
+}
+
+.marker {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 25%; /* Adjust size to match other icons */
+  height: 25%; /* Adjust size to match other icons */
+  background-color: #ff0000; /* Default color, will be overridden by inline style */
+  box-sizing: border-box; /* Ensure padding and border are included in the width and height */
+}
+
+.unit-image-container .marker {
+  width: 25% !important; /* Ensure marker size is controlled */
+  height: 25% !important; /* Ensure marker size is controlled */
 }

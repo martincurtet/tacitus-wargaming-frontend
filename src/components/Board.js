@@ -103,6 +103,7 @@ const Board = ({
             factionIconName={tile?.factionIcon}
             veterancyIconName={tile?.veterancyIcon}
             setSelectedTile={setSelectedTile}
+            markerColor={tile?.markerColor}
             handleToggleMarker={handleToggleMarker}
           />
         )

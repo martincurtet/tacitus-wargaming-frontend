@@ -9,7 +9,8 @@ import '../styles/components/Tile.css'
 const Tile = ({
     content, coordinates, highlighted, color,
     setStartingTile=()=>{}, setFinishingTile=()=>{}, setSelectedTile=()=>{},
-    unitIconName, factionIconName, veterancyIconName, handleToggleMarker=()=>{}
+    unitIconName, factionIconName, veterancyIconName,
+    markerColor, handleToggleMarker=()=>{}
   }) => {
   //
 
@@ -36,12 +37,14 @@ const Tile = ({
         content
       ) : (
         <Droppable id={coordinates}>
-          {unitIconName !== undefined && unitIconName !== '' ? (
+          {markerColor || (unitIconName !== undefined && unitIconName !== '') ? (
             <Draggable id={coordinates}>
               <UnitIcon
                 unitIconName={unitIconName}
                 factionIconName={factionIconName}
                 veterancyIconName={veterancyIconName}
+                markerColor={markerColor}
+                handleClick={handleClick}
               />
             </Draggable>
           ) : null}
