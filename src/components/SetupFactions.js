@@ -147,7 +147,7 @@ const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, se
         {users.map(u => {
           if (u.faction === '') {
             return (
-              <span key={u.userUuid}><span className={`status-dot ${u.currentSocketId === '' ? 'dis' : ''}connected`}></span>{u.username} </span>
+              <span key={u.userUuid} style={{ color: u.userColor }}><span className={`status-dot ${u.currentSocketId === '' ? 'dis' : ''}connected`}></span>{u.username} </span>
             )
           } else { return null }
         })}
