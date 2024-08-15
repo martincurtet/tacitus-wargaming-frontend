@@ -100,6 +100,7 @@ const SetupInitiative = ({ users, units, setUnits, factions }) => {
           if (matchingUnit) {
             return (
               <UnitIcon
+                key={type}
                 className={'initiative-row-image'}
                 tooltip={`${matchingUnit.name}\n${matchingUnit.men} Men`}
                 unitIconName={matchingUnit.iconName}

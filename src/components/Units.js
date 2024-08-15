@@ -14,7 +14,7 @@ const Units = ({
     <div className='tracker-units'>
     {units.map((u) => (
       <Unit
-        key={u.code}
+        key={`${u.factionCode}-${u.unitCode}-${u.identifier}`}
         setBoard={setBoard}
         factions={factions}
         setUnits={setUnits}

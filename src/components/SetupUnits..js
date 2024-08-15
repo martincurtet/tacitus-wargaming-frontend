@@ -91,7 +91,7 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
     <div className='setup-units'>
       <div className='unit-store'>
         {unitShop.map((u) => (
-          <div className='unit-item' tooltip={`${u.name}\nHD per men: ${u.hdPerMen}`}>
+          <div key={u.code} className='unit-item' tooltip={`${u.name}\nHD per men: ${u.hdPerMen}`}>
             {u.icon ? (
               <img
                 src={require(`../images/${u.icon}`)}
@@ -107,6 +107,7 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
       <div className='faction-panels'>
         {factions.map((f, i) => (
           <div
+            key={f.code}
             className={`faction-panel ${!user.isHost && user.isSpectator ? '' : (!user.isHost && user.userFaction === f.code ? 'selected' : (factions[indexFactionSelected]?.code === f.code ? 'selected' : ''))}`}
             style={{ borderColor: f.color }}
             onClick={() => selectFaction(i)}
