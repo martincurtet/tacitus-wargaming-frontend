@@ -102,7 +102,7 @@ const Unit = ({
     <div key={unitData.code} className={`tracker-item ${unitData.isAlive ? '' : 'inactive'}`}>
       <img className='tracker-item-one' src={require(`../images/${factions.find(f => f.code === unitData.factionCode).icon}`)} alt='' height={18} width={30} />
       <div className='tracker-item-two'>
-        <div>{unitData.name.split(' ').slice(1).join(' ')} {unitData.identifier}</div>
+        <div>{unitData.fire && (<span>🔥</span>)}{unitData.name.split(' ').slice(1).join(' ')} {unitData.identifier}</div>
         <div>{unitData.name.split(' ')[0]} {unitData.men} men</div>
         {unitData.coordinates !== '' ? (
           <div>Location {unitData.coordinates}</div>
