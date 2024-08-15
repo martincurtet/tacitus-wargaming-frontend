@@ -198,13 +198,17 @@ const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, se
         submitText='Add'
       >
         Add faction:
-        <select onChange={changeInputFactionCode}>
-          <option value='' disabled selected>Select a faction</option>
+        <select
+          onChange={changeInputFactionCode}
+          defaultValue={'DEFAULT'}
+        >
+          <option value='DEFAULT' disabled>Select a faction</option>
           {factionShop.map(f => {
             let exists = factions.find(fa => fa.code === f.code)
             return (
-            <option key={f.code} value={f.code} disabled={exists}>{f.name}</option>
-          )})}
+              <option key={f.code} value={f.code} disabled={exists}>{f.name}</option>
+            )
+          })}
         </select>
       </Modal>
   
