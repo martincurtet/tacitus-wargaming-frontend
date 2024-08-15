@@ -27,7 +27,7 @@ const Tile = ({
     <div
       id={coordinates}
       className={`tile ${highlighted ? 'red' : 'grey'}-border`}
-      style={{ backgroundColor: color }}
+      style={{ backgroundColor: color, borderColor: markerColor }}
       onMouseDown={() => setStartingTile(coordinates)}
       onMouseUp={() => setFinishingTile(coordinates)}
       onDoubleClick={() => setSelectedTile(coordinates)}
@@ -37,7 +37,7 @@ const Tile = ({
         content
       ) : (
         <Droppable id={coordinates}>
-          {markerColor || (unitIconName !== undefined && unitIconName !== '') ? (
+          {unitIconName !== undefined && unitIconName !== '' ? (
             <Draggable id={coordinates}>
               <UnitIcon
                 unitIconName={unitIconName}
