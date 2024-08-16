@@ -10,11 +10,11 @@ const Tile = ({
     content, coordinates, highlighted, color,
     setStartingTile=()=>{}, setFinishingTile=()=>{}, setSelectedTile=()=>{},
     unitIconName, factionIconName, veterancyIconName,
-    markerColor, handleToggleMarker=()=>{}, handleToggleFire=()=>{}, fire
+    markerColor, handleToggleMarker=()=>{}, handleToggleFire=()=>{}, fire,
+    identifier
   }) => {
   //
   const handleClick = (e) => {
-    console.log(e)
     setSelectedTile(coordinates)
     if (e.shiftKey) {
       console.log('Shift+Click triggered')
@@ -24,8 +24,6 @@ const Tile = ({
     } else if (e.altKey) {
       console.log('Alt+Click triggered')
       handleToggleFire(coordinates)
-    } else if (e.delKey) {
-      console.log('Delete key triggered')
     }
   }
 
@@ -62,6 +60,7 @@ const Tile = ({
                 veterancyIconName={veterancyIconName}
                 markerColor={markerColor}
                 handleClick={handleClick}
+                identifier={identifier}
               />
             </Draggable>
           ) : null}

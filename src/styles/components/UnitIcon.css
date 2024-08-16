@@ -66,3 +66,13 @@
   width: 25% !important; /* Ensure marker size is controlled */
   height: 25% !important; /* Ensure marker size is controlled */
 }
+
+.identifier {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 25%;
+  height: 25%;
+  font-size: .75rem;
+  color: black;
+}

@@ -126,6 +126,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
             factionIconName={tile?.factionIcon}
             veterancyIconName={tile?.veterancyIcon}
             fire={tile?.fire}
+            identifier={tile?.identifier}
           />
         )
       }
