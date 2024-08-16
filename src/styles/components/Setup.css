@@ -20,6 +20,15 @@
   font-weight: bold;
 }
 
+.setup-main {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
 .setup-box {
   display: flex;
   flex-direction: column;
@@ -38,3 +47,35 @@
   align-self: flex-end;
   gap: 1rem;
 }
+
+.setup-left {
+  width: 10rem;
+  border: solid 1px red;
+  border-radius: 1rem;
+  padding: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.setup-right {
+  width: 10rem;
+  border: solid 1px red;
+  border-radius: 1rem;
+  padding: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+}
+
+.setup-right p {
+  text-align: center;
+  font-style: italic;
+  color: red;
+  padding: 0;
+  margin: 0;
+}
+

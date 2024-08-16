@@ -25,6 +25,7 @@ const Setup = ({
   const params = useParams()
   const [user, setUser] = useContext(UserContext)
   const [nextStepLocked, setNextStepLocked] = useState(true)
+  const [stepLockDescription, setStepLockDescription] = useState('test')
 
   //
   const stepTitles = {
@@ -98,15 +99,18 @@ const Setup = ({
 
   useEffect(() => {
     let isStepLocked = true
+    let stepDescription = ''
     if (user.isHost) {
       switch (parseInt(step)) {
         case 1:
           // At least one faction
           isStepLocked = factions.length <= 0
+          stepDescription = 'Add at least one faction'
           break
         case 2:
           // At least one unit
           isStepLocked = units.length <= 0
+          stepDescription = 'Add at least one unit'
           break
         case 3:
           // All units have been assigned initiative
@@ -117,6 +121,7 @@ const Setup = ({
             }
           })
           isStepLocked = !allUnitsAssigned
+          stepDescription = 'All units have been assigned initiative'
           break
         case 4:
           // All units have been placed on the map
@@ -127,11 +132,13 @@ const Setup = ({
             }
           })
           isStepLocked = !allUnitsPlaced
+          stepDescription = 'All units have been placed'
           break
         default:
           break
       }
       setNextStepLocked(isStepLocked)
+      setStepLockDescription(stepDescription)
     }
   }, [step, factions, units])
 
@@ -158,18 +165,34 @@ const Setup = ({
           </div>
         ))}
       </div>
-      <div className='setup-box'>
-        <h2 className='setup-title'>{stepTitles[step]}</h2>
-        {renderStepContent()}
-        {/* <button onClick={prevStep}>Back</button> */}
-        <div className='setup-buttons'>
+      <div className='setup-main'>
+        <div className='setup-left'>Users
+          {users.map(u => (
+            <div key={u.userUuid} style={{ color: u.userColor }}><span className={`status-dot ${u.currentSocketId === '' ? 'dis' : ''}connected`}></span>{u.username} </div>
+          ))}
+        </div>
+        <div className='setup-box'>
+          <h2 className='setup-title'>{stepTitles[step]}</h2>
+          {renderStepContent()}
+          {/* <button onClick={prevStep}>Back</button> */}
+          {/* <div className='setup-buttons'>
+            <Button
+              disabled={nextStepLocked}
+              onClick={openNextStepModal}
+            >
+              Confirm
+            </Button>
+            <Button onClick={prevStep}>Back</Button>
+          </div> */}
+        </div>
+        <div className='setup-right'>
+          {nextStepLocked && <p>{stepLockDescription}</p>}
           <Button
             disabled={nextStepLocked}
             onClick={openNextStepModal}
           >
             Confirm
           </Button>
-          {/* <Button onClick={prevStep}>Back</Button> */}
         </div>
       </div>
 
