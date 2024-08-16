@@ -55,6 +55,14 @@ const Board = ({
     })
   }
 
+  const handleToggleFire = (coordinates) => {
+    socket.emit('toggle-fire', {
+      roomUuid: params.battleuuid,
+      userUuid: user.userUuid,
+      coordinates: coordinates
+    })
+  }
+
   // SOCKET EVENTS
   useEffect(() => {
     socket.on('unit-coordinates-updated', (data) => {
@@ -74,10 +82,16 @@ const Board = ({
       setLog(data.log)
     })
 
+    socket.on('fire-toggled', (data) => {
+      setBoard(data.board)
+      setLog(data.log)
+    })
+
     return () => {
       socket.off('unit-coordinates-updated')
       socket.off('unit-killed')
       socket.off('marker-toggled')
+      socket.off('fire-toggled')
     }
   }, [setBoard, setUnits, setLog])
 
@@ -105,6 +119,8 @@ const Board = ({
             setSelectedTile={setSelectedTile}
             markerColor={tile?.markerColor}
             handleToggleMarker={handleToggleMarker}
+            handleToggleFire={handleToggleFire}
+            fire={tile?.fire}
           />
         )
       }
