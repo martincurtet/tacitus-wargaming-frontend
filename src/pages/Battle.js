@@ -230,7 +230,7 @@ const Battle = () => {
             setLog={setLog}
           />
           <Log log={log} setLog={setLog} />
-          <Chat messages={messages} setMessages={setMessages} setLog={setLog} />
+          <Chat messages={messages} setMessages={setMessages} users={users} setLog={setLog} />
         </div>
       ): (
         <Setup

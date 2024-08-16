@@ -8,7 +8,7 @@ import Button from './Button'
 
 import '../styles/components/Chat.css'
 
-const Chat = ({ messages, setMessages, setLog }) => {
+const Chat = ({ messages, setMessages, users, setLog }) => {
   //
   const params = useParams()
   const [user, setUser] = useContext(UserContext)
@@ -41,6 +41,11 @@ const Chat = ({ messages, setMessages, setLog }) => {
 
   return (
     <div className='chat'>
+      <div className='chat-users'>
+        {users.map(u => (
+          <span key={u.userUuid} style={{ color: u.userColor }}><span className={`status-dot ${u.currentSocketId === '' ? 'dis' : ''}connected`}></span>{u.username} </span>
+        ))}
+      </div>
       {messages.map(m => (
         <p key={m.timestamp}>{formatTimestamp(m.timestamp, 'hh:min:ss')} {m.username === 'System' ? null : `${m.username}:`} {m.message}</p>
       ))}

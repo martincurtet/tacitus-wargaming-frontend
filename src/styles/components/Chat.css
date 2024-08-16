@@ -4,6 +4,12 @@
   margin-right: 26px;
 }
 
+.chat-users {
+  display: flex;
+  flex-direction: row;
+  gap: .5rem;
+}
+
 .chat-send {
   display: flex;
   flex-direction: row;
