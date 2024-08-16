@@ -122,7 +122,7 @@ const SetupInitiative = ({ users, units, setUnits, factions }) => {
           onClick={origin ? () => {} : isHighlighted ? () => assignNewInitiative(i) : () => {}}
         >
           <td className='row-header'>{i}</td>
-          <td className={`row-units ${isHighlighted ? 'highlighted' : ''}`}>{unitImages}</td>
+          <td className={`row-units${isHighlighted ? ' highlighted' : ''}`}>{unitImages}</td>
         </tr>
       )
     }

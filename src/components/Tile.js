@@ -13,7 +13,6 @@ const Tile = ({
     markerColor, handleToggleMarker=()=>{}
   }) => {
   //
-
   const handleClick = (e) => {
     setSelectedTile(coordinates)
     if (e.shiftKey) {
@@ -27,7 +26,7 @@ const Tile = ({
     <div
       id={coordinates}
       className={`tile ${highlighted ? 'red' : 'grey'}-border`}
-      style={{ backgroundColor: color, borderColor: markerColor }}
+      style={{ background: markerColor ? `linear-gradient(45deg, ${color} 90%, ${markerColor} 10%)` : color }}
       onMouseDown={() => setStartingTile(coordinates)}
       onMouseUp={() => setFinishingTile(coordinates)}
       onDoubleClick={() => setSelectedTile(coordinates)}
