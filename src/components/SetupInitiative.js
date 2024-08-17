@@ -4,10 +4,11 @@ import { useParams } from 'react-router-dom'
 import { UserContext } from '../context/UserContext'
 
 import UnitIcon from './UnitIcon'
+import Button from './Button'
 
 import '../styles/components/SetupInitiative.css'
 
-const SetupInitiative = ({ users, units, setUnits, factions }) => {
+const SetupInitiative = ({ users, units, setUnits, factions, setLog }) => {
   //
   const params = useParams()
   const [user, setUser] = useContext(UserContext)
@@ -62,13 +63,27 @@ const SetupInitiative = ({ users, units, setUnits, factions }) => {
     }
   }
 
+  const handleRevertInitiative = (steps) => {
+    socket.emit('revert-initiative', {
+      roomUuid: params.battleuuid,
+      steps: steps
+    })
+  }
+
   useEffect(() => {
     socket.on('initiative-changed', (data) => {
       setUnits(data.units)
+      setLog(data.log)
+    })
+
+    socket.on('initiative-reverted', (data) => {
+      setUnits(data.units)
+      setLog(data.log)
     })
 
     return () => {
       socket.off('initiative-changed')
+      socket.off('initiative-reverted')
     }
   }, [socket, setUnits])
 
@@ -160,6 +175,10 @@ const SetupInitiative = ({ users, units, setUnits, factions }) => {
           </div>
         </div>
       )}
+      <div className='initiative-buttons'>
+        <Button onClick={() => handleRevertInitiative(1)}>Undo</Button>
+        <Button onClick={() => handleRevertInitiative('all')}>Undo All</Button>
+      </div>
       <div className='initiative-tables'>
         {renderTable(20, 0, -1, true)}
         {renderTable(25, -5, -1, false)}

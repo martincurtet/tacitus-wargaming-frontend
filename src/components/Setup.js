@@ -70,6 +70,7 @@ const Setup = ({
             users={users}
             units={units} setUnits={setUnits}
             factions={factions}
+            setLog={setLog}
           />
         )
       case 4:

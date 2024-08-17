@@ -5,6 +5,12 @@
   align-items: center;
 }
 
+.initiative-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: .5rem;
+}
+
 .initiative-tables {
   width: 100%;
   display: flex;
