@@ -3,7 +3,13 @@
   flex-direction: row;
   align-items: center;
   gap: 1rem;
-  padding: 7px 13px 7px 7px;
+  padding: .25rem .5rem .25rem .25rem;
+
+  border: brown solid 1px;
+}
+
+.tracker-item:hover {
+  filter: brightness(150%);
 }
 
 .tracker-item.inactive {

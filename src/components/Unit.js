@@ -102,10 +102,10 @@ const Unit = ({
     <div key={unitData.code} className={`tracker-item ${unitData.isAlive ? '' : 'inactive'}`}>
       <img className='tracker-item-one' src={require(`../images/${factions.find(f => f.code === unitData.factionCode).icon}`)} alt='' height={18} width={30} />
       <div className='tracker-item-two'>
-        <div>{unitData.fire && (<span>🔥</span>)}{unitData.name.split(' ').slice(1).join(' ')} {unitData.identifier}</div>
+        <div>{unitData.name.split(' ').slice(1).join(' ')} {unitData.identifier}</div>
         <div>{unitData.name.split(' ')[0]} {unitData.men} men</div>
         {unitData.coordinates !== '' ? (
-          <div>Location {unitData.coordinates}</div>
+          <div>Location {unitData.coordinates} {unitData.fire && (<span>🔥</span>)}</div>
         ) : (
           <div>
             <span
@@ -140,7 +140,7 @@ const Unit = ({
         <div className='fatigue-controls'>
           <span
             className='emote'
-            tooltip='Bed (-1)'
+            tooltip='-1'
             onClick={() => handleFatigueChange(-1)}
           >
             🛏️
@@ -148,7 +148,7 @@ const Unit = ({
           {unitData.fatigue}
           <span
             className='emote'
-            tooltip='Sword (2)'
+            tooltip='+2'
             onClick={() => handleFatigueChange(2)}
           >
             🗡️
