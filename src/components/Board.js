@@ -6,6 +6,7 @@ import { DndContext } from '@dnd-kit/core'
 import { UserContext } from '../context/UserContext'
 
 import Tile from './Tile'
+import Button from './Button'
 
 import '../styles/components/Board.css'
 
@@ -63,6 +64,13 @@ const Board = ({
     })
   }
 
+  const handleRemoveMarkers = () => {
+    socket.emit('remove-markers', {
+      roomUuid: params.battleuuid,
+      userUuid: user.userUuid
+    })
+  }
+
   // SOCKET EVENTS
   useEffect(() => {
     socket.on('unit-coordinates-updated', (data) => {
@@ -83,6 +91,11 @@ const Board = ({
     })
 
     socket.on('fire-toggled', (data) => {
+      setBoard(data.board)
+      setLog(data.log)
+    })
+
+    socket.on('markers-removed', (data) => {
       setBoard(data.board)
       setLog(data.log)
     })
@@ -145,6 +158,7 @@ const Board = ({
           {renderBoard()}
         </div>
       </DndContext>
+      <Button onClick={handleRemoveMarkers}>Clear Markers</Button>
 
       {/* <Modal
         isOpen={isBoardSizeModalOpen}
