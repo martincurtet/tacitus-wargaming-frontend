@@ -11,7 +11,7 @@ const Tile = ({
     setStartingTile=()=>{}, setFinishingTile=()=>{}, setSelectedTile=()=>{},
     unitIconName, factionIconName, veterancyIconName,
     markerColor, handleToggleMarker=()=>{}, handleToggleFire=()=>{}, fire,
-    identifier
+    identifier, identifierColor
   }) => {
   //
   const handleClick = (e) => {
@@ -60,7 +60,7 @@ const Tile = ({
                 veterancyIconName={veterancyIconName}
                 markerColor={markerColor}
                 handleClick={handleClick}
-                identifier={identifier}
+                identifier={identifier} identifierColor={identifierColor}
               />
             </Draggable>
           ) : null}

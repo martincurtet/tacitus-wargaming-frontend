@@ -96,6 +96,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
                 unitIconName={u.iconName}
                 factionIconName={factions.find(f => f.code === u.factionCode).icon}
                 veterancyIconName={veterancyMap[u.veterancy].iconName}
+                identifier={u.identifier} identifierColor={u.fontColor}
               />
             </Draggable>
           )
@@ -127,6 +128,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
             veterancyIconName={tile?.veterancyIcon}
             fire={tile?.fire}
             identifier={tile?.identifier}
+            identifierColor={tile?.identifierColor}
           />
         )
       }

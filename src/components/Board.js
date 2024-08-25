@@ -135,6 +135,7 @@ const Board = ({
             handleToggleFire={handleToggleFire}
             fire={tile?.fire}
             identifier={tile?.unitIdentifier}
+            identifierColor={tile?.identifierColor}
           />
         )
       }

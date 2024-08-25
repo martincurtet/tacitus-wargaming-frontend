@@ -5,7 +5,7 @@ const UnitIcon = ({
     className='',
     tooltip,
     unitIconName=null, factionIconName=null, veterancyIconName=null,
-    highlighted, handleClick, identifier
+    highlighted, handleClick, identifier, identifierColor
   }) => {
 
   // RENDER
@@ -18,7 +18,7 @@ const UnitIcon = ({
       {unitIconName && <img src={require(`../images/${unitIconName}`)} alt='' className='unit-image' onClick={() => console.log(`coucou`)} />}
       {factionIconName && <img src={require(`../images/${factionIconName}`)} alt='' className='faction-image' onClick={() => console.log(`coucou`)} />}
       {veterancyIconName && <img src={require(`../images/${veterancyIconName}`)} alt='' className='veterancy-image' onClick={() => console.log(`coucou`)} />}
-      {identifier && <div className='identifier'>{identifier}</div>}
+      {identifier && <div className='identifier' style={{ color: identifierColor }}>{identifier}</div>}
     </div>
   )
 }
