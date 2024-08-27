@@ -133,7 +133,7 @@ const Board = ({
             markerColor={tile?.markerColor}
             handleToggleMarker={handleToggleMarker}
             handleToggleFire={handleToggleFire}
-            fire={tile?.fire}
+            fire={tile?.fire} highGround={tile?.impassable}
             identifier={tile?.unitIdentifier}
             identifierColor={tile?.identifierColor}
           />

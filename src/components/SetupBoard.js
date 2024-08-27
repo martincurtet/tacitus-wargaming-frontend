@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
+import { DndContext } from '@dnd-kit/core'
 import { integerToLetter } from '../functions/functions'
 
 import Draggable from './dndComponents/Draggable'
@@ -9,7 +10,6 @@ import UnitIcon from './UnitIcon'
 import Tile from './Tile'
 
 import '../styles/components/SetupBoard.css'
-import { DndContext } from '@dnd-kit/core'
 
 const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units, setUnits, setLog }) => {
   //
@@ -126,7 +126,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
             unitIconName={tile?.unitIcon}
             factionIconName={tile?.factionIcon}
             veterancyIconName={tile?.veterancyIcon}
-            fire={tile?.fire}
+            fire={tile?.fire} highGround={tile?.impassable}
             identifier={tile?.identifier}
             identifierColor={tile?.identifierColor}
           />
@@ -167,7 +167,6 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
     
     if (board[coordinates]?.unitFullCode !== undefined && board[coordinates]?.unitFullCode !== '') return
 
-    console.log(`sending ${unitFullCode} to ${coordinates}`)
     //
     socket.emit('update-unit-coordinates', {
       roomUuid: params.battleuuid,
