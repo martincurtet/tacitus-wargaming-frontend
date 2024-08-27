@@ -51,14 +51,16 @@ const SetupInitiative = ({ users, units, setUnits, factions, setLog }) => {
     setCurrentUnitTypeIndex(selectNextUnitTypeIndex())
   }, [units])
 
-  const assignNewInitiative = (value) => {
+  const assignNewInitiative = (value, order=0) => {
+    console.log(`init ${value}, order ${order}`)
     const [factionCode, unitCode] = unitTypes[currentUnitTypeIndex].split('-')
     if (user.isHost || user.userFaction === factionCode) {
       socket.emit('change-initiative', {
         roomUuid: params.battleuuid,
         factionCode: factionCode,
         unitCode: unitCode,
-        initiative: parseInt(value)
+        initiative: parseInt(value),
+        initiativeOrder: parseInt(order)
       })
     }
   }
@@ -99,8 +101,7 @@ const SetupInitiative = ({ users, units, setUnits, factions, setLog }) => {
       let factionStratAbility = factions.find(f => f.code === factionCode)?.stratAbility
       const unitGroup = units.filter(u => u.factionCode === factionCode && u.unitCode === unitCode)
       
-      isHighlighted = unitGroup.some(unit => 
-        (origin && unit.initiativeRaw === i) ||
+      isHighlighted = unitGroup.some(unit =>
         (!origin && i >= parseInt(unit.initiativeRaw - factionStratAbility) &&
         i <= parseInt(unit.initiativeRaw + factionStratAbility))
       )
@@ -130,14 +131,70 @@ const SetupInitiative = ({ users, units, setUnits, factions, setLog }) => {
         })
         .filter(icon => icon !== null)
 
+      let unitImagesWithButtons = []
+
+      if (unitImages.length > 0) {
+        if (isHighlighted) {
+          // Add a button before the first unit
+          unitImagesWithButtons.push(
+            <Button
+              size='small'
+              color='green'
+              onClick={() => assignNewInitiative(i, 0)}
+            >
+              +
+            </Button>
+          )
+
+          // Add buttons between each unit
+          unitImages.forEach((unitIcon, index) => {
+            unitImagesWithButtons.push(unitIcon)
+            if (index < unitImages.length - 1) {
+              unitImagesWithButtons.push(
+                <Button
+                  size='small'
+                  color='green'
+                  onClick={() => assignNewInitiative(i, index+1)}
+                >
+                  +
+                </Button>
+              )
+            }
+          })
+
+          // Add a button after the last unit
+          unitImagesWithButtons.push(
+            <Button
+              size='small'
+              color='green'
+              onClick={() => assignNewInitiative(i, unitImages.length)}
+            >
+              +
+            </Button>
+          )
+        } else {
+          unitImagesWithButtons = unitImages
+        }
+      } else if (isHighlighted && !origin) {
+        // Add a single button if the row is empty and highlighted
+        unitImagesWithButtons.push(
+          <Button
+            size='small'
+            color='green'
+            onClick={() => assignNewInitiative(i)}
+          >
+            +
+          </Button>
+        )
+      }
+
       tableRows.push(
         <tr
           key={i}
           className={`${i % 2 === 0 ? 'even' : 'odd'}`}
-          onClick={origin ? () => {} : isHighlighted ? () => assignNewInitiative(i) : () => {}}
         >
           <td className='row-header'>{i}</td>
-          <td className={`row-units${isHighlighted ? ' highlighted' : ''}`}>{unitImages}</td>
+          <td className={`row-units`}>{unitImagesWithButtons}</td>
         </tr>
       )
     }

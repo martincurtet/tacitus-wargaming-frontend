@@ -55,6 +55,7 @@ tr.odd {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: .25rem;
 }
 
 .row-units.highlighted {
