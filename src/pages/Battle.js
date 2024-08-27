@@ -265,6 +265,7 @@ const Battle = () => {
         <div>Select a faction:
           <select onChange={handleUserFactionChange}>
             <option value='' disabled selected>Select a faction</option>
+            <option value=''>Spectator</option>
             {factions.map(f => {
               return (
               <option key={f.code} value={f.code}>{f.name}</option>
