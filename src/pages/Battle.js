@@ -26,6 +26,7 @@ const Battle = () => {
 
   const [isUserFactionModalOpen, setIsUserFactionModalOpen] = useState(false)
   const [inputUserFaction, setInputUserFaction] = useState('')
+  const [inputStratAbility, setInputStratAbility] = useState(0)
 
   // BATTLE VARIABLES
   const [step, setStep] = useState(1)
@@ -78,14 +79,23 @@ const Battle = () => {
   const handleUserFactionChange = (e) => {
     setInputUserFaction(e.target.value)
   }
+  
+  const handleInputStratAbility = (e) => {
+    const stratAbility = parseInt(e.target.value, 10)
+    if (!isNaN(stratAbility) && stratAbility >= 0 && stratAbility <= 5) {
+      setInputStratAbility(stratAbility)
+    }
+  }
 
   const submitUserFactionModal = () => {
     socket.emit('assign-faction', {
       roomUuid: params.battleuuid,
       userUuid: user.userUuid,
-      factionCode: inputUserFaction
+      factionCode: inputUserFaction,
+      stratAbility: inputStratAbility
     })
   }
+
   
   // JOIN ROOM
   useEffect(() => {
@@ -272,6 +282,18 @@ const Battle = () => {
             )})}
           </select>
         </div>
+        {inputUserFaction !== '' && (
+          <div>Strategic Ability:
+            <input
+              type='number'
+              value={inputStratAbility}
+              onChange={handleInputStratAbility}
+              min={1}
+              step={1}
+              max={5}
+            />
+          </div>
+        )}
       </Modal>
     </div>
   )
