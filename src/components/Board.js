@@ -20,6 +20,42 @@ const Board = ({
   const params = useParams()
   const [user, setUser] = useContext(UserContext)
   const [selectedTile, setSelectedTile] = useState('')
+  const [paintToggle, setPaintToggle] = useState(false)
+  const [inputTerrain, setInputTerrain] = useState('plains')
+  const [startingTile, setStartingTile] = useState(null)
+  const [finishingTile, setFinishingTile] = useState(null)
+
+  const togglePaint = () => {
+    setPaintToggle(prev => !prev)
+  }
+
+  const handleInputTerrainChange = (e) => {
+    setInputTerrain(e.target.value)
+  }
+
+  //
+  useEffect(() => {
+    if (finishingTile !== null && paintToggle) {
+      socket.emit('update-board-terrain', {
+        roomUuid: params.battleuuid,
+        startCell: startingTile,
+        endCell: finishingTile,
+        terrainType: inputTerrain
+      })
+    }
+  }, [finishingTile])
+
+  //
+  useEffect(() => {
+    if (finishingTile !== null && paintToggle) {
+      socket.emit('update-board-terrain', {
+        roomUuid: params.battleuuid,
+        startCell: startingTile,
+        endCell: finishingTile,
+        terrainType: inputTerrain
+      })
+    }
+  }, [finishingTile])
 
   const handleDragEnd = (e) => {
     const { active, over } = e
@@ -100,11 +136,17 @@ const Board = ({
       setLog(data.log)
     })
 
+    socket.on('board-terrain-updated', (data) => {
+      setBoard(data.board)
+      setLog(data.log)
+    })
+
     return () => {
       socket.off('unit-coordinates-updated')
       socket.off('unit-killed')
       socket.off('marker-toggled')
       socket.off('fire-toggled')
+      socket.off('board-terrain-updated')
     }
   }, [setBoard, setUnits, setLog])
 
@@ -136,6 +178,8 @@ const Board = ({
             fire={tile?.fire} highGround={tile?.impassable}
             identifier={tile?.unitIdentifier}
             identifierColor={tile?.identifierColor}
+            setStartingTile={setStartingTile}
+            setFinishingTile={setFinishingTile}
           />
         )
       }
@@ -148,7 +192,7 @@ const Board = ({
     <div className='board'>
       <DndContext onDragEnd={handleDragEnd}>
         <div
-          className={`board-grid`}
+          className={`board-grid ${paintToggle ? 'paint-cursor' : ''}`}
           style={{
             gridTemplateColumns: `repeat(${boardSize['columnNumber']+1}, 40px)`,
             gridTemplateRows: `repeat(${boardSize['rowNumber']+1}, 40px)`,
@@ -160,6 +204,29 @@ const Board = ({
         </div>
       </DndContext>
       <Button onClick={handleRemoveMarkers}>Clear Markers</Button>
+      <div className='sidebar-terrain'>
+        <input
+          type='checkbox'
+          checked={paintToggle}
+          onChange={togglePaint}
+        />
+        <select
+          onChange={handleInputTerrainChange}
+          value={inputTerrain}
+        >
+          <option value='plains'>Plains</option>
+          <option value='forest'>Forest</option>
+          <option value='mud'>Mud</option>
+          <option value='jungle'>Jungle</option>
+          <option value='undergrowth'>Undergrowth</option>
+          <option value='marsh'>Marsh</option>
+          <option value='high-ground'>High Ground</option>
+          <option value='shallow-water'>Shallow Water</option>
+          <option value='deep-water'>Deep Water</option>
+          <option value='fire'>Fire</option>
+          <option value='road'>Road</option>
+        </select>
+      </div>
 
       {/* <Modal
         isOpen={isBoardSizeModalOpen}
