@@ -12,7 +12,7 @@ const Home = () => {
   // VARIABLES - STATES
   const navigate = useNavigate()
   const [user, setUser] = useContext(UserContext)
-  const [inputUsername, setInputUsername] = useState('Tacitus')
+  const [inputUsername, setInputUsername] = useState('')
   const [validUsername, setValidUsername] = useState(false)
   const [userTyped, setUserTyped] = useState(false)
 

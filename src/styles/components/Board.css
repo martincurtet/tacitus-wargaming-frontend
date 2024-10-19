@@ -58,7 +58,3 @@
   z-index: 1;
   width: max-content;
 }
-
-.paint-cursor {
-  cursor: url("../../images/paintbrush.png") 0 16, default;
-}
