@@ -1,0 +1,59 @@
+@font-face {
+  font-family: 'Fundamento';
+  src: url(../fonts/Fondamento-Regular.woff) format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+*, *:before, *:after {
+
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Georgia, 'Times New Roman', Times, serif, sans-serif;
+  background-color: #E5D3B3;
+}
+
+input {
+  padding: 5px;
+}
+
+input:focus {
+  outline: none;
+}
+
+.card-border {
+  border-width: .5rem;
+  border-color: #664229;
+  border-style: double;
+  padding: 2rem;
+}
+
+/* palette */
+/*
+#B99976
+#D2B48C
+#E5D3B3
+#987554
+#664229
+*/
+
+
+.status-dot {
+  width: 10px; /* Size of the dot */
+  height: 10px; /* Size of the dot */
+  border-radius: 50%; /* Makes the div a circle */
+  display: inline-block; /* Allows the dots to be inline with text */
+}
+
+.connected {
+  background-color: green; /* Green dot for connected status */
+}
+
+.disconnected {
+  background-color: red; /* Red dot for disconnected status */
+}

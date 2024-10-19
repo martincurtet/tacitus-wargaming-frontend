@@ -1,0 +1,12 @@
+.page-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.home-username {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

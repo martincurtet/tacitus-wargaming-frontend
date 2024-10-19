@@ -1,0 +1,60 @@
+.board {
+  justify-self: left;
+  width: 59vw;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.board .button {
+  align-self: flex-start;
+}
+
+.board-toolbar {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+}
+
+.board-grid {
+  display: grid;
+  user-select: none;
+  /* max-width: 1098px; */
+  max-height: 90vh;
+  overflow: scroll;
+}
+
+.paint-cursor {
+  cursor: url("../../images/paintbrush.png") 0 16, default;
+}
+
+.unit-drop {
+  border: solid 1px grey;
+  border-radius: 10px;
+  padding: 10px;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  height: auto;
+}
+
+.unit-drop-item[tooltip] {
+  position: relative;
+}
+
+.unit-drop-item[tooltip]:hover::after {
+  content: attr(tooltip);
+  background-color: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: pre-wrap;
+  z-index: 1;
+  width: max-content;
+}

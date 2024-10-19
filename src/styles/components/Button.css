@@ -1,0 +1,102 @@
+.button {
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.button:hover {
+  margin: -1px -1px;
+}
+
+.button:active {
+  margin: -1px -1px;
+}
+
+.button-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.button-circle {
+  border-radius: 50%;
+}
+
+.small-button {
+  font-size: 12px;
+  padding: 5px 10px;
+  font-weight: normal;
+}
+
+.medium-button {
+  padding: 10px 20px;
+}
+
+.large-button {
+  font-size: 20px;
+  padding: 15px 30px;
+}
+
+.button-none:hover {
+  margin: 0;
+  font-weight: bold;
+}
+
+.button-none:active {
+  margin: 0;
+}
+
+.button-beige {
+  background-color: #D2B48C;
+  border: solid 1px #664229;
+}
+
+.button-beige:hover {
+  border: solid 2px #664229;
+}
+
+.button-beige:active {
+  background-color: #664229;
+  border: solid 2px #664229;
+}
+
+.button-green {
+  background-color: lightgreen;
+  border: solid 1px rgb(109, 179, 109);
+}
+
+.button-green:hover {
+  border: solid 2px rgb(109, 179, 109);
+}
+
+.button-green:active {
+  background-color: rgb(109, 179, 109);
+  border: solid 2px rgb(109, 179, 109);
+}
+
+.button-blue {
+  background-color: lightblue;
+  border: solid 1px rgb(129, 161, 172);
+}
+
+.button-blue:hover {
+  border: solid 2px rgb(129, 161, 172);
+}
+
+.button-blue:active {
+  background-color: rgb(129, 161, 172);
+  border: solid 2px rgb(129, 161, 172);
+}
+
+.button-red {
+  background-color: lightcoral;
+  border: solid 1px rgb(185, 98, 98);
+}
+
+.button-red:hover {
+  border: solid 2px rgb(185, 98, 98);
+}
+
+.button-red:active {
+  background-color: rgb(185, 98, 98);
+  border: solid 2px rgb(185, 98, 98);
+}

@@ -1,0 +1,48 @@
+/* .unit-store {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 5px;
+
+  width: auto;
+  height: auto;
+} */
+
+.unit-item {
+  cursor: pointer;
+  padding: 2px;
+  /* background-color: pink; */
+}
+
+.unit-item[tooltip] {
+  position: relative;
+}
+
+.unit-item[tooltip]:hover::after {
+  content: attr(tooltip);
+  background-color: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: pre-wrap;
+  z-index: 1;
+  width: max-content;
+}
+
+.small-input {
+  width: 40px;
+}
+
+.tracker-units {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  width: 39vw;
+  overflow-y: scroll;
+  margin-right: 26px;
+  max-height: 90vh;
+}

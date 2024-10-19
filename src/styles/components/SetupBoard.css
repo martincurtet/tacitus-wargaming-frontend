@@ -1,0 +1,31 @@
+.setup-board {
+  display: flex;
+  flex-direction: row;
+
+}
+
+.setup-board-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.setup-board-grid {
+  display: grid;
+  user-select: none;
+}
+
+.paint-cursor {
+  cursor: url("../../images/paintbrush.png") 0 16, default;
+}
+
+.sidebar-units {
+  display: flex;
+  flex-direction: row;
+}
+
+.sidebar-units-image {
+  cursor: pointer;
+  height: 2.75rem;
+  width: 2.75rem;
+}

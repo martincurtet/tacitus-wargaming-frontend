@@ -1,0 +1,77 @@
+.unit-image-container {
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  width: 100px; /* Set a fixed width for consistency, adjust as needed */
+  height: 100px; /* Set a fixed height for consistency, adjust as needed */
+}
+
+.unit-image-container.highlighted {
+  border: greenyellow solid 3px;
+}
+
+.unit-image-container[tooltip] {
+  position: relative;
+}
+
+.unit-image-container[tooltip]:hover::after {
+  content: attr(tooltip);
+  background-color: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: absolute;
+  bottom: 105%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: pre-wrap;
+  z-index: 1;
+  width: max-content;
+  text-align: center;
+}
+
+.unit-image {
+  display: block;
+  width: 100%; /* Adjust as needed */
+  height: auto; /* Adjust as needed */
+}
+
+.faction-image {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 25%; /* Adjust size as needed */
+  height: auto; /* Adjust size as needed */
+}
+
+.veterancy-image {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 25%; /* Adjust size as needed */
+  height: auto; /* Adjust size as needed */
+}
+
+.marker {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 25%; /* Adjust size to match other icons */
+  height: 25%; /* Adjust size to match other icons */
+  background-color: #ff0000; /* Default color, will be overridden by inline style */
+  box-sizing: border-box; /* Ensure padding and border are included in the width and height */
+}
+
+.unit-image-container .marker {
+  width: 25% !important; /* Ensure marker size is controlled */
+  height: 25% !important; /* Ensure marker size is controlled */
+}
+
+.identifier {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 25%;
+  height: 25%;
+  font-size: .75rem;
+}

@@ -1,0 +1,32 @@
+.tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tile :first-child {
+  width: 35px;
+  height: 35px;
+}
+
+.red-border {
+  border: solid 1px red; 
+}
+
+.grey-border {
+  border: solid 1px lightgrey;
+}
+
+.test {
+  color: #d9ead3; 
+  color: #6aa84f;
+  color: #b46006;
+  color: #274e13;
+  color: #38761d;
+  color: #134f5c;
+  color: #071c30;
+  color: #c9daf8;
+  color: #3c78d8;
+  color: #ff9a00;
+  color: #999999;
+}

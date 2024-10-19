@@ -1,0 +1,24 @@
+.chat {
+  max-height: 300px;
+  overflow-y: scroll;
+  margin-right: 26px;
+}
+
+.chat-users {
+  display: flex;
+  flex-direction: row;
+  gap: .5rem;
+}
+
+.chat-send {
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  gap: 2px;
+  padding-right: 13px;
+}
+
+.chat-send input {
+  padding: 0;
+  flex-grow: 2;
+}
