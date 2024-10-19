@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client'
 
-const URL = 'http://localhost:8080'
+const URL = 'https://luminous-crumble-c87247.netlify.app'
 
 export const socket = io(URL, {
   autoConnect: false
