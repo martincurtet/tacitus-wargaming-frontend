@@ -16,7 +16,7 @@
 }
 
 .paint-cursor {
-  cursor: url("./images/paintbrush.png") 0 16, default;
+  cursor: url("/public/images/paintbrush.png") 0 16 default;
 }
 
 .sidebar-units {

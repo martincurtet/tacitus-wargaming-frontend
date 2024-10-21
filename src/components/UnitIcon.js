@@ -15,9 +15,9 @@ const UnitIcon = ({
       tooltip={tooltip}
       onClick={handleClick}
     >
-      {unitIconName && <img src={require(`./images/${unitIconName}`)} alt='' className='unit-image' onClick={() => console.log(`coucou`)} />}
-      {factionIconName && <img src={require(`./images/${factionIconName}`)} alt='' className='faction-image' onClick={() => console.log(`coucou`)} />}
-      {veterancyIconName && <img src={require(`./images/${veterancyIconName}`)} alt='' className='veterancy-image' onClick={() => console.log(`coucou`)} />}
+      {unitIconName && <img src={`./images/${unitIconName}`} alt='' className='unit-image' onClick={() => console.log(`coucou`)} />}
+      {factionIconName && <img src={`./images/${factionIconName}`} alt='' className='faction-image' onClick={() => console.log(`coucou`)} />}
+      {veterancyIconName && <img src={`./images/${veterancyIconName}`} alt='' className='veterancy-image' onClick={() => console.log(`coucou`)} />}
       {identifier && <div className='identifier' style={{ color: identifierColor }}>{identifier}</div>}
     </div>
   )
