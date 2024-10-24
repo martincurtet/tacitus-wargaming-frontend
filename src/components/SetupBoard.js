@@ -149,18 +149,15 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
 
     if (active.id.length !== 2) {
       // unit-unassigned to tile
-      console.log('case 1')
       if (over.id === 'unit-unassigned') return
       unitFullCode = active.id
       coordinates = over.id
     } else if (over.id === 'unit-unassigned') {
       // tile to unit-unassigned (disabled)
-      console.log('case 2')
       return
     } else {
       // tile to tile
       if (active.id === over.id) return
-      console.log('case 3')
       unitFullCode = board[active.id].unitFullCode
       coordinates = over.id
     }
