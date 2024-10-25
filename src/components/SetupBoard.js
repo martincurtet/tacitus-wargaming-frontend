@@ -206,8 +206,8 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
         onDragEnd={handleDragEnd}
       >
         <div className='setup-board-sidebar'>
-          <div className='sidebar-row'>
-            <label>Number of rows</label>
+          <div className='sidebar-board-size'>
+            <label>Number of rows </label>
             <input
               type='number'
               value={inputRowNumber}
@@ -216,9 +216,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
               max={MAX_GRID_SIZE}
               step={1}
             />
-          </div>
-          <div className='sidebar-column'>
-            <label>Number of columns</label>
+            <label>Number of columns </label>
             <input
               type='number'
               value={inputColumnNumber}
