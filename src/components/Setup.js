@@ -25,7 +25,7 @@ const Setup = ({
   const params = useParams()
   const [user, setUser] = useContext(UserContext)
   const [nextStepLocked, setNextStepLocked] = useState(true)
-  const [stepLockDescription, setStepLockDescription] = useState('test')
+  const [stepLockDescription, setStepLockDescription] = useState('')
 
   //
   const stepTitles = {
@@ -101,46 +101,44 @@ const Setup = ({
   useEffect(() => {
     let isStepLocked = true
     let stepDescription = ''
-    if (user.isHost) {
-      switch (parseInt(step)) {
-        case 1:
-          // At least one faction
-          isStepLocked = factions.length <= 0
-          stepDescription = 'Add at least one faction'
-          break
-        case 2:
-          // At least one unit
-          isStepLocked = units.length <= 0
-          stepDescription = 'Add at least one unit'
-          break
-        case 3:
-          // All units have been assigned initiative
-          let allUnitsAssigned = true
-          units.forEach(u => {
-            if (u.initiative === null) {
-              allUnitsAssigned = false
-            }
-          })
-          isStepLocked = !allUnitsAssigned
-          stepDescription = 'All units have been assigned initiative'
-          break
-        case 4:
-          // All units have been placed on the map
-          let allUnitsPlaced = true
-          units.forEach(u => {
-            if (u.coordinates === '') {
-              allUnitsPlaced = false
-            }
-          })
-          isStepLocked = !allUnitsPlaced
-          stepDescription = 'All units have been placed'
-          break
-        default:
-          break
-      }
-      setNextStepLocked(isStepLocked)
-      setStepLockDescription(stepDescription)
+    switch (parseInt(step)) {
+      case 1:
+        // At least one faction
+        isStepLocked = factions.length <= 0
+        stepDescription = 'Add at least one faction'
+        break
+      case 2:
+        // At least one unit
+        isStepLocked = units.length <= 0
+        stepDescription = 'Add at least one unit'
+        break
+      case 3:
+        // All units have been assigned initiative
+        let allUnitsAssigned = true
+        units.forEach(u => {
+          if (u.initiative === null) {
+            allUnitsAssigned = false
+          }
+        })
+        isStepLocked = !allUnitsAssigned
+        stepDescription = 'All units must have initiative assigned'
+        break
+      case 4:
+        // All units have been placed on the map
+        let allUnitsPlaced = true
+        units.forEach(u => {
+          if (u.coordinates === '') {
+            allUnitsPlaced = false
+          }
+        })
+        isStepLocked = !allUnitsPlaced
+        stepDescription = 'All units must be placed'
+        break
+      default:
+        break
     }
+    setNextStepLocked(isStepLocked)
+    setStepLockDescription(stepDescription)
   }, [step, factions, units])
 
   //
@@ -178,13 +176,13 @@ const Setup = ({
           {/* <button onClick={prevStep}>Back</button> */}
           {/* <div className='setup-buttons'>
             <Button
-              disabled={nextStepLocked}
-              onClick={openNextStepModal}
+            disabled={nextStepLocked}
+            onClick={openNextStepModal}
             >
-              Confirm
+            Confirm
             </Button>
             <Button onClick={prevStep}>Back</Button>
-          </div> */}
+            </div> */}
         </div>
         <div className='setup-right'>
           {nextStepLocked && <p>{stepLockDescription}</p>}
