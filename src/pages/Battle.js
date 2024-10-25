@@ -204,22 +204,6 @@ const Battle = () => {
   // RENDER
   return (
     <div className='page-battle'>
-      {/* <div>Battle Page</div> */}
-      {/* <div>Context:
-        <p>{user.userUuid || 'no userUuid'}</p>
-        <p>{user.username || 'no username'}</p>
-        <p>{user.userColor || 'no color'}</p>
-        <p>{user.isHost ? 'host' : 'player'}</p>
-      </div> */}
-      {/* {user.username !== '' ? (
-        <>
-          <Board board={board} setBoard={setBoard} units={units} setUnits={setUnits} setLog={setLog} />
-          <Tracker setBoard={setBoard} factionShop={factionShop} setFactionShop={setFactionShop} factions={factions} setFactions={setFactions} unitShop={unitShop} units={units} setUnits={setUnits} setLog={setLog} />
-          <Log log={log} setLog={setLog} />
-          <Chat messages={messages} setMessages={setMessages} setLog={setLog} />
-        </>
-      ) : null } */}
-
       {step >= 5 ? (
         <div className='battle'>
           <Board
@@ -227,12 +211,6 @@ const Battle = () => {
             setUnits={setUnits}
             setLog={setLog}
           />
-          {/* <Tracker
-            setBoard={setBoard}
-            factionShop={factionShop} setFactionShop={setFactionShop} factions={factions} setFactions={setFactions}
-            unitShop={unitShop} units={units} setUnits={setUnits}
-            setLog={setLog}
-          /> */}
           <Units
             setBoard={setBoard}
             factions={factions}

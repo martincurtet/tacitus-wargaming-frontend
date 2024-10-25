@@ -227,31 +227,6 @@ const Board = ({
           <option value='road'>Road</option>
         </select>
       </div>
-
-      {/* <Modal
-        isOpen={isBoardSizeModalOpen}
-        onCancel={closeBoardSizeModal}
-        onSubmit={submitBoardSizeModal}
-      >
-        <label>Number of rows</label>
-        <input
-          type='number'
-          value={inputBoardSizeR}
-          onChange={changeInputBoardSizeR}
-          min={1}
-          max={MAX_GRID_SIZE}
-          step={1}
-        />
-        <label>Number of columns</label>
-        <input
-          type='number'
-          value={inputBoardSizeC}
-          onChange={changeInputBoardSizeC}
-          min={1}
-          max={MAX_GRID_SIZE}
-          step={1}
-        />
-      </Modal> */}
     </div>
   )
 }
