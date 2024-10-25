@@ -94,7 +94,7 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
           <div key={u.code} className='unit-item' tooltip={`${u.name}\nHD per men: ${u.hdPerMen}`}>
             {u.icon ? (
               <img
-                src={require(`../images/${u.icon}`)}
+                src={`/images/${u.icon}`}
                 onClick={() => addUnit(u.code)}
                 alt=''
                 height={48}
@@ -113,7 +113,7 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
             onClick={() => selectFaction(i)}
           >
             <div className='faction-panel-title'>
-              <img src={require(`../images/${f.icon}`)} alt='' height={18} width={30} />
+              <img src={`/images/${f.icon}`} alt='' height={18} width={30} />
               {f.name}
             </div>
             {units.map((u) => {

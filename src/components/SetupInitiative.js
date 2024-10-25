@@ -213,11 +213,11 @@ const SetupInitiative = ({ users, units, setUnits, factions, setLog }) => {
       {currentUnitTypeIndex !== -1 && (
         <div className='current-unit'>
           <div>
-            <img src={require(`../images/${factions.find(f => f.code === unitTypes[currentUnitTypeIndex]?.split('-')[0]).icon}`)} alt='' height={36} width={60} />
+            <img src={`/images/${factions.find(f => f.code === unitTypes[currentUnitTypeIndex]?.split('-')[0]).icon}`} alt='' height={36} width={60} />
           </div>
           <div>{factions.find(f => f.code === unitTypes[currentUnitTypeIndex]?.split('-')[0]).name}</div>
           <div>
-            <img src={require(`../images/${units.find(u => `${u.factionCode}-${u.unitCode}` === unitTypes[currentUnitTypeIndex])?.iconName}`)} alt='' height={60} width={60} />
+            <img src={`./images/${units.find(u => `${u.factionCode}-${u.unitCode}` === unitTypes[currentUnitTypeIndex])?.iconName}`} alt='' height={60} width={60} />
           </div>
           <div>
             {units.find(u => `${u.factionCode}-${u.unitCode}` === unitTypes[currentUnitTypeIndex])?.name}</div>
