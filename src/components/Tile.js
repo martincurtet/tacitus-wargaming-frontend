@@ -17,12 +17,9 @@ const Tile = ({
   const handleClick = (e) => {
     setSelectedTile(coordinates)
     if (e.shiftKey) {
-      console.log('Shift+Click triggered')
       handleToggleMarker(coordinates)
     } else if (e.ctrlKey) {
-      console.log('Ctrl+Click triggered')
     } else if (e.altKey) {
-      console.log('Alt+Click triggered')
       handleToggleFire(coordinates)
     }
   }
@@ -55,9 +52,9 @@ const Tile = ({
       {content !== '' ? (
         content
       ) : (
-        <Droppable id={coordinates} onClick={() => console.log('clicking on droppable')}>
+        <Droppable id={coordinates}>
           {unitIconName !== undefined && unitIconName !== '' ? (
-            <Draggable id={coordinates} onClick={() => console.log('clicking on draggable')}>
+            <Draggable id={coordinates}>
               <UnitIcon
                 unitIconName={unitIconName}
                 factionIconName={factionIconName}

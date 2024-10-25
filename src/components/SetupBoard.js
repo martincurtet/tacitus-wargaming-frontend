@@ -149,18 +149,15 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
 
     if (active.id.length !== 2) {
       // unit-unassigned to tile
-      console.log('case 1')
       if (over.id === 'unit-unassigned') return
       unitFullCode = active.id
       coordinates = over.id
     } else if (over.id === 'unit-unassigned') {
       // tile to unit-unassigned (disabled)
-      console.log('case 2')
       return
     } else {
       // tile to tile
       if (active.id === over.id) return
-      console.log('case 3')
       unitFullCode = board[active.id].unitFullCode
       coordinates = over.id
     }
@@ -209,8 +206,8 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
         onDragEnd={handleDragEnd}
       >
         <div className='setup-board-sidebar'>
-          <div className='sidebar-row'>
-            <label>Number of rows</label>
+          <div className='sidebar-board-size'>
+            <label>Number of rows </label>
             <input
               type='number'
               value={inputRowNumber}
@@ -219,9 +216,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
               max={MAX_GRID_SIZE}
               step={1}
             />
-          </div>
-          <div className='sidebar-column'>
-            <label>Number of columns</label>
+            <label>Number of columns </label>
             <input
               type='number'
               value={inputColumnNumber}

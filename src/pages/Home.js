@@ -15,6 +15,7 @@ const Home = () => {
   const [inputUsername, setInputUsername] = useState('')
   const [validUsername, setValidUsername] = useState(false)
   const [userTyped, setUserTyped] = useState(false)
+  const [createRoomLoading, setCreateRoomLoading] = useState(false)
 
   // FUNCTIONS
   const changeInputUsername = (e) => {
@@ -31,6 +32,7 @@ const Home = () => {
   }
 
   const createRoom = () => {
+    setCreateRoomLoading(true)
     socket.connect()
     socket.emit('create-room', { username: inputUsername })
   }
@@ -54,6 +56,7 @@ const Home = () => {
         isHost: data.isHost,
         isSpectator: data.isSpectator
       })
+      setCreateRoomLoading(false)
       navigate(`/${data.roomUuid}`)
     })
 
@@ -76,10 +79,13 @@ const Home = () => {
         {userTyped && !validUsername && (
           <p>Invalid Username</p>
         )}
+        {createRoomLoading && (
+          <p>Loading...</p>
+        )}
       </div>
       <Button
         onClick={createRoom}
-        disabled={!validUsername}
+        disabled={!validUsername || createRoomLoading}
         color='beige'
       >
         Create Room

@@ -52,7 +52,6 @@ const SetupInitiative = ({ users, units, setUnits, factions, setLog }) => {
   }, [units])
 
   const assignNewInitiative = (value, order=0) => {
-    console.log(`init ${value}, order ${order}`)
     const [factionCode, unitCode] = unitTypes[currentUnitTypeIndex].split('-')
     if (user.isHost || user.userFaction === factionCode) {
       socket.emit('change-initiative', {
