@@ -41,6 +41,8 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
 
   const handleInputRowNumberChange = (e) => {
     const rowNumber= parseInt(e.target.value)
+    if (isNaN(rowNumber) || rowNumber < 0) rowNumber = 0
+    if (rowNumber > 200) rowNumber = 200
     setInputRowNumber(rowNumber)
     updateBoardSize(rowNumber, inputColumnNumber)
   }
@@ -48,6 +50,8 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
   const handleInputColumnNumberChange = (e) => {
     const columnNumber = parseInt(e.target.value)
     setInputColumnNumber(columnNumber)
+    if (isNaN(columnNumber) || columnNumber < 0) columnNumber = 0
+    if (columnNumber > 200) columnNumber = 200
     updateBoardSize(inputRowNumber, columnNumber)
   }
 
