@@ -31,11 +31,13 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
     if (user.isHost) {
       selectedFaction = factions[indexFactionSelected]?.code
     }
-    socket.emit('add-unit', {
-      roomUuid: params.battleuuid,
-      factionCode: selectedFaction,
-      unitCode: unitCode
-    })
+    if (units.filter(u => u.factionCode === factions[indexFactionSelected]?.code).length < 100) {
+      socket.emit('add-unit', {
+        roomUuid: params.battleuuid,
+        factionCode: selectedFaction,
+        unitCode: unitCode
+      })
+    }
   }
 
   const removeUnit = (factionCode, unitCode, identifier) => {
@@ -114,7 +116,7 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
           >
             <div className='faction-panel-title'>
               <img src={`/images/${f.icon}`} alt='' height={18} width={30} />
-              {f.name}
+              {f.name} ({units.filter(u => u.factionCode === f.code).length})
             </div>
             {units.map((u) => {
               if (u.factionCode === f.code) {
