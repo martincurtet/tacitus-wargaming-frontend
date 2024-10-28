@@ -91,6 +91,7 @@ const SetupInitiative = ({ users, units, setUnits, factions, setLog }) => {
   // RENDER FUNCTIONS
   const renderTable = (start, end, step, origin) => {
     let tableRows = []
+    let highlightedIndices = []
     for (let i = start; (step > 0 ? i < end : i > end); i += step) {
       let unitImages = []
       let isHighlighted = false
@@ -99,18 +100,18 @@ const SetupInitiative = ({ users, units, setUnits, factions, setLog }) => {
       const [factionCode, unitCode] = currentUnitType?.split('-') || ['', '']
       let factionStratAbility = factions.find(f => f.code === factionCode)?.stratAbility
       const unitGroup = units.filter(u => u.factionCode === factionCode && u.unitCode === unitCode)
-      
-      isHighlighted = unitGroup.some(unit =>
-        (!origin && i >= parseInt(unit.initiativeRaw - factionStratAbility) &&
-        i <= parseInt(unit.initiativeRaw + factionStratAbility))
-      )
 
+      isHighlighted = unitGroup.some(unit => !origin && i >= parseInt(unit.initiativeRaw - factionStratAbility) && i <= parseInt(unit.initiativeRaw + factionStratAbility))
+
+      if (isHighlighted) {
+        highlightedIndices.push(i)
+      }
       unitImages = unitTypes
         .map(type => {
           const [factionCode, unitCode] = type.split('-')
           const unitGroup = units.filter(u => u.factionCode === factionCode && u.unitCode === unitCode)
 
-          const matchingUnit = unitGroup.find(u => origin ? u.initiativeRaw === i : u.initiative === i)
+          const matchingUnit = unitGroup.find(u => (origin ? u.initiativeRaw === i : u.initiative === i))
 
           if (matchingUnit) {
             return (
@@ -153,7 +154,7 @@ const SetupInitiative = ({ users, units, setUnits, factions, setLog }) => {
                 <Button
                   size='small'
                   color='green'
-                  onClick={() => assignNewInitiative(i, index+1)}
+                  onClick={() => assignNewInitiative(i, index + 1)}
                 >
                   +
                 </Button>
@@ -190,11 +191,23 @@ const SetupInitiative = ({ users, units, setUnits, factions, setLog }) => {
       tableRows.push(
         <tr
           key={i}
-          className={`${i % 2 === 0 ? 'even' : 'odd'}`}
+          className={`${i % 2 === 0 ? 'even' : 'odd'} ${isHighlighted ? 'highlight' : ''}`}
         >
           <td className='row-header'>{i}</td>
           <td className={`row-units`}>{unitImagesWithButtons}</td>
         </tr>
+      )
+    }
+  
+    // Add 'first-highlight' and 'last-highlight' classes to appropriate rows
+    if (highlightedIndices.length > 0) {
+      const firstHighlight = highlightedIndices[0];
+      const lastHighlight = highlightedIndices[highlightedIndices.length - 1];
+  
+      tableRows = tableRows.map(row =>
+        React.cloneElement(row, {
+          className: `${row.props.className} ${row.key == firstHighlight ? 'first-highlight' : ''} ${row.key == lastHighlight ? 'last-highlight' : ''}`
+        })
       )
     }
 
