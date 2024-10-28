@@ -2,6 +2,7 @@
   cursor: pointer;
   border-radius: 5px;
   font-weight: bold;
+  user-select: none;
 }
 
 .button:hover {
