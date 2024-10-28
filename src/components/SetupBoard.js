@@ -40,18 +40,18 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
   const [finishingTile, setFinishingTile] = useState(null)
 
   const handleInputRowNumberChange = (e) => {
-    const rowNumber= parseInt(e.target.value)
-    if (isNaN(rowNumber) || rowNumber < 0) rowNumber = 0
-    if (rowNumber > 200) rowNumber = 200
+    let rowNumber = parseInt(e.target.value.replace(/[^0-9]/g, ''))
+    if (isNaN(rowNumber) || rowNumber < 1) rowNumber = 1
+    if (rowNumber > 100) rowNumber = 100
     setInputRowNumber(rowNumber)
     updateBoardSize(rowNumber, inputColumnNumber)
   }
 
   const handleInputColumnNumberChange = (e) => {
-    const columnNumber = parseInt(e.target.value)
+    let columnNumber = parseInt(e.target.value.replace(/[^0-9]/g, ''))
     setInputColumnNumber(columnNumber)
-    if (isNaN(columnNumber) || columnNumber < 0) columnNumber = 0
-    if (columnNumber > 200) columnNumber = 200
+    if (isNaN(columnNumber) || columnNumber < 1) columnNumber = 1
+    if (columnNumber > 100) columnNumber = 100
     updateBoardSize(inputRowNumber, columnNumber)
   }
 
