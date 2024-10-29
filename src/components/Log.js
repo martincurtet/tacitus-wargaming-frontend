@@ -37,14 +37,14 @@ const Log = ({ log }) => {
   // RENDER
   return (
     <div className='log'>
+      {log.map(l => (
+        <p>[{formatTimestamp(l.timestamp, 'hh:min:ss')}] {l.log}</p>
+      ))}
       <Button
         onClick={handleDownload}
       >
         Download
       </Button>
-      {log.map(l => (
-        <p>[{formatTimestamp(l.timestamp, 'hh:min:ss')}] {l.log}</p>
-      ))}
     </div>
   )
 }

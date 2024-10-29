@@ -16,6 +16,7 @@
 body {
   font-family: Georgia, 'Times New Roman', Times, serif, sans-serif;
   background-color: #E5D3B3;
+  margin: 0;
 }
 
 input {

@@ -43,19 +43,21 @@ const Chat = ({ messages, setMessages, users, setLog }) => {
     <div className='chat'>
       <div className='chat-users'>
         {users.map(u => (
-          <span key={u.userUuid} style={{ color: u.userColor }}><span className={`status-dot ${u.currentSocketId === '' ? 'dis' : ''}connected`}></span>{u.username} </span>
+          <span key={u.userUuid} style={{ color: u.userColor }}><span className={`status-dot ${u.currentSocketId === '' ? 'dis' : ''}connected`}></span>{u.username}</span>
         ))}
       </div>
-      {messages.map(m => (
-        <p key={m.timestamp}>{formatTimestamp(m.timestamp, 'hh:min:ss')} {m.username === 'System' ? null : `${m.username}:`} {m.message}</p>
-      ))}
-      <div className='chat-send'>
-        <input
-          type='text'
-          value={inputMessage}
-          onChange={changeInputMessage}
-        />
-        <Button color='blue' onClick={sendMessage}>Send</Button>
+      <div className='chat-box'>
+        {messages.map(m => (
+          <p key={m.timestamp}>{formatTimestamp(m.timestamp, 'hh:min:ss')} {m.username === 'System' ? null : `${m.username}:`} {m.message}</p>
+        ))}
+        <div className='chat-send'>
+          <input
+            type='text'
+            value={inputMessage}
+            onChange={changeInputMessage}
+            />
+          <Button color='blue' onClick={sendMessage}>Send</Button>
+        </div>
       </div>
     </div>
   )
