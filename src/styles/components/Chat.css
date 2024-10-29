@@ -1,13 +1,27 @@
 .chat {
-  max-height: 300px;
+  max-height: 20vh;
   overflow-y: scroll;
   margin-right: 26px;
+  display: flex;
+  flex-direction: row;
+  align-items: end;
 }
 
 .chat-users {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: .5rem;
+  text-overflow: ellipsis;
+}
+
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.chat-box p {
+  margin: .25rem;
 }
 
 .chat-send {

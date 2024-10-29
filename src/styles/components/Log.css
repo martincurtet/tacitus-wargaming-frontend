@@ -1,6 +1,13 @@
 .log {
-  max-height: 300px;
+  max-height: 20vh;
   overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+
+.log p {
+  margin: 0.25rem;
 }
 
 .log .button {

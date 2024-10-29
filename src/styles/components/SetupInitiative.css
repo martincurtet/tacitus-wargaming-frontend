@@ -46,16 +46,29 @@ tr.odd {
   background-color: #D2B48C;
 }
 
-.row-header {
-
+tr.highlight {
+  border-left: solid black 2px;
+  border-right: solid black 2px;
+  border-top: none;
+  border-bottom: none;
 }
+
+tr.first-highlight {
+  border-top: solid black 2px;
+}
+
+tr.last-highlight {
+  border-bottom: solid black 2px;
+}
+
+.row-header {}
 
 .row-units {
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: .25rem;
+  gap: 1rem;
 }
 
 .row-units.highlighted {

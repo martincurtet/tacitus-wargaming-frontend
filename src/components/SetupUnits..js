@@ -31,11 +31,13 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
     if (user.isHost) {
       selectedFaction = factions[indexFactionSelected]?.code
     }
-    socket.emit('add-unit', {
-      roomUuid: params.battleuuid,
-      factionCode: selectedFaction,
-      unitCode: unitCode
-    })
+    if (units.filter(u => u.factionCode === factions[indexFactionSelected]?.code).length < 100) {
+      socket.emit('add-unit', {
+        roomUuid: params.battleuuid,
+        factionCode: selectedFaction,
+        unitCode: unitCode
+      })
+    }
   }
 
   const removeUnit = (factionCode, unitCode, identifier) => {
@@ -48,7 +50,9 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
   }
 
   const handleInputMen = (factionCode, unitCode, identifier, value) => {
-    const men = parseInt(value, 10)
+    let men = parseInt(value.replace(/[^0-9]/g, '') || '0', 10)
+    if (isNaN(men) || men < 1) men = 1
+    if (men > 99999) men = 99999
     socket.emit('change-men', {
       roomUuid: params.battleuuid,
       factionCode: factionCode,
@@ -130,7 +134,8 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
                       type='number'
                       value={inputMen[`${u.factionCode}-${u.unitCode}-${u.identifier}`] || 20}
                       onChange={(e) => handleInputMen(f.code, u.unitCode, u.identifier, e.target.value)}
-                      min={0}
+                      min={1}
+                      max={99999}
                       step={1}
                     /> men {u.maxHd} HD </div>
                   </div>

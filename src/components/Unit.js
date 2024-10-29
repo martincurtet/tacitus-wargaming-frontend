@@ -99,7 +99,11 @@ const Unit = ({
 
   // RENDER
   return (
-    <div key={unitData.code} className={`tracker-item ${unitData.isAlive ? '' : 'inactive'}`}>
+    <div
+      key={unitData.code}
+      className={`tracker-item ${unitData.isAlive ? '' : 'inactive'}`}
+      style={{ borderColor: factions.find(f => f.code === unitData.factionCode).color }}
+    >
       <img className='tracker-item-one' src={`/images/${factions.find(f => f.code === unitData.factionCode).icon}`} alt='' height={18} width={30} />
       <div className='tracker-item-two'>
         <div>{unitData.name.split(' ').slice(1).join(' ')} {unitData.identifier}</div>

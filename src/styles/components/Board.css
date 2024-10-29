@@ -1,6 +1,7 @@
 .board {
   justify-self: left;
-  width: 59vw;
+  width: 60vw;
+  height: 80vh;
 
   display: flex;
   flex-direction: column;

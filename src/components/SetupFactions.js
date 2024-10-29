@@ -188,7 +188,9 @@ const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, se
             })}
           </div>
         ))}
-        <Button size='small' onClick={openAddFactionModal}>Add a faction</Button>
+        {factions.length < 4 && (
+          <Button size='small' onClick={openAddFactionModal}>Add a faction</Button>
+        )}
       </div>
 
       <Modal
