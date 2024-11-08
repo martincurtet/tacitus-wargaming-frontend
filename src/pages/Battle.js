@@ -6,12 +6,11 @@ import { UserContext } from '../context/UserContext'
 import Setup from '../components/Setup'
 import Modal from '../components/Modal'
 import Board from '../components/Board'
-import Tracker from '../components/Tracker'
 import Chat from '../components/Chat'
 import Log from '../components/Log'
+import Units from '../components/Units'
 
 import '../styles/pages/Battle.css'
-import Units from '../components/Units'
 
 const Battle = () => {
   // PARAMS
@@ -23,11 +22,11 @@ const Battle = () => {
   const [user, setUser] = useContext(UserContext)
   const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(user.username === '')
   const [inputUsername, setInputUsername] = useState('')
-
+  
   const [isUserFactionModalOpen, setIsUserFactionModalOpen] = useState(false)
   const [inputUserFaction, setInputUserFaction] = useState('')
   const [inputStratAbility, setInputStratAbility] = useState(0)
-
+  
   // BATTLE VARIABLES
   const [step, setStep] = useState(1)
   const [boardSize, setBoardSize] = useState({
@@ -42,6 +41,36 @@ const Battle = () => {
   const [unitShop, setUnitShop] = useState([])
   const [units, setUnits] = useState([])
   const [users, setUsers] = useState([])
+
+  // BACKGROUND
+  const chooseRandomIndex = (type) => {
+    const number = params.battleuuid.match(/\d/)
+    if (number === null) number = 1
+    if (type === 'setup') {
+      console.log((number % process.env.REACT_APP_SETUP_BGS) + 1)
+      return (number % process.env.REACT_APP_SETUP_BGS) + 1
+    } else {
+      console.log((number % process.env.REACT_APP_BATTLE_BGS) + 1)
+      return (number % process.env.REACT_APP_BATTLE_BGS) + 1
+    }
+  }
+
+  const bgSetup = `/images/setup_${chooseRandomIndex('setup')}.png`
+  const bgBattle = `/images/battle_${chooseRandomIndex('battle')}.png`
+
+  useEffect(() => {
+    if (step >= 5) {
+      document.body.style.backgroundImage = `url(${bgBattle})`
+    } else {
+      document.body.style.backgroundImage = `url(${bgSetup})`
+    }
+    document.body.style.backgroundSize = '100vw 100vh'
+    document.body.style.backgroundRepeat = 'repeat'
+
+    return () => {
+      document.body.style.backgroundImage = ''
+    }
+  }, [step])
 
   // USERNAME FUNCTIONS
   const changeInputUsername = (e) => {
