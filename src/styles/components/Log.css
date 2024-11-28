@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   justify-content: end;
+  background-color: #E5D3B3;
 }
 
 .log p {
