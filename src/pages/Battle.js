@@ -47,10 +47,8 @@ const Battle = () => {
     const number = params.battleuuid.match(/\d/)
     if (number === null) number = 1
     if (type === 'setup') {
-      // console.log((number % process.env.REACT_APP_SETUP_BGS) + 1)
       return (number % process.env.REACT_APP_SETUP_BGS) + 1
     } else {
-      // console.log((number % process.env.REACT_APP_BATTLE_BGS) + 1)
       return (number % process.env.REACT_APP_BATTLE_BGS) + 1
     }
   }

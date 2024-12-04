@@ -151,12 +151,11 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
     let unitFullCode = ''
     let coordinates = ''
 
-    if (active.id.length !== 2) {
+    if (active.id.includes('-')) {
       // unit-unassigned to tile
       if (over.id === 'unit-unassigned') return
       unitFullCode = active.id
       coordinates = over.id
-      console.log(`Moving unit ${unitFullCode} from unassigned to ${coordinates}`)
     } else if (over.id === 'unit-unassigned') {
       // tile to unit-unassigned (disabled)
       return
@@ -165,13 +164,11 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
       if (active.id === over.id) return
       unitFullCode = board[active.id].unitFullCode
       coordinates = over.id
-      console.log(`Moving unit ${unitFullCode} from unassigned to ${coordinates}`)
     }
     
     if (board[coordinates]?.unitFullCode !== undefined && board[coordinates]?.unitFullCode !== '') return
 
     //
-    console.log(`sending ${unitFullCode} to ${coordinates}`)
     socket.emit('update-unit-coordinates', {
       roomUuid: params.battleuuid,
       unitFullCode: unitFullCode,
