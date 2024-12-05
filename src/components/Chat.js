@@ -49,7 +49,10 @@ const Chat = ({ messages, setMessages, users, setLog }) => {
     <div className='chat'>
       <div className='chat-users'>
         {users.map(u => (
-          <span key={u.userUuid} style={{ color: u.userColor }}><span className={`status-dot ${u.currentSocketId === '' ? 'dis' : ''}connected`}></span>{u.username}</span>
+          <span key={u.userUuid} style={{ color: u.userColor }}>
+            <span className={`status-dot ${u.currentSocketId === '' ? 'dis' : ''}connected`} />
+            <span title={u.username}>{u.username}</span>
+          </span>
         ))}
       </div>
       <div className='chat-box'>
