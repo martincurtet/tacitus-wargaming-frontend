@@ -18,6 +18,12 @@ const Chat = ({ messages, setMessages, users, setLog }) => {
     setInputMessage(e.target.value)
   }
 
+  const handlePressEnter = (e) => {
+    if (e.key === 'Enter' && inputMessage.trim()) {
+      sendMessage()
+    }
+  }
+
   const sendMessage = () => {
     if (!inputMessage.trim()) return
     socket.emit('send-message', {
@@ -55,6 +61,7 @@ const Chat = ({ messages, setMessages, users, setLog }) => {
             type='text'
             value={inputMessage}
             onChange={changeInputMessage}
+            onKeyDown={handlePressEnter}
             />
           <Button color='blue' onClick={sendMessage}>Send</Button>
         </div>
