@@ -1,7 +1,6 @@
 .chat {
   max-height: 20vh;
   overflow-y: scroll;
-  margin-right: 26px;
   display: flex;
   flex-direction: row;
   align-items: end;
