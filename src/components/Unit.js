@@ -14,9 +14,8 @@ const Unit = ({
 
   //
   const params = useParams()
-  const [inputHd, setInputHd] = useState(unitData.hd)
 
-  //
+  // REVIVE
   const handleRevive = (unitData) => {
     socket.emit('revive-unit', {
       roomUuid: params.battleuuid,
@@ -37,7 +36,6 @@ const Unit = ({
         identifier: unitData.identifier,
         hd: hd
       })
-      setInputHd(hd)
     }
   }
 
@@ -128,7 +126,7 @@ const Unit = ({
           <input
             className='small-input'
             type='number'
-            value={inputHd}
+            value={unitData.hd}
             onChange={handleInputHd}
             min={0}
             max={unitData.maxHd}
@@ -162,9 +160,8 @@ const Unit = ({
       <div className='tracker-item-five'>
         <textarea
           onChange={handleInputNotes}
-        >
-          {unitData.notes}
-        </textarea>
+          value={unitData.notes}
+        />
       </div>
     </div>
   )
