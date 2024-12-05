@@ -12,6 +12,12 @@
   flex-direction: column;
   gap: .5rem;
   text-overflow: ellipsis;
+  text-wrap: nowrap; 
+  margin-right: 5px;
+}
+
+.chat-users .status-dot {
+  margin-right: 5px;
 }
 
 .chat-box {
