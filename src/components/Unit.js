@@ -12,6 +12,8 @@ const Unit = ({
     setLog,
   }) => {
 
+  const [localNotesText, setValue] = useState(unitData.notes || '')
+
   //
   const params = useParams()
 
@@ -159,8 +161,9 @@ const Unit = ({
       </div>
       <div className='tracker-item-five'>
         <textarea
-          onChange={handleInputNotes}
-          value={unitData.notes}
+          onChange={(e) => setValue(e.target.value)}
+          value={localNotesText}
+          onBlur={handleInputNotes}
         />
       </div>
     </div>
