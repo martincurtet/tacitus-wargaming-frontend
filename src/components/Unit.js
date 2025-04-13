@@ -12,6 +12,8 @@ const Unit = ({
     setLog,
   }) => {
 
+  const [localNotes, setLocalNotes] = useState(unitData.notes || '')
+
   //
   const params = useParams()
 
@@ -77,6 +79,7 @@ const Unit = ({
     })
 
     socket.on('unit-notes-updated', (data) => {
+      setLocalNotes(data.units.find(u => u.unitCode === unitData.unitCode && u.factionCode === unitData.factionCode && u.identifier === unitData.identifier).notes)
       setUnits(data.units)
       setLog(data.log)
     })
@@ -159,8 +162,9 @@ const Unit = ({
       </div>
       <div className='tracker-item-five'>
         <textarea
-          onChange={handleInputNotes}
-          value={unitData.notes}
+          onChange={(e) => setLocalNotes(e.target.value)}
+          value={localNotes}
+          onBlur={handleInputNotes}
         />
       </div>
     </div>
