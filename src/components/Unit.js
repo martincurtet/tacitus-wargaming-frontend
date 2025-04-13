@@ -13,6 +13,7 @@ const Unit = ({
   }) => {
 
   const [localNotes, setLocalNotes] = useState(unitData.notes || '')
+  const [localHD, setLocalHD] = useState(unitData.hd || parseInt(unitData.maxHd)) 
 
   //
   const params = useParams()
@@ -69,6 +70,7 @@ const Unit = ({
   // SOCKET LISTENERS
   useEffect(() => {
     socket.on('unit-hd-updated', (data) => {
+      setLocalHD(data.units.find(u => u.unitCode === unitData.unitCode && u.factionCode === unitData.factionCode && u.identifier === unitData.identifier).hd)
       setUnits(data.units)
       setLog(data.log)
     })
@@ -129,8 +131,9 @@ const Unit = ({
           <input
             className='small-input'
             type='number'
-            value={unitData.hd}
-            onChange={handleInputHd}
+            onChange={(e) => setLocalHD(e.target.value)}
+            value={localHD}
+            onBlur={handleInputHd}
             min={0}
             max={unitData.maxHd}
             step={1}
