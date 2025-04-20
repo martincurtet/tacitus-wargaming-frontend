@@ -215,7 +215,8 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
             <input
               type='number'
               value={inputRowNumber}
-              onChange={handleInputRowNumberChange}
+              onChange={(e) => setInputRowNumber(e.target.value)}
+              onBlur={handleInputRowNumberChange}
               min={1}
               max={MAX_GRID_SIZE}
               step={1}
@@ -224,7 +225,8 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
             <input
               type='number'
               value={inputColumnNumber}
-              onChange={handleInputColumnNumberChange}
+              onChange={(e) => setInputColumnNumber(e.target.value)}
+              onBlur={handleInputColumnNumberChange}
               min={1}
               max={MAX_GRID_SIZE}
               step={1}
