@@ -25,7 +25,7 @@ const Battle = () => {
   
   const [isUserFactionModalOpen, setIsUserFactionModalOpen] = useState(false)
   const [inputUserFaction, setInputUserFaction] = useState('')
-  const [inputStratAbility, setInputStratAbility] = useState(0)
+  const [inputStratAbility, setInputStratAbility] = useState(Number(process.env.REACT_APP_DEFAULT_STRAT_ABILITY) || 3)
   
   // BATTLE VARIABLES
   const [step, setStep] = useState(1)
