@@ -6,32 +6,33 @@ import { DndContext } from '@dnd-kit/core'
 import { UserContext } from '../context/UserContext'
 
 import Tile from './Tile'
-import Button from './Button'
 
 import '../styles/components/Board.css'
 
 const Board = ({
     board, setBoard, boardSize,
     setUnits,
-    setLog
+    setLog,
+    paintToggle,
+    inputTerrain
   }) => {
 
   //
   const params = useParams()
   const [user, setUser] = useContext(UserContext)
   const [selectedTile, setSelectedTile] = useState('')
-  const [paintToggle, setPaintToggle] = useState(false)
-  const [inputTerrain, setInputTerrain] = useState('plains')
+  // const [paintToggle, setPaintToggle] = useState(false)
+  // const [inputTerrain, setInputTerrain] = useState('plains')
   const [startingTile, setStartingTile] = useState(null)
   const [finishingTile, setFinishingTile] = useState(null)
 
-  const togglePaint = () => {
-    setPaintToggle(prev => !prev)
-  }
+  // const togglePaint = () => {
+  //   setPaintToggle(prev => !prev)
+  // }
 
-  const handleInputTerrainChange = (e) => {
-    setInputTerrain(e.target.value)
-  }
+  // const handleInputTerrainChange = (e) => {
+  //   setInputTerrain(e.target.value)
+  // }
 
   //
   useEffect(() => {
@@ -203,9 +204,9 @@ const Board = ({
           {renderBoard()}
         </div>
       </DndContext>
-      <Button onClick={handleRemoveMarkers}>Clear Markers</Button>
-      <div className='sidebar-terrain'>
-        <input
+      {/* <div className='board-toolbar'> */}
+        {/* <Button onClick={handleRemoveMarkers}>Clear Markers</Button> */}
+        {/* <input
           type='checkbox'
           checked={paintToggle}
           onChange={togglePaint}
@@ -225,8 +226,8 @@ const Board = ({
           <option value='deep-water'>Deep Water</option>
           <option value='fire'>Fire</option>
           <option value='road'>Road</option>
-        </select>
-      </div>
+        </select> */}
+      {/* </div> */}
     </div>
   )
 }

@@ -9,9 +9,19 @@
   display: grid;
   grid-template-areas:
     "auto auto"
+    "auto auto"
     "auto auto";
-  grid-template-rows: 1fr 20vh;
+  grid-template-rows: auto 80vh 20vh;
   height: 100vh;
+}
+
+.battle-toolbar {
+  display: flex;
+  flex-direction: row;
+  background-color: #E5D3B3;
+  border-bottom: solid 1px #664229;
+  padding: 0.25rem;
+  gap: 0.25rem;
 }
 
 /* Chrome, Safari, Edge, Opera */
