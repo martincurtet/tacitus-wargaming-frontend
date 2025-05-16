@@ -9,6 +9,7 @@ import Board from '../components/Board'
 import Chat from '../components/Chat'
 import Log from '../components/Log'
 import Units from '../components/Units'
+import Button from '../components/Button'
 
 import '../styles/pages/Battle.css'
 
@@ -25,7 +26,7 @@ const Battle = () => {
   
   const [isUserFactionModalOpen, setIsUserFactionModalOpen] = useState(false)
   const [inputUserFaction, setInputUserFaction] = useState('')
-  const [inputStratAbility, setInputStratAbility] = useState(0)
+  const [inputStratAbility, setInputStratAbility] = useState(Number(process.env.REACT_APP_DEFAULT_STRAT_ABILITY) || 3)
   
   // BATTLE VARIABLES
   const [step, setStep] = useState(1)
@@ -41,6 +42,10 @@ const Battle = () => {
   const [unitShop, setUnitShop] = useState([])
   const [units, setUnits] = useState([])
   const [users, setUsers] = useState([])
+
+  const [logChatCollapse, setLogChatCollapse] = useState(false)
+  const [inputTerrain, setInputTerrain] = useState('plains')
+  const [paintToggle, setPaintToggle] = useState(false)
 
   // BACKGROUND
   const chooseRandomIndex = (type) => {
@@ -93,6 +98,20 @@ const Battle = () => {
   //     setUser(twUserData)
   //   }
   // }, [])
+
+  // DOWNLOAD
+  const handleDownload = () => {
+    socket.emit('download-file', {
+      roomUuid: params.battleuuid
+    })
+  }
+
+  const handleRemoveMarkers = () => {
+    socket.emit('remove-markers', {
+      roomUuid: params.battleuuid,
+      userUuid: user.userUuid
+    })
+  }
 
   // USER FACTION MODAL
   const openUserFactionModal = () => {
@@ -233,10 +252,40 @@ const Battle = () => {
     <div className='page-battle'>
       {step >= 5 ? (
         <div className='battle'>
+          <div className='battle-toolbar'>
+            <Button onClick={handleRemoveMarkers}>Clear Markers</Button>
+            <input
+              type='checkbox'
+              checked={paintToggle}
+              onChange={() => setPaintToggle(!paintToggle)}
+            />
+            <select
+              onChange={(e) => setInputTerrain(e.target.value)}
+              value={inputTerrain}
+            >
+              <option value='plains'>Plains</option>
+              <option value='forest'>Forest</option>
+              <option value='mud'>Mud</option>
+              <option value='jungle'>Jungle</option>
+              <option value='undergrowth'>Undergrowth</option>
+              <option value='marsh'>Marsh</option>
+              <option value='high-ground'>High Ground</option>
+              <option value='shallow-water'>Shallow Water</option>
+              <option value='deep-water'>Deep Water</option>
+              <option value='fire'>Fire</option>
+              <option value='road'>Road</option>
+            </select>
+            <Button onClick={() => setLogChatCollapse(!logChatCollapse)}>Hide Log and Chat</Button>
+          </div>
+          <div className='battle-toolbar'>
+            <Button onClick={handleDownload}>Download</Button>
+          </div>
           <Board
             board={board} setBoard={setBoard} boardSize={boardSize}
             setUnits={setUnits}
             setLog={setLog}
+            paintToggle={paintToggle}
+            inputTerrain={inputTerrain}
           />
           <Units
             setBoard={setBoard}
@@ -244,8 +293,12 @@ const Battle = () => {
             units={units} setUnits={setUnits}
             setLog={setLog}
           />
-          <Log log={log} setLog={setLog} />
-          <Chat messages={messages} setMessages={setMessages} users={users} setLog={setLog} />
+          {!logChatCollapse && (
+            <>
+              <Log log={log} setLog={setLog} />
+              <Chat messages={messages} setMessages={setMessages} users={users} setLog={setLog} />
+            </>
+          )}
         </div>
       ): (
         <Setup

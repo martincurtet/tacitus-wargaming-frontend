@@ -11,11 +11,11 @@ const Log = ({ log }) => {
   //
   const params = useParams()
 
-  const handleDownload = () => {
-    socket.emit('download-file', {
-      roomUuid: params.battleuuid
-    })
-  }
+  // const handleDownload = () => {
+  //   socket.emit('download-file', {
+  //     roomUuid: params.battleuuid
+  //   })
+  // }
 
   useEffect(() => {
     socket.on('file-downloaded', (data) => {
@@ -40,11 +40,11 @@ const Log = ({ log }) => {
       {log.map(l => (
         <p>[{formatTimestamp(l.timestamp, 'hh:min:ss')}] {l.log}</p>
       ))}
-      <Button
+      {/* <Button
         onClick={handleDownload}
       >
         Download
-      </Button>
+      </Button> */}
     </div>
   )
 }
