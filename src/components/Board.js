@@ -27,6 +27,7 @@ const Board = ({
   const [startingTile, setStartingTile] = useState(null)
   const [finishingTile, setFinishingTile] = useState(null)
   const [activeId, setActiveId] = useState(null)
+  const [dragging, setDragging] = useState(false)
 
   // const togglePaint = () => {
   //   setPaintToggle(prev => !prev)
@@ -62,10 +63,12 @@ const Board = ({
 
   const handleDragStart = (event) => {
     setActiveId(event.active.id)
+    setDragging(true)
   }
 
   const handleDragEnd = (e) => {
     setActiveId(null)
+    setDragging(false)
     const { active, over } = e
     if (over === null) return
     if (over.id === '00') return
@@ -188,6 +191,7 @@ const Board = ({
             identifierColor={tile?.identifierColor}
             setStartingTile={setStartingTile}
             setFinishingTile={setFinishingTile}
+            dragging={dragging}
           />
         )
       }

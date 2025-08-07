@@ -39,6 +39,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
   const [startingTile, setStartingTile] = useState(null)
   const [finishingTile, setFinishingTile] = useState(null)
   const [activeId, setActiveId] = useState(null)
+  const [dragging, setDragging] = useState(false)
 
   const handleInputRowNumberChange = (e) => {
     let rowNumber = parseInt(e.target.value.replace(/[^0-9]/g, ''))
@@ -134,6 +135,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
             fire={tile?.fire} highGround={tile?.impassable}
             identifier={tile?.identifier}
             identifierColor={tile?.identifierColor}
+            dragging={dragging}
           />
         )
       }
@@ -143,10 +145,12 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
 
   const handleDragStart = (event) => {
     setActiveId(event.active.id)
+    setDragging(true)
   }
 
   const handleDragEnd = (e) => {
     setActiveId(null)
+    setDragging(false)
     if (paintToggle) return
 
     const { active, over } = e
