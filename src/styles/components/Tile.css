@@ -3,6 +3,7 @@
   justify-content: center;
   align-items: center;
   position: relative;
+  z-index: 1;
 }
 
 .tile :first-child {
@@ -18,23 +19,56 @@
   border: solid 1px lightgrey;
 }
 
-/* High Ground Triangles using simple CSS approach */
+/* High Ground Triangles */
+.high-ground {
+  position: relative;
+}
+
+/* Top and bottom triangles using ::before and ::after */
+.high-ground::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 5px 5px 5px;
+  border-color: transparent transparent #071c30 transparent;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.high-ground::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 5px 0 5px;
+  border-color: #071c30 transparent transparent transparent;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Left and right triangles using additional pseudo-elements via CSS */
 .high-ground {
   background-image: 
-    /* Top triangle */
-    linear-gradient(135deg, transparent 40%, #071c30 40%, #071c30 60%, transparent 60%),
-    /* Bottom triangle */
-    linear-gradient(-135deg, transparent 40%, #071c30 40%, #071c30 60%, transparent 60%),
-    /* Left triangle */
-    linear-gradient(45deg, transparent 40%, #071c30 40%, #071c30 60%, transparent 60%),
-    /* Right triangle */
-    linear-gradient(-45deg, transparent 40%, #071c30 40%, #071c30 60%, transparent 60%);
-  background-size: 40px 40px;
-  background-position: 
-    50% 0%,
-    50% 100%,
-    0% 50%,
-    100% 50%;
+    linear-gradient(90deg, transparent calc(50% - 2.5px), #071c30 calc(50% - 2.5px), #071c30 calc(50% + 2.5px), transparent calc(50% + 2.5px));
+  background-size: 100% 100%;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+}
+
+/* For high ground tiles with fire or markers, layer the backgrounds properly */
+.high-ground[style*="linear-gradient"] {
+  background-image: 
+    var(--base-background),
+    linear-gradient(90deg, transparent calc(50% - 2.5px), #071c30 calc(50% - 2.5px), #071c30 calc(50% + 2.5px), transparent calc(50% + 2.5px));
 }
 
 .test {

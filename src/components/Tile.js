@@ -27,11 +27,16 @@ const Tile = ({
   const tileStyle = fire ? {
     background: markerColor 
       ? `linear-gradient(45deg, ${color} 10%, #ff9a00 10%, #ff9a00 20%, ${color} 20%, ${color} 30%, #ff9a00 30%, #ff9a00 40%, ${color} 40%, ${color} 50%, #ff9a00 50%, #ff9a00 60%, ${color} 60%, ${color} 70%, #ff9a00 70%, #ff9a00 80%, ${color} 80%, ${color} 90%, ${markerColor} 90%)`
+      : `linear-gradient(45deg, ${color} 10%, #ff9a00 10%, #ff9a00 20%, ${color} 20%, ${color} 30%, #ff9a00 30%, #ff9a00 40%, ${color} 40%, ${color} 50%, #ff9a00 50%, #ff9a00 60%, ${color} 60%, ${color} 70%, #ff9a00 70%, #ff9a00 80%, ${color} 80%, ${color} 90%)`,
+    '--base-background': markerColor 
+      ? `linear-gradient(45deg, ${color} 10%, #ff9a00 10%, #ff9a00 20%, ${color} 20%, ${color} 30%, #ff9a00 30%, #ff9a00 40%, ${color} 40%, ${color} 50%, #ff9a00 50%, #ff9a00 60%, ${color} 60%, ${color} 70%, #ff9a00 70%, #ff9a00 80%, ${color} 80%, ${color} 90%, ${markerColor} 90%)`
       : `linear-gradient(45deg, ${color} 10%, #ff9a00 10%, #ff9a00 20%, ${color} 20%, ${color} 30%, #ff9a00 30%, #ff9a00 40%, ${color} 40%, ${color} 50%, #ff9a00 50%, #ff9a00 60%, ${color} 60%, ${color} 70%, #ff9a00 70%, #ff9a00 80%, ${color} 80%, ${color} 90%)`
   } : markerColor ? {
-    background: `linear-gradient(45deg, ${color} 90%, ${markerColor} 90%)`
+    background: `linear-gradient(45deg, ${color} 90%, ${markerColor} 90%)`,
+    '--base-background': `linear-gradient(45deg, ${color} 90%, ${markerColor} 90%)`
   } : {
-    background: color
+    background: color,
+    '--base-background': color
   }
 
   // RENDER
