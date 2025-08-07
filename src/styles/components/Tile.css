@@ -18,6 +18,25 @@
   border: solid 1px lightgrey;
 }
 
+/* High Ground Triangles using simple CSS approach */
+.high-ground {
+  background-image: 
+    /* Top triangle */
+    linear-gradient(135deg, transparent 40%, #071c30 40%, #071c30 60%, transparent 60%),
+    /* Bottom triangle */
+    linear-gradient(-135deg, transparent 40%, #071c30 40%, #071c30 60%, transparent 60%),
+    /* Left triangle */
+    linear-gradient(45deg, transparent 40%, #071c30 40%, #071c30 60%, transparent 60%),
+    /* Right triangle */
+    linear-gradient(-45deg, transparent 40%, #071c30 40%, #071c30 60%, transparent 60%);
+  background-size: 40px 40px;
+  background-position: 
+    50% 0%,
+    50% 100%,
+    0% 50%,
+    100% 50%;
+}
+
 .test {
   color: #d9ead3; 
   color: #6aa84f;

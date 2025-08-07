@@ -38,88 +38,13 @@ const Tile = ({
   return (
     <div
       id={coordinates}
-      className={`tile ${highlighted ? 'red' : 'grey'}-border`}
-      style={{
-        ...tileStyle,
-        position: 'relative'
-      }}
+      className={`tile ${highlighted ? 'red' : 'grey'}-border ${highGround ? 'high-ground' : ''}`}
+      style={tileStyle}
       onMouseDown={() => setStartingTile(coordinates)}
       onMouseUp={() => setFinishingTile(coordinates)}
       onDoubleClick={() => setSelectedTile(coordinates)}
       onClick={handleClick}
     >
-      {highGround && (
-        <>
-          {/* Top triangle */}
-          <div 
-            className="high-ground-triangle top"
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: 0,
-              height: 0,
-              borderStyle: 'solid',
-              borderWidth: '0 5px 5px 5px',
-              borderColor: 'transparent transparent #071c30 transparent',
-              zIndex: -1,
-              pointerEvents: 'none'
-            }}
-          />
-          {/* Bottom triangle */}
-          <div 
-            className="high-ground-triangle bottom"
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: 0,
-              height: 0,
-              borderStyle: 'solid',
-              borderWidth: '5px 5px 0 5px',
-              borderColor: '#071c30 transparent transparent transparent',
-              zIndex: -1,
-              pointerEvents: 'none'
-            }}
-          />
-          {/* Left triangle */}
-          <div 
-            className="high-ground-triangle left"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: 0,
-              transform: 'translateY(-50%)',
-              width: 0,
-              height: 0,
-              borderStyle: 'solid',
-              borderWidth: '5px 5px 5px 0',
-              borderColor: 'transparent #071c30 transparent transparent',
-              zIndex: -1,
-              pointerEvents: 'none'
-            }}
-          />
-          {/* Right triangle */}
-          <div 
-            className="high-ground-triangle right"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              right: 0,
-              transform: 'translateY(-50%)',
-              width: 0,
-              height: 0,
-              borderStyle: 'solid',
-              borderWidth: '5px 0 5px 5px',
-              borderColor: 'transparent transparent transparent #071c30',
-              zIndex: -1,
-              pointerEvents: 'none'
-            }}
-          />
-        </>
-      )}
       {content !== '' ? (
         content
       ) : (
