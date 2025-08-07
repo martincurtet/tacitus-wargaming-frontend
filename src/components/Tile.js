@@ -39,7 +39,10 @@ const Tile = ({
     <div
       id={coordinates}
       className={`tile ${highlighted ? 'red' : 'grey'}-border`}
-      style={tileStyle}
+      style={{
+        ...tileStyle,
+        position: 'relative'
+      }}
       onMouseDown={() => setStartingTile(coordinates)}
       onMouseUp={() => setFinishingTile(coordinates)}
       onDoubleClick={() => setSelectedTile(coordinates)}
@@ -60,7 +63,7 @@ const Tile = ({
               borderStyle: 'solid',
               borderWidth: '0 5px 5px 5px',
               borderColor: 'transparent transparent #071c30 transparent',
-              zIndex: 0,
+              zIndex: -1,
               pointerEvents: 'none'
             }}
           />
@@ -77,7 +80,7 @@ const Tile = ({
               borderStyle: 'solid',
               borderWidth: '5px 5px 0 5px',
               borderColor: '#071c30 transparent transparent transparent',
-              zIndex: 0,
+              zIndex: -1,
               pointerEvents: 'none'
             }}
           />
@@ -94,7 +97,7 @@ const Tile = ({
               borderStyle: 'solid',
               borderWidth: '5px 5px 5px 0',
               borderColor: 'transparent #071c30 transparent transparent',
-              zIndex: 0,
+              zIndex: -1,
               pointerEvents: 'none'
             }}
           />
@@ -111,7 +114,7 @@ const Tile = ({
               borderStyle: 'solid',
               borderWidth: '5px 0 5px 5px',
               borderColor: 'transparent transparent transparent #071c30',
-              zIndex: 0,
+              zIndex: -1,
               pointerEvents: 'none'
             }}
           />
