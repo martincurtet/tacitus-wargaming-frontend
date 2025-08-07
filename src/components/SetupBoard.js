@@ -178,9 +178,23 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
     const updatedBoard = { ...board }
     
     if (active.id.includes('-')) {
-      // unit-unassigned to tile - no need to clear source since it's from sidebar
-      updatedBoard[coordinates] = { ...updatedBoard[coordinates] }
-      // The unit data will be populated by the server response
+      // unit-unassigned to tile - populate the target tile with unit data
+      const [factionCode, unitCode, identifier] = active.id.split('-')
+      const unit = units.find(u => 
+        u.factionCode === factionCode && 
+        u.unitCode === unitCode && 
+        u.identifier === (identifier || '')
+      )
+      
+      if (unit) {
+        updatedBoard[coordinates] = { ...updatedBoard[coordinates] }
+        updatedBoard[coordinates].unitIcon = unit.iconName
+        updatedBoard[coordinates].factionIcon = factions.find(f => f.code === unit.factionCode).icon
+        updatedBoard[coordinates].veterancyIcon = veterancyMap[unit.veterancy].iconName
+        updatedBoard[coordinates].identifier = unit.identifier
+        updatedBoard[coordinates].identifierColor = unit.fontColor
+        updatedBoard[coordinates].unitFullCode = unitFullCode
+      }
     } else {
       // tile to tile
       updatedBoard[active.id] = { ...updatedBoard[active.id] }
