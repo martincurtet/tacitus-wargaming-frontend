@@ -39,7 +39,6 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
   const [startingTile, setStartingTile] = useState(null)
   const [finishingTile, setFinishingTile] = useState(null)
   const [activeId, setActiveId] = useState(null)
-  const [dragging, setDragging] = useState(false)
 
   const handleInputRowNumberChange = (e) => {
     let rowNumber = parseInt(e.target.value.replace(/[^0-9]/g, ''))
@@ -135,7 +134,6 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
             fire={tile?.fire} highGround={tile?.impassable}
             identifier={tile?.identifier}
             identifierColor={tile?.identifierColor}
-            dragging={dragging}
           />
         )
       }
@@ -145,12 +143,10 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
 
   const handleDragStart = (event) => {
     setActiveId(event.active.id)
-    setDragging(true)
   }
 
   const handleDragEnd = (e) => {
     setActiveId(null)
-    setDragging(false)
     if (paintToggle) return
 
     const { active, over } = e
@@ -177,6 +173,34 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
     }
     
     if (board[coordinates]?.unitFullCode !== undefined && board[coordinates]?.unitFullCode !== '') return
+
+    // Optimistic update - immediately update local state
+    const updatedBoard = { ...board }
+    
+    if (active.id.includes('-')) {
+      // unit-unassigned to tile - no need to clear source since it's from sidebar
+      updatedBoard[coordinates] = { ...updatedBoard[coordinates] }
+      // The unit data will be populated by the server response
+    } else {
+      // tile to tile
+      updatedBoard[active.id] = { ...updatedBoard[active.id] }
+      delete updatedBoard[active.id].unitIcon
+      delete updatedBoard[active.id].factionIcon
+      delete updatedBoard[active.id].veterancyIcon
+      delete updatedBoard[active.id].identifier
+      delete updatedBoard[active.id].identifierColor
+      delete updatedBoard[active.id].unitFullCode
+
+      updatedBoard[coordinates] = { ...updatedBoard[coordinates] }
+      updatedBoard[coordinates].unitIcon = board[active.id].unitIcon
+      updatedBoard[coordinates].factionIcon = board[active.id].factionIcon
+      updatedBoard[coordinates].veterancyIcon = board[active.id].veterancyIcon
+      updatedBoard[coordinates].identifier = board[active.id].identifier
+      updatedBoard[coordinates].identifierColor = board[active.id].identifierColor
+      updatedBoard[coordinates].unitFullCode = unitFullCode
+    }
+
+    setBoard(updatedBoard)
 
     //
     socket.emit('update-unit-coordinates', {

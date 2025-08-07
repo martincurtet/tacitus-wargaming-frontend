@@ -11,12 +11,6 @@
   height: 35px;
 }
 
-/* Hide the original element when it's being dragged */
-.tile.dragging {
-  opacity: 0;
-  pointer-events: none;
-}
-
 .red-border {
   border: solid 1px red; 
 }

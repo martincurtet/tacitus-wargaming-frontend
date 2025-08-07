@@ -27,7 +27,6 @@ const Board = ({
   const [startingTile, setStartingTile] = useState(null)
   const [finishingTile, setFinishingTile] = useState(null)
   const [activeId, setActiveId] = useState(null)
-  const [dragging, setDragging] = useState(false)
 
   // const togglePaint = () => {
   //   setPaintToggle(prev => !prev)
@@ -63,12 +62,10 @@ const Board = ({
 
   const handleDragStart = (event) => {
     setActiveId(event.active.id)
-    setDragging(true)
   }
 
   const handleDragEnd = (e) => {
     setActiveId(null)
-    setDragging(false)
     const { active, over } = e
     if (over === null) return
     if (over.id === '00') return
@@ -78,6 +75,26 @@ const Board = ({
     let coordinates = over.id
   
     if (board[coordinates]?.unitFullCode !== undefined && board[coordinates]?.unitFullCode !== '') return
+
+    // Optimistic update - immediately update local state
+    const updatedBoard = { ...board }
+    updatedBoard[active.id] = { ...updatedBoard[active.id] }
+    delete updatedBoard[active.id].unitIcon
+    delete updatedBoard[active.id].factionIcon
+    delete updatedBoard[active.id].veterancyIcon
+    delete updatedBoard[active.id].unitIdentifier
+    delete updatedBoard[active.id].identifierColor
+    delete updatedBoard[active.id].unitFullCode
+
+    updatedBoard[coordinates] = { ...updatedBoard[coordinates] }
+    updatedBoard[coordinates].unitIcon = board[active.id].unitIcon
+    updatedBoard[coordinates].factionIcon = board[active.id].factionIcon
+    updatedBoard[coordinates].veterancyIcon = board[active.id].veterancyIcon
+    updatedBoard[coordinates].unitIdentifier = board[active.id].unitIdentifier
+    updatedBoard[coordinates].identifierColor = board[active.id].identifierColor
+    updatedBoard[coordinates].unitFullCode = unitFullCode
+
+    setBoard(updatedBoard)
 
     socket.emit('update-unit-coordinates', {
       roomUuid: params.battleuuid,
@@ -191,7 +208,6 @@ const Board = ({
             identifierColor={tile?.identifierColor}
             setStartingTile={setStartingTile}
             setFinishingTile={setFinishingTile}
-            dragging={dragging}
           />
         )
       }
