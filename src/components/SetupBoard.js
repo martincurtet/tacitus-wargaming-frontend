@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
-import { DndContext } from '@dnd-kit/core'
+import { DndContext, DragOverlay } from '@dnd-kit/core'
 import { integerToLetter } from '../functions/functions'
 
 import Draggable from './dndComponents/Draggable'
@@ -38,6 +38,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
   const [inputTerrain, setInputTerrain] = useState('plains')
   const [startingTile, setStartingTile] = useState(null)
   const [finishingTile, setFinishingTile] = useState(null)
+  const [activeId, setActiveId] = useState(null)
 
   const handleInputRowNumberChange = (e) => {
     let rowNumber = parseInt(e.target.value.replace(/[^0-9]/g, ''))
@@ -140,7 +141,12 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
     return tiles
   }
 
+  const handleDragStart = (event) => {
+    setActiveId(event.active.id)
+  }
+
   const handleDragEnd = (e) => {
+    setActiveId(null)
     if (paintToggle) return
 
     const { active, over } = e
@@ -176,6 +182,49 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
     })
   }
 
+  // Drag Overlay Component
+  const renderDragOverlay = () => {
+    if (!activeId) return null
+    
+    // Check if it's a unit from sidebar
+    if (activeId.includes('-')) {
+      const [factionCode, unitCode, identifier] = activeId.split('-')
+      const unit = units.find(u => 
+        u.factionCode === factionCode && 
+        u.unitCode === unitCode && 
+        u.identifier === (identifier || '')
+      )
+      if (unit) {
+        return (
+          <UnitIcon
+            className='sidebar-units-image'
+            unitIconName={unit.iconName}
+            factionIconName={factions.find(f => f.code === unit.factionCode).icon}
+            veterancyIconName={veterancyMap[unit.veterancy].iconName}
+            identifier={unit.identifier} 
+            identifierColor={unit.fontColor}
+          />
+        )
+      }
+    }
+    
+    // Check if it's a unit from board
+    const tile = board[activeId] || null
+    if (tile && tile.unitIcon) {
+      return (
+        <UnitIcon
+          unitIconName={tile.unitIcon}
+          factionIconName={tile.factionIcon}
+          veterancyIconName={tile.veterancyIcon}
+          identifier={tile.identifier}
+          identifierColor={tile.identifierColor}
+        />
+      )
+    }
+    
+    return null
+  }
+
   // SOCKET EVENTS
   useEffect(() => {
     socket.on('board-size-updated', (data) => {
@@ -207,6 +256,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
   return (
     <div className='setup-board'>
       <DndContext
+        onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
         <div className='setup-board-sidebar'>
@@ -255,7 +305,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
               <option value='road'>Road</option>
             </select>
           </div>
-          <Droppable id={'unit-unassigned'}>
+          <Droppable id='unit-unassigned'>
             <div className='sidebar-units'>
               {renderUnits()}
             </div>
@@ -270,6 +320,9 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
         >
           {renderBoard()}
         </div>
+        <DragOverlay>
+          {renderDragOverlay()}
+        </DragOverlay>
       </DndContext>
     </div>
   )

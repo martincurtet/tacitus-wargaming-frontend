@@ -2,10 +2,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import { integerToLetter } from '../functions/functions'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
-import { DndContext } from '@dnd-kit/core'
+import { DndContext, DragOverlay, useDraggable } from '@dnd-kit/core'
 import { UserContext } from '../context/UserContext'
 
 import Tile from './Tile'
+import UnitIcon from './UnitIcon'
 
 import '../styles/components/Board.css'
 
@@ -25,6 +26,7 @@ const Board = ({
   // const [inputTerrain, setInputTerrain] = useState('plains')
   const [startingTile, setStartingTile] = useState(null)
   const [finishingTile, setFinishingTile] = useState(null)
+  const [activeId, setActiveId] = useState(null)
 
   // const togglePaint = () => {
   //   setPaintToggle(prev => !prev)
@@ -58,7 +60,12 @@ const Board = ({
     }
   }, [finishingTile])
 
+  const handleDragStart = (event) => {
+    setActiveId(event.active.id)
+  }
+
   const handleDragEnd = (e) => {
+    setActiveId(null)
     const { active, over } = e
     if (over === null) return
     if (over.id === '00') return
@@ -188,10 +195,31 @@ const Board = ({
     return tiles
   }
 
+  // Drag Overlay Component
+  const renderDragOverlay = () => {
+    if (!activeId) return null
+    
+    const tile = board[activeId] || null
+    if (!tile || !tile.unitIcon) return null
+
+    return (
+      <UnitIcon
+        unitIconName={tile.unitIcon}
+        factionIconName={tile.factionIcon}
+        veterancyIconName={tile.veterancyIcon}
+        identifier={tile.unitIdentifier}
+        identifierColor={tile.identifierColor}
+      />
+    )
+  }
+
   // RENDER
   return (
     <div className='board'>
-      <DndContext onDragEnd={handleDragEnd}>
+      <DndContext 
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
         <div
           className={`board-grid ${paintToggle ? 'paint-cursor' : ''}`}
           style={{
@@ -203,6 +231,9 @@ const Board = ({
         >
           {renderBoard()}
         </div>
+        <DragOverlay>
+          {renderDragOverlay()}
+        </DragOverlay>
       </DndContext>
       {/* <div className='board-toolbar'> */}
         {/* <Button onClick={handleRemoveMarkers}>Clear Markers</Button> */}
