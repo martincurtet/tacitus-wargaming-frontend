@@ -30,6 +30,12 @@
   text-align: center;
 }
 
+/* Drag overlay units should be the same size as board tiles */
+.unit-image-container.drag-overlay-unit {
+  width: 35px;
+  height: 35px;
+}
+
 .unit-image {
   display: block;
   width: 100%; /* Adjust as needed */

@@ -204,6 +204,7 @@ const Board = ({
 
     return (
       <UnitIcon
+        className='drag-overlay-unit'
         unitIconName={tile.unitIcon}
         factionIconName={tile.factionIcon}
         veterancyIconName={tile.veterancyIcon}

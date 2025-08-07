@@ -197,7 +197,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
       if (unit) {
         return (
           <UnitIcon
-            className='sidebar-units-image'
+            className='drag-overlay-unit'
             unitIconName={unit.iconName}
             factionIconName={factions.find(f => f.code === unit.factionCode).icon}
             veterancyIconName={veterancyMap[unit.veterancy].iconName}
@@ -213,6 +213,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
     if (tile && tile.unitIcon) {
       return (
         <UnitIcon
+          className='drag-overlay-unit'
           unitIconName={tile.unitIcon}
           factionIconName={tile.factionIcon}
           veterancyIconName={tile.veterancyIcon}
