@@ -11,7 +11,7 @@ const Tile = ({
     setStartingTile=()=>{}, setFinishingTile=()=>{}, setSelectedTile=()=>{},
     unitIconName, factionIconName, veterancyIconName,
     markerColor, handleToggleMarker=()=>{}, handleToggleFire=()=>{}, fire, highGround,
-    identifier, identifierColor
+    identifier, identifierColor, terrain
   }) => {
   //
   const handleClick = (e) => {
@@ -43,7 +43,7 @@ const Tile = ({
   return (
     <div
       id={coordinates}
-      className={`tile ${highlighted ? 'red' : 'grey'}-border ${highGround ? 'high-ground' : ''}`}
+      className={`tile ${highlighted ? 'red' : 'grey'}-border ${(highGround || terrain === 'high-ground') ? 'high-ground' : ''} ${terrain === 'high-ground-2' ? 'high-ground-2' : ''}`}
       style={tileStyle}
       onMouseDown={() => setStartingTile(coordinates)}
       onMouseUp={() => setFinishingTile(coordinates)}

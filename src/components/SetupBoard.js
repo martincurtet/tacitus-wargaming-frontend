@@ -350,6 +350,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
               <option value='undergrowth'>Undergrowth</option>
               <option value='marsh'>Marsh</option>
               <option value='high-ground'>High Ground</option>
+              <option value='high-ground-2'>High Ground (2)</option>
               <option value='shallow-water'>Shallow Water</option>
               <option value='deep-water'>Deep Water</option>
               <option value='fire'>Fire</option>

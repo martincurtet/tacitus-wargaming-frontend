@@ -40,6 +40,35 @@
   pointer-events: none;
 }
 
+/* High Ground (2): two adjacent bottom triangles */
+.high-ground-2 {
+  position: relative;
+}
+
+.high-ground-2::before,
+.high-ground-2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 5px 5px 5px;
+  border-color: transparent transparent #071c30 transparent;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Left triangle center 5px left of center */
+.high-ground-2::before {
+  left: calc(50% - 5px);
+}
+
+/* Right triangle center 5px right of center */
+.high-ground-2::after {
+  left: calc(50% + 5px);
+}
+
 .test {
   color: #d9ead3; 
   color: #6aa84f;
