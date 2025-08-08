@@ -252,7 +252,7 @@ const Board = ({
         >
           {renderBoard()}
         </div>
-        <DragOverlay>
+        <DragOverlay dropAnimation={null}>
           {renderDragOverlay()}
         </DragOverlay>
       </DndContext>

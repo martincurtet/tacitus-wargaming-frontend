@@ -195,6 +195,13 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
         updatedBoard[coordinates].identifier = unit.identifier
         updatedBoard[coordinates].identifierColor = unit.fontColor
         updatedBoard[coordinates].unitFullCode = unitFullCode
+        // Optimistically remove from tray by setting coordinates on the unit
+        setUnits(prev => prev.map(u => {
+          if (u.factionCode === factionCode && u.unitCode === unitCode && u.identifier === (identifier || '')) {
+            return { ...u, coordinates: coordinates }
+          }
+          return u
+        }))
       }
     } else {
       // tile to tile
@@ -207,11 +214,11 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
       delete updatedBoard[active.id].unitFullCode
 
       updatedBoard[coordinates] = { ...(updatedBoard[coordinates] || {}) }
-      updatedBoard[coordinates].unitIcon = board[active.id].unitIcon
-      updatedBoard[coordinates].factionIcon = board[active.id].factionIcon
-      updatedBoard[coordinates].veterancyIcon = board[active.id].veterancyIcon
-      updatedBoard[coordinates].identifier = board[active.id].identifier
-      updatedBoard[coordinates].identifierColor = board[active.id].identifierColor
+      updatedBoard[coordinates].unitIcon = board[active.id]?.unitIcon
+      updatedBoard[coordinates].factionIcon = board[active.id]?.factionIcon
+      updatedBoard[coordinates].veterancyIcon = board[active.id]?.veterancyIcon
+      updatedBoard[coordinates].identifier = board[active.id]?.identifier
+      updatedBoard[coordinates].identifierColor = board[active.id]?.identifierColor
       updatedBoard[coordinates].unitFullCode = unitFullCode
     }
 
@@ -364,7 +371,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
         >
           {renderBoard()}
         </div>
-        <DragOverlay>
+        <DragOverlay dropAnimation={null}>
           {renderDragOverlay()}
         </DragOverlay>
       </DndContext>
