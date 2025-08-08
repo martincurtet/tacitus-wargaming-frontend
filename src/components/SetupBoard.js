@@ -160,7 +160,8 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
     if (active.id.includes('-')) {
       // unit-unassigned to tile
       if (over.id === 'unit-unassigned') return
-      unitFullCode = active.id
+      const [factionCode, unitCode, identifier] = active.id.split('-')
+      unitFullCode = `${factionCode}-${unitCode}-${identifier || ''}`
       coordinates = over.id
     } else if (over.id === 'unit-unassigned') {
       // tile to unit-unassigned (disabled)
@@ -187,17 +188,17 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
       )
       
       if (unit) {
-        updatedBoard[coordinates] = { ...updatedBoard[coordinates] }
+        updatedBoard[coordinates] = { ...(updatedBoard[coordinates] || {}) }
         updatedBoard[coordinates].unitIcon = unit.iconName
-        updatedBoard[coordinates].factionIcon = factions.find(f => f.code === unit.factionCode).icon
-        updatedBoard[coordinates].veterancyIcon = veterancyMap[unit.veterancy].iconName
+        updatedBoard[coordinates].factionIcon = (factions.find(f => f.code === unit.factionCode)?.icon) || ''
+        updatedBoard[coordinates].veterancyIcon = (veterancyMap[unit.veterancy]?.iconName) || ''
         updatedBoard[coordinates].identifier = unit.identifier
         updatedBoard[coordinates].identifierColor = unit.fontColor
         updatedBoard[coordinates].unitFullCode = unitFullCode
       }
     } else {
       // tile to tile
-      updatedBoard[active.id] = { ...updatedBoard[active.id] }
+      updatedBoard[active.id] = { ...(updatedBoard[active.id] || {}) }
       delete updatedBoard[active.id].unitIcon
       delete updatedBoard[active.id].factionIcon
       delete updatedBoard[active.id].veterancyIcon
@@ -205,7 +206,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
       delete updatedBoard[active.id].identifierColor
       delete updatedBoard[active.id].unitFullCode
 
-      updatedBoard[coordinates] = { ...updatedBoard[coordinates] }
+      updatedBoard[coordinates] = { ...(updatedBoard[coordinates] || {}) }
       updatedBoard[coordinates].unitIcon = board[active.id].unitIcon
       updatedBoard[coordinates].factionIcon = board[active.id].factionIcon
       updatedBoard[coordinates].veterancyIcon = board[active.id].veterancyIcon

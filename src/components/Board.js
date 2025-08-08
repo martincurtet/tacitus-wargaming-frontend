@@ -71,14 +71,14 @@ const Board = ({
     if (over.id === '00') return
     if (active.id === over.id) return
 
-    let unitFullCode = board[active.id].unitFullCode
+    let unitFullCode = board[active.id]?.unitFullCode
     let coordinates = over.id
   
     if (board[coordinates]?.unitFullCode !== undefined && board[coordinates]?.unitFullCode !== '') return
 
     // Optimistic update - immediately update local state
     const updatedBoard = { ...board }
-    updatedBoard[active.id] = { ...updatedBoard[active.id] }
+    updatedBoard[active.id] = { ...(updatedBoard[active.id] || {}) }
     delete updatedBoard[active.id].unitIcon
     delete updatedBoard[active.id].factionIcon
     delete updatedBoard[active.id].veterancyIcon
@@ -86,13 +86,13 @@ const Board = ({
     delete updatedBoard[active.id].identifierColor
     delete updatedBoard[active.id].unitFullCode
 
-    updatedBoard[coordinates] = { ...updatedBoard[coordinates] }
-    updatedBoard[coordinates].unitIcon = board[active.id].unitIcon
-    updatedBoard[coordinates].factionIcon = board[active.id].factionIcon
-    updatedBoard[coordinates].veterancyIcon = board[active.id].veterancyIcon
-    updatedBoard[coordinates].unitIdentifier = board[active.id].unitIdentifier
-    updatedBoard[coordinates].identifierColor = board[active.id].identifierColor
-    updatedBoard[coordinates].unitFullCode = unitFullCode
+    updatedBoard[coordinates] = { ...(updatedBoard[coordinates] || {}) }
+    updatedBoard[coordinates].unitIcon = board[active.id]?.unitIcon || ''
+    updatedBoard[coordinates].factionIcon = board[active.id]?.factionIcon || ''
+    updatedBoard[coordinates].veterancyIcon = board[active.id]?.veterancyIcon || ''
+    updatedBoard[coordinates].unitIdentifier = board[active.id]?.unitIdentifier || ''
+    updatedBoard[coordinates].identifierColor = board[active.id]?.identifierColor || ''
+    updatedBoard[coordinates].unitFullCode = unitFullCode || ''
 
     setBoard(updatedBoard)
 
