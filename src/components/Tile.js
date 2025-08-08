@@ -43,7 +43,7 @@ const Tile = ({
   return (
     <div
       id={coordinates}
-      className={`tile ${highlighted ? 'red' : 'grey'}-border ${(highGround || terrain === 'high-ground') ? 'high-ground' : ''} ${terrain === 'high-ground-2' ? 'high-ground-2' : ''}`}
+      className={`tile ${highlighted ? 'red' : 'grey'}-border ${(highGround || terrain === 'high-ground') ? 'high-ground' : ''} ${terrain === 'high-ground-2' ? 'high-ground-2' : ''} ${terrain === 'low-ground' ? 'low-ground' : ''} ${terrain === 'low-ground-2' ? 'low-ground-2' : ''} ${terrain === 'impassable-r' ? 'impassable-r' : ''} ${terrain === 'impassable-b' ? 'impassable-b' : ''} ${terrain === 'impassable-corner' ? 'impassable-corner' : ''}`}
       style={tileStyle}
       onMouseDown={() => setStartingTile(coordinates)}
       onMouseUp={() => setFinishingTile(coordinates)}

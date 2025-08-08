@@ -351,10 +351,15 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
               <option value='marsh'>Marsh</option>
               <option value='high-ground'>High Ground</option>
               <option value='high-ground-2'>High Ground (2)</option>
+              <option value='low-ground'>Low Ground</option>
+              <option value='low-ground-2'>Low Ground (2)</option>
               <option value='shallow-water'>Shallow Water</option>
               <option value='deep-water'>Deep Water</option>
               <option value='fire'>Fire</option>
               <option value='road'>Road</option>
+              <option value='impassable-r'>Impassable (Right)</option>
+              <option value='impassable-b'>Impassable (Bottom)</option>
+              <option value='impassable-corner'>Impassable (Corner)</option>
             </select>
           </div>
           <Droppable id='unit-unassigned'>
