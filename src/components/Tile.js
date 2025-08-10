@@ -10,8 +10,9 @@ const Tile = ({
     content, coordinates, highlighted, color,
     setStartingTile=()=>{}, setFinishingTile=()=>{}, setSelectedTile=()=>{},
     unitIconName, factionIconName, veterancyIconName,
-    markerColor, handleToggleMarker=()=>{}, handleToggleFire=()=>{}, fire, highGround,
-    identifier, identifierColor, terrain
+    markerColor, handleToggleMarker=()=>{}, handleToggleFire=()=>{}, fire,
+    identifier, identifierColor, terrain,
+    painting=false
   }) => {
   //
   const handleClick = (e) => {
@@ -24,14 +25,7 @@ const Tile = ({
     }
   }
 
-  const tileStyle = fire ? {
-    background: markerColor 
-      ? `linear-gradient(45deg, ${color} 10%, #ff9a00 10%, #ff9a00 20%, ${color} 20%, ${color} 30%, #ff9a00 30%, #ff9a00 40%, ${color} 40%, ${color} 50%, #ff9a00 50%, #ff9a00 60%, ${color} 60%, ${color} 70%, #ff9a00 70%, #ff9a00 80%, ${color} 80%, ${color} 90%, ${markerColor} 90%)`
-      : `linear-gradient(45deg, ${color} 10%, #ff9a00 10%, #ff9a00 20%, ${color} 20%, ${color} 30%, #ff9a00 30%, #ff9a00 40%, ${color} 40%, ${color} 50%, #ff9a00 50%, #ff9a00 60%, ${color} 60%, ${color} 70%, #ff9a00 70%, #ff9a00 80%, ${color} 80%, ${color} 90%)`,
-    '--base-background': markerColor 
-      ? `linear-gradient(45deg, ${color} 10%, #ff9a00 10%, #ff9a00 20%, ${color} 20%, ${color} 30%, #ff9a00 30%, #ff9a00 40%, ${color} 40%, ${color} 50%, #ff9a00 50%, #ff9a00 60%, ${color} 60%, ${color} 70%, #ff9a00 70%, #ff9a00 80%, ${color} 80%, ${color} 90%, ${markerColor} 90%)`
-      : `linear-gradient(45deg, ${color} 10%, #ff9a00 10%, #ff9a00 20%, ${color} 20%, ${color} 30%, #ff9a00 30%, #ff9a00 40%, ${color} 40%, ${color} 50%, #ff9a00 50%, #ff9a00 60%, ${color} 60%, ${color} 70%, #ff9a00 70%, #ff9a00 80%, ${color} 80%, ${color} 90%)`
-  } : markerColor ? {
+  const tileStyle = markerColor ? {
     background: `linear-gradient(45deg, ${color} 90%, ${markerColor} 90%)`,
     '--base-background': `linear-gradient(45deg, ${color} 90%, ${markerColor} 90%)`
   } : {
@@ -39,35 +33,93 @@ const Tile = ({
     '--base-background': color
   }
 
+  const parseTerrainTokens = () => {
+    if (!terrain || typeof terrain !== 'string') return []
+    return terrain.split(/[+,]/).map(t => t.trim()).filter(Boolean)
+  }
+
+  const renderOverlays = () => {
+    const tokens = parseTerrainTokens()
+
+    const overlays = []
+
+    // Fire active if either server flag or token present
+    const fireActive = fire || tokens.includes('fire')
+
+    // Fire as an underlay within overlays stack
+    if (fireActive) {
+      overlays.push(<div key='fire' className='overlay-fire' />)
+    }
+
+    if (tokens.length === 0) return <div className='tile-overlays'>{overlays}</div>
+
+    const hasHigh2 = tokens.includes('high-ground-2')
+    const hasHigh1 = tokens.includes('high-ground') && !hasHigh2
+    const hasLow2 = tokens.includes('low-ground-2')
+    const hasLow1 = tokens.includes('low-ground') && !hasLow2
+    const hasImpR = tokens.includes('impassable-r')
+    const hasImpB = tokens.includes('impassable-b')
+
+    if (hasHigh2) {
+      overlays.push(
+        <div key='hg2-left' className='overlay-tri-bottom offset-left' />,
+        <div key='hg2-right' className='overlay-tri-bottom offset-right' />
+      )
+    } else if (hasHigh1) {
+      overlays.push(<div key='hg1' className='overlay-tri-bottom' />)
+    }
+
+    if (hasLow2) {
+      overlays.push(
+        <div key='lg2-left' className='overlay-tri-top offset-left' />,
+        <div key='lg2-right' className='overlay-tri-top offset-right' />
+      )
+    } else if (hasLow1) {
+      overlays.push(<div key='lg1' className='overlay-tri-top' />)
+    }
+
+    if (hasImpR) overlays.push(<div key='imp-r' className='overlay-stripe-right' />)
+    if (hasImpB) overlays.push(<div key='imp-b' className='overlay-stripe-bottom' />)
+
+    return <div className='tile-overlays'>{overlays}</div>
+  }
+
   // RENDER
   return (
     <div
       id={coordinates}
-      className={`tile ${highlighted ? 'red' : 'grey'}-border ${(highGround || terrain === 'high-ground') ? 'high-ground' : ''} ${terrain === 'high-ground-2' ? 'high-ground-2' : ''} ${terrain === 'low-ground' ? 'low-ground' : ''} ${terrain === 'low-ground-2' ? 'low-ground-2' : ''} ${terrain === 'impassable-r' ? 'impassable-r' : ''} ${terrain === 'impassable-b' ? 'impassable-b' : ''} ${terrain === 'impassable-corner' ? 'impassable-corner' : ''}`}
+      className={`tile ${highlighted ? 'red' : 'grey'}-border`}
       style={tileStyle}
-      onMouseDown={() => setStartingTile(coordinates)}
-      onMouseUp={() => setFinishingTile(coordinates)}
+      onMouseDown={() => { if (painting) setStartingTile(coordinates) }}
+      onMouseUp={() => { if (painting) setFinishingTile(coordinates) }}
       onDoubleClick={() => setSelectedTile(coordinates)}
       onClick={handleClick}
     >
-      {content !== '' ? (
-        content
-      ) : (
-        <Droppable id={coordinates}>
-          {unitIconName !== undefined && unitIconName !== '' ? (
-            <Draggable id={coordinates}>
-              <UnitIcon
-                unitIconName={unitIconName}
-                factionIconName={factionIconName}
-                veterancyIconName={veterancyIconName}
-                markerColor={markerColor}
-                handleClick={handleClick}
-                identifier={identifier} identifierColor={identifierColor}
-              />
-            </Draggable>
-          ) : null}
-        </Droppable>
-      )}
+      {renderOverlays()}
+      <div className='tile-content'>
+        {content !== '' ? (
+          content
+        ) : (
+          <Droppable id={coordinates} className='droppable-fill'>
+            <div>
+              {unitIconName !== undefined && unitIconName !== '' ? (
+                <Draggable id={coordinates}>
+                  <div onMouseDown={() => setSelectedTile(coordinates)}>
+                    <UnitIcon
+                      unitIconName={unitIconName}
+                      factionIconName={factionIconName}
+                      veterancyIconName={veterancyIconName}
+                      markerColor={markerColor}
+                      handleClick={handleClick}
+                      identifier={identifier} identifierColor={identifierColor}
+                    />
+                  </div>
+                </Draggable>
+              ) : null}
+            </div>
+          </Droppable>
+        )}
+      </div>
     </div>
   )
 }

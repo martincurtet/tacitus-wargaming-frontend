@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { integerToLetter } from '../functions/functions'
+import { integerToLetter, terrainToHex } from '../functions/functions'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
-import { DndContext, DragOverlay, useDraggable } from '@dnd-kit/core'
+import { DndContext, DragOverlay } from '@dnd-kit/core'
 import { UserContext } from '../context/UserContext'
 
 import Tile from './Tile'
@@ -20,7 +20,7 @@ const Board = ({
 
   //
   const params = useParams()
-  const [user, setUser] = useContext(UserContext)
+  const [user] = useContext(UserContext)
   const [selectedTile, setSelectedTile] = useState('')
   // const [paintToggle, setPaintToggle] = useState(false)
   // const [inputTerrain, setInputTerrain] = useState('plains')
@@ -28,37 +28,26 @@ const Board = ({
   const [finishingTile, setFinishingTile] = useState(null)
   const [activeId, setActiveId] = useState(null)
 
-  // const togglePaint = () => {
-  //   setPaintToggle(prev => !prev)
-  // }
-
-  // const handleInputTerrainChange = (e) => {
-  //   setInputTerrain(e.target.value)
-  // }
-
-  //
+  // Additive terrain painter (battle screen): delegate composition to backend
   useEffect(() => {
     if (finishingTile !== null && paintToggle) {
-      socket.emit('update-board-terrain', {
-        roomUuid: params.battleuuid,
-        startCell: startingTile,
-        endCell: finishingTile,
-        terrainType: inputTerrain
-      })
-    }
-  }, [finishingTile])
+      const startCell = startingTile
+      const endCell = finishingTile
+      const token = (inputTerrain ?? '').toString().trim().toLowerCase()
+      if (!startCell || !endCell || !token) return
 
-  //
-  useEffect(() => {
-    if (finishingTile !== null && paintToggle) {
       socket.emit('update-board-terrain', {
         roomUuid: params.battleuuid,
-        startCell: startingTile,
-        endCell: finishingTile,
-        terrainType: inputTerrain
+        startCell,
+        endCell,
+        terrainType: token
       })
+
+      // Reset selection to avoid stale range carrying over
+      setStartingTile(null)
+      setFinishingTile(null)
     }
-  }, [finishingTile])
+  }, [finishingTile, paintToggle, inputTerrain, startingTile, params.battleuuid])
 
   const handleDragStart = (event) => {
     setActiveId(event.active.id)
@@ -128,13 +117,6 @@ const Board = ({
     })
   }
 
-  const handleRemoveMarkers = () => {
-    socket.emit('remove-markers', {
-      roomUuid: params.battleuuid,
-      userUuid: user.userUuid
-    })
-  }
-
   // SOCKET EVENTS
   useEffect(() => {
     socket.on('unit-coordinates-updated', (data) => {
@@ -165,6 +147,7 @@ const Board = ({
     })
 
     socket.on('board-terrain-updated', (data) => {
+      // Treat server snapshot as source of truth
       setBoard(data.board)
       setLog(data.log)
     })
@@ -185,7 +168,15 @@ const Board = ({
       for (let c = 0; c <= boardSize['columnNumber']; c++) {
         const tileCoordinates = `${integerToLetter(c)}${r}`
         const tile = board[tileCoordinates] || null
-        let tileColor = tile?.terrainColor || '#d9ead3'
+        // Derive base color from terrainType tokens if present
+        const terrainType = tile?.terrainType || ''
+        const tokens = terrainType ? terrainType.split(/[+,]/).map(t => t.trim()).filter(Boolean) : []
+        const baseToken = tokens.find(t => (
+          t === 'plains' || t === 'forest' || t === 'mud' || t === 'jungle' ||
+          t === 'undergrowth' || t === 'marsh' || t === 'shallow-water' ||
+          t === 'deep-water' || t === 'road'
+        ))
+        let tileColor = (baseToken ? terrainToHex(baseToken) : (tile?.terrainColor || '#d9ead3'))
         if (c === 0 || r === 0) tileColor = '#ffffff'
         const tileContent = (c === 0 && r === 0) ? '' : c === 0 ? r : r === 0 ? integerToLetter(c) : ''
         tiles.push(
@@ -203,11 +194,12 @@ const Board = ({
             markerColor={tile?.markerColor}
             handleToggleMarker={handleToggleMarker}
             handleToggleFire={handleToggleFire}
-            fire={tile?.fire} highGround={tile?.impassable}
+            fire={tile?.fire}
             identifier={tile?.unitIdentifier}
             identifierColor={tile?.identifierColor}
             setStartingTile={setStartingTile}
             setFinishingTile={setFinishingTile}
+            painting={paintToggle}
           />
         )
       }
@@ -256,30 +248,6 @@ const Board = ({
           {renderDragOverlay()}
         </DragOverlay>
       </DndContext>
-      {/* <div className='board-toolbar'> */}
-        {/* <Button onClick={handleRemoveMarkers}>Clear Markers</Button> */}
-        {/* <input
-          type='checkbox'
-          checked={paintToggle}
-          onChange={togglePaint}
-        />
-        <select
-          onChange={handleInputTerrainChange}
-          value={inputTerrain}
-        >
-          <option value='plains'>Plains</option>
-          <option value='forest'>Forest</option>
-          <option value='mud'>Mud</option>
-          <option value='jungle'>Jungle</option>
-          <option value='undergrowth'>Undergrowth</option>
-          <option value='marsh'>Marsh</option>
-          <option value='high-ground'>High Ground</option>
-          <option value='shallow-water'>Shallow Water</option>
-          <option value='deep-water'>Deep Water</option>
-          <option value='fire'>Fire</option>
-          <option value='road'>Road</option>
-        </select> */}
-      {/* </div> */}
     </div>
   )
 }

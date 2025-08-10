@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { socket } from '../connections/socket'
 import { useParams } from 'react-router-dom'
 import { DndContext, DragOverlay } from '@dnd-kit/core'
-import { integerToLetter } from '../functions/functions'
+import { integerToLetter, cellRange, terrainToHex } from '../functions/functions'
 
 import Draggable from './dndComponents/Draggable'
 import Droppable from './dndComponents/Droppable'
@@ -39,6 +39,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
   const [startingTile, setStartingTile] = useState(null)
   const [finishingTile, setFinishingTile] = useState(null)
   const [activeId, setActiveId] = useState(null)
+  const [recentlyCleared, setRecentlyCleared] = useState(new Set())
 
   const handleInputRowNumberChange = (e) => {
     let rowNumber = parseInt(e.target.value.replace(/[^0-9]/g, ''))
@@ -77,14 +78,23 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
   //
   useEffect(() => {
     if (finishingTile !== null && paintToggle) {
+      const startCell = startingTile
+      const endCell = finishingTile
+      const token = (inputTerrain ?? '').toString().trim().toLowerCase()
+      if (!startCell || !endCell || !token) return
+
       socket.emit('update-board-terrain', {
         roomUuid: params.battleuuid,
-        startCell: startingTile,
-        endCell: finishingTile,
-        terrainType: inputTerrain
+        startCell,
+        endCell,
+        terrainType: token
       })
+
+      // Reset to prevent stale ranges
+      setStartingTile(null)
+      setFinishingTile(null)
     }
-  }, [finishingTile])
+  }, [finishingTile, paintToggle, inputTerrain, startingTile, params.battleuuid])
 
   //
   const renderUnits = () => {
@@ -116,7 +126,14 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
       for (let c = 0; c <= boardSize['columnNumber']; c++) {
         const tileCoordinates = `${integerToLetter(c)}${r}`
         const tile = board[tileCoordinates] || null
-        let tileColor = tile?.terrainColor || '#d9ead3'
+        const terrainType = tile?.terrainType || ''
+        const tokens = terrainType ? terrainType.split(/[+,]/).map(t => t.trim()).filter(Boolean) : []
+        const baseToken = tokens.find(t => (
+          t === 'plains' || t === 'forest' || t === 'mud' || t === 'jungle' ||
+          t === 'undergrowth' || t === 'marsh' || t === 'shallow-water' ||
+          t === 'deep-water' || t === 'road'
+        ))
+        let tileColor = (baseToken ? terrainToHex(baseToken) : (tile?.terrainColor || '#d9ead3'))
         if (c === 0 || r === 0) tileColor = '#ffffff'
         const tileContent = (c === 0 && r === 0) ? '' : c === 0 ? r : r === 0 ? integerToLetter(c) : ''
         tiles.push(
@@ -131,9 +148,10 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
             unitIconName={tile?.unitIcon}
             factionIconName={tile?.factionIcon}
             veterancyIconName={tile?.veterancyIcon}
-            fire={tile?.fire} highGround={tile?.impassable}
+            fire={tile?.fire}
             identifier={tile?.identifier}
             identifierColor={tile?.identifierColor}
+            painting={paintToggle}
           />
         )
       }
@@ -286,7 +304,22 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
     })
 
     socket.on('board-terrain-updated', (data) => {
-      setBoard(data.board)
+      // If we recently issued a clear, enforce overlay removal client-side
+      if (recentlyCleared.size > 0) {
+        const overlayTokens = new Set(['high-ground','high-ground-2','low-ground','low-ground-2','impassable-r','impassable-b'])
+        const adjusted = { ...data.board }
+        recentlyCleared.forEach((coord) => {
+          const currentType = (adjusted[coord]?.terrainType || '')
+          if (currentType) {
+            const tokens = currentType.split(/[+,]/).map(t => t.trim()).filter(Boolean)
+            const filtered = tokens.filter(t => !overlayTokens.has(t))
+            adjusted[coord] = { ...(adjusted[coord] || {}), terrainType: filtered.join('+') }
+          }
+        })
+        setBoard(adjusted)
+      } else {
+        setBoard(data.board)
+      }
       setLog(data.log)
     })
 
@@ -301,7 +334,7 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
       socket.off('board-terrain-updated')
       socket.off('unit-coordinates-updated')
     }
-  }, [setBoardSize, setLog])
+  }, [setBoardSize, setLog, recentlyCleared])
 
   // RENDER
   return (
@@ -357,9 +390,9 @@ const SetupBoard = ({ board, setBoard, boardSize, setBoardSize, factions, units,
               <option value='deep-water'>Deep Water</option>
               <option value='fire'>Fire</option>
               <option value='road'>Road</option>
-              <option value='impassable-r'>Impassable (Right)</option>
-              <option value='impassable-b'>Impassable (Bottom)</option>
-              <option value='impassable-corner'>Impassable (Corner)</option>
+              <option value='impassable-r'>Impassable (R)</option>
+              <option value='impassable-b'>Impassable (B)</option>
+              <option value='clear'>Clear (remove HG/Imp)</option>
             </select>
           </div>
           <Droppable id='unit-unassigned'>
