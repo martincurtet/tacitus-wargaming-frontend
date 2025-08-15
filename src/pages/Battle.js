@@ -270,10 +270,16 @@ const Battle = () => {
               <option value='undergrowth'>Undergrowth</option>
               <option value='marsh'>Marsh</option>
               <option value='high-ground'>High Ground</option>
+              <option value='high-ground-2'>High Ground (2)</option>
+              <option value='low-ground'>Low Ground</option>
+              <option value='low-ground-2'>Low Ground (2)</option>
               <option value='shallow-water'>Shallow Water</option>
               <option value='deep-water'>Deep Water</option>
               <option value='fire'>Fire</option>
               <option value='road'>Road</option>
+              <option value='impassable-r'>Impassable (R)</option>
+              <option value='impassable-b'>Impassable (B)</option>
+              <option value='clear'>Clear (remove HG/Imp)</option>
             </select>
             <Button onClick={() => setLogChatCollapse(!logChatCollapse)}>Hide Log and Chat</Button>
           </div>
