@@ -12,7 +12,10 @@ const Tile = ({
     unitIconName, factionIconName, veterancyIconName,
     markerColor, handleToggleMarker=()=>{}, handleToggleFire=()=>{}, fire,
     identifier, identifierColor, terrain,
-    painting=false
+    painting=false,
+    unitStyle,
+    identifierStyle,
+    tileZIndex
   }) => {
   //
   const handleClick = (e) => {
@@ -32,6 +35,7 @@ const Tile = ({
     background: color,
     '--base-background': color
   }
+  if (tileZIndex) tileStyle.zIndex = tileZIndex
 
   const parseTerrainTokens = () => {
     if (!terrain || typeof terrain !== 'string') return []
@@ -112,6 +116,8 @@ const Tile = ({
                       markerColor={markerColor}
                       handleClick={handleClick}
                       identifier={identifier} identifierColor={identifierColor}
+                      style={unitStyle}
+                      identifierStyle={identifierStyle}
                     />
                   </div>
                 </Draggable>

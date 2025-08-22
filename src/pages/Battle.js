@@ -288,7 +288,7 @@ const Battle = () => {
           </div>
           <Board
             board={board} setBoard={setBoard} boardSize={boardSize}
-            setUnits={setUnits}
+            units={units} setUnits={setUnits}
             setLog={setLog}
             paintToggle={paintToggle}
             inputTerrain={inputTerrain}
