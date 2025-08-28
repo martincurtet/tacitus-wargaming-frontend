@@ -1,12 +1,93 @@
+/* Overlay container and content wrapper */
 .tile {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
-.tile :first-child {
+/* Ensure only the unit icon inside tile content is sized, not overlays */
+.tile-content .unit-image-container {
   width: 35px;
   height: 35px;
+  display: block;       /* avoid inline-block baseline quirks */
+  line-height: 0;       /* remove extra baseline space */
+  justify-self: center; /* explicit grid centering safeguards */
+  align-self: center;
+}
+
+/* Nudge identifier badge down when on the board (tile context) */
+.tile-content .unit-image-container .identifier {
+  top: 5px;
+}
+
+.tile-overlays {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.tile-content {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+}
+
+/* Triangle overlays */
+.overlay-tri-bottom,
+.overlay-tri-top {
+  position: absolute;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  transform: translateX(-50%);
+}
+
+/* Bottom-facing inward triangle (wide edge on bottom) */
+.overlay-tri-bottom {
+  bottom: 0;
+  border-width: 0 5px 5px 5px;
+  border-color: transparent transparent #071c30 transparent;
+}
+
+/* Top-facing inward triangle (wide edge on top) */
+.overlay-tri-top {
+  top: 0;
+  border-width: 5px 5px 0 5px;
+  border-color: #071c30 transparent transparent transparent;
+}
+
+/* Offsets for the double versions */
+.offset-left {
+  left: calc(50% - 5px);
+}
+
+.offset-right {
+  left: calc(50% + 5px);
+}
+
+/* Stripe overlays */
+.overlay-stripe-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2px;
+  height: 100%;
+  background: #000;
+}
+
+.overlay-stripe-bottom {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: #000;
 }
 
 .red-border {
@@ -17,16 +98,168 @@
   border: solid 1px lightgrey;
 }
 
-.test {
-  color: #d9ead3; 
-  color: #6aa84f;
-  color: #b46006;
-  color: #274e13;
-  color: #38761d;
-  color: #134f5c;
-  color: #071c30;
-  color: #c9daf8;
-  color: #3c78d8;
-  color: #ff9a00;
-  color: #999999;
+/* High Ground Triangle */
+.high-ground {
+  position: relative;
+}
+
+/* Bottom triangle pointing inward */
+.high-ground::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 5px 5px 5px;
+  border-color: transparent transparent #071c30 transparent;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* High Ground (2): two adjacent bottom triangles */
+.high-ground-2 {
+  position: relative;
+}
+
+.high-ground-2::before,
+.high-ground-2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 5px 5px 5px;
+  border-color: transparent transparent #071c30 transparent;
+  z-index: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+/* Left triangle center 5px left of center */
+.high-ground-2::before {
+  left: calc(50% - 5px);
+}
+
+/* Right triangle center 5px right of center */
+.high-ground-2::after {
+  left: calc(50% + 5px);
+}
+
+/* Low Ground: single top triangle pointing inward (down) */
+.low-ground {
+  position: relative;
+}
+
+.low-ground::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 5px 0 5px; /* point down */
+  border-color: #071c30 transparent transparent transparent;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Low Ground (2): two adjacent top triangles */
+.low-ground-2 {
+  position: relative;
+}
+
+.low-ground-2::before,
+.low-ground-2::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 5px 0 5px; /* point down */
+  border-color: #071c30 transparent transparent transparent;
+  z-index: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+/* Left triangle center 5px left of center */
+.low-ground-2::before {
+  left: calc(50% - 5px);
+}
+
+/* Right triangle center 5px right of center */
+.low-ground-2::after {
+  left: calc(50% + 5px);
+}
+
+/* Impassable (R): 3px black stripe on right edge */
+.impassable-r {
+  position: relative;
+}
+
+.impassable-r::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2px;
+  height: 100%;
+  background: #000;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Impassable (B): 3px black stripe on bottom edge */
+.impassable-b {
+  position: relative;
+}
+
+.impassable-b::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: #000;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Full-tile droppable fill */
+.droppable-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+/* Center inner wrapper as well to avoid edge cases */
+.droppable-fill > div {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Fire overlay within overlay stack */
+.overlay-fire {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, var(--base-background) 10%, #ff9a00 10%, #ff9a00 20%, var(--base-background) 20%, var(--base-background) 30%, #ff9a00 30%, #ff9a00 40%, var(--base-background) 40%, var(--base-background) 50%, #ff9a00 50%, #ff9a00 60%, var(--base-background) 60%, var(--base-background) 70%, #ff9a00 70%, #ff9a00 80%, var(--base-background) 80%, var(--base-background) 90%);
+  z-index: 0;
+}
+
+/* Ensure subsequent overlays render above fire */
+.tile-overlays > *:not(.overlay-fire) {
+  z-index: 1;
 }

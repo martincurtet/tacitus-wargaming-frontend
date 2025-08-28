@@ -30,6 +30,22 @@
   text-align: center;
 }
 
+/* Drag overlay units should be the same size as board tiles */
+.unit-image-container.drag-overlay-unit {
+  width: 35px;
+  height: 35px;
+}
+
+.unit-image-container.drag-overlay-unit.board-overlay {
+  opacity: 0;
+}
+
+/* Ensure tray drag overlays sit above terrain/tiles */
+.unit-image-container.drag-overlay-unit.tray-overlay {
+  opacity: 1;
+  z-index: 999; /* elevated during drag from tray */
+}
+
 .unit-image {
   display: block;
   width: 100%; /* Adjust as needed */
