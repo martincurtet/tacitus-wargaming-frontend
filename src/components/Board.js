@@ -12,7 +12,7 @@ import '../styles/components/Board.css'
 
 const Board = ({
     board, setBoard, boardSize,
-    setUnits,
+    units, setUnits,
     setLog,
     paintToggle,
     inputTerrain
@@ -163,6 +163,55 @@ const Board = ({
 
   // RENDER FUNCTIONS
   const renderBoard = () => {
+    const buildUnitFullCode = (u) => `${u.factionCode}-${u.unitCode}-${u.identifier || ''}`
+    const computeUnitStyle = (tile) => {
+      try {
+        const unitCode = tile?.unitFullCode
+        if (!Array.isArray(units)) return undefined
+        let unit = null
+        if (unitCode) {
+          unit = units.find(u => buildUnitFullCode(u) === unitCode || `${u.factionCode}-${u.unitCode}` === unitCode)
+        }
+        // Fallback match by icon + identifier if needed (when unitFullCode is absent)
+        if (!unit && tile?.unitIcon) {
+          unit = units.find(u => u.iconName === tile.unitIcon && (u.identifier || '') === (tile.unitIdentifier || tile.identifier || '')) || null
+        }
+        if (!unit) return undefined
+        const men = Number(unit.men)
+        const threshold = Number(unit.sizeThreshold ?? unit.size_threshold ?? unit.menPerSquare ?? unit.men_per_square)
+        if (!men || !threshold || threshold <= 0) return undefined
+        const ratio = men / threshold
+        const factor = Math.max(1, Math.ceil(Math.sqrt(ratio)))
+        const basePx = 40
+        const sizePx = Math.max(1, basePx * factor - 5)
+        const style = { width: `${sizePx}px`, height: `${sizePx}px` }
+        if (factor > 1) style.transform = 'translate(2px, 2px)'
+        return style
+      } catch (e) {
+        return undefined
+      }
+    }
+    const computeTileZ = (tile, coords) => {
+      try {
+        if (coords && coords === activeId) return 999
+        const style = computeUnitStyle(tile)
+        if (!style) return undefined
+        const sizePx = parseInt(style.width)
+        const factor = Math.round(sizePx / 40)
+        return factor > 1 ? 10 : undefined
+      } catch (e) { return undefined }
+    }
+    const computeIdentifierStyle = (tile) => {
+      try {
+        const style = computeUnitStyle(tile)
+        if (!style) return undefined
+        const sizePx = parseInt(style.width)
+        // Back out the factor using the pre-chop base of 40px per tile
+        const factor = Math.max(1, Math.round((sizePx + 5) / 40))
+        const topOffsetPx = Math.round((sizePx) * 0.15)
+        return { fontSize: `${0.75 * factor}rem`, top: `${topOffsetPx}px` }
+      } catch (e) { return undefined }
+    }
     let tiles = []
     for (let r = 0; r <= boardSize['rowNumber']; r++) {
       for (let c = 0; c <= boardSize['columnNumber']; c++) {
@@ -200,6 +249,9 @@ const Board = ({
             setStartingTile={setStartingTile}
             setFinishingTile={setFinishingTile}
             painting={paintToggle}
+            unitStyle={computeUnitStyle(tile)}
+            identifierStyle={computeIdentifierStyle(tile)}
+            tileZIndex={computeTileZ(tile, tileCoordinates)}
           />
         )
       }
@@ -214,9 +266,29 @@ const Board = ({
     const tile = board[activeId] || null
     if (!tile || !tile.unitIcon) return null
 
+    // Suppress overlay for default-size units so the source stays visible during drag
+    try {
+      const buildUnitFullCode = (u) => `${u.factionCode}-${u.unitCode}-${u.identifier || ''}`
+      let unit = null
+      if (tile.unitFullCode && Array.isArray(units)) {
+        unit = units.find(u => buildUnitFullCode(u) === tile.unitFullCode || `${u.factionCode}-${u.unitCode}` === tile.unitFullCode) || null
+      }
+      if (!unit && Array.isArray(units)) {
+        unit = units.find(u => u.iconName === tile.unitIcon && (u.identifier || '') === (tile.unitIdentifier || tile.identifier || '')) || null
+      }
+      if (unit) {
+        const men = Number(unit.men)
+        const threshold = Number(unit.sizeThreshold ?? unit.size_threshold ?? unit.menPerSquare ?? unit.men_per_square)
+        if (men && threshold && threshold > 0) {
+          const factor = Math.max(1, Math.ceil(Math.sqrt(men / threshold)))
+          if (factor === 1) return null
+        }
+      }
+    } catch (_) {}
+
     return (
       <UnitIcon
-        className='drag-overlay-unit'
+        className='drag-overlay-unit board-overlay'
         unitIconName={tile.unitIcon}
         factionIconName={tile.factionIcon}
         veterancyIconName={tile.veterancyIcon}
