@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { socket } from '../connections/socket'
 import { UserContext } from '../context/UserContext'
@@ -37,6 +37,16 @@ const Setup = ({
 
   // NEXT STEP CONFIRM MODAL
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
+  const [bulkAdditionHandler, setBulkAdditionHandler] = useState(null)
+
+  const updateBulkAdditionHandler = useCallback((handler) => {
+    setBulkAdditionHandler(() => (typeof handler === 'function' ? handler : null))
+  }, [])
+  const handleBulkAdditionClick = useCallback(() => {
+    if (typeof bulkAdditionHandler === 'function') {
+      bulkAdditionHandler()
+    }
+  }, [bulkAdditionHandler])
 
   const openNextStepModal = () => {
     setIsConfirmModalOpen(true)
@@ -62,6 +72,7 @@ const Setup = ({
           <SetupUnits
             unitShop={unitShop} units={units} setUnits={setUnits}
             factions={factions}
+            registerBulkAdditionHandler={updateBulkAdditionHandler}
           />
         )
       case 3:
@@ -171,7 +182,12 @@ const Setup = ({
           ))}
         </div>
         <div className='setup-box'>
-          <h2 className='setup-title'>{stepTitles[step]}</h2>
+          <div className='setup-box-header'>
+            <h2 className='setup-title'>{stepTitles[step]}</h2>
+            {step === 2 ? (
+              <Button onClick={handleBulkAdditionClick}>Bulk Addition</Button>
+            ) : null}
+          </div>
           {renderStepContent()}
           {/* <button onClick={prevStep}>Back</button> */}
           {/* <div className='setup-buttons'>
