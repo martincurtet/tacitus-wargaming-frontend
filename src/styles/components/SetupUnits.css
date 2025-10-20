@@ -4,6 +4,34 @@
   gap: 1rem;
 }
 
+.bulk-addition-container {
+  align-self: flex-start;
+}
+
+.bulk-addition-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 400px;
+}
+
+.bulk-addition-modal textarea {
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+  padding: 0.5rem;
+  font-family: monospace;
+}
+
+.bulk-addition-error {
+  width: 100%;
+  color: #b30000;
+  background-color: rgba(179, 0, 0, 0.1);
+  border: 1px solid #b30000;
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+
 .unit-store {
   display: grid;
   grid-template-columns: repeat(10, 1fr);

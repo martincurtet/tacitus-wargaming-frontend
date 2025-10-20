@@ -1,18 +1,42 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { socket } from '../connections/socket'
 import { UserContext } from '../context/UserContext'
 import Button from './Button'
+import Modal from './Modal'
 
 import '../styles/components/SetupUnits.css'
 
-const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
+const SetupUnits = ({ unitShop, units, setUnits, factions, registerBulkAdditionHandler }) => {
   const params = useParams()
   const [user, setUser] = useContext(UserContext)
   const [indexFactionSelected, setIndexFactionSelected] = useState(user.isHost ? 0 : -1)
   const [inputMen, setInputMen] = useState({})
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false)
+  const [bulkInput, setBulkInput] = useState('')
+  const [bulkError, setBulkError] = useState('')
 
   const DEFAULT_MEN_VALUE = Number(process.env.DEFAULT_MEN_VALUE) || 20
+
+  const validFactionCodes = useMemo(() => factions.map(f => f.code.toUpperCase()), [factions])
+  const validUnitCodes = useMemo(() => unitShop.map(u => u.code.toUpperCase()), [unitShop])
+  const existingFactionCounts = useMemo(() => {
+    return units.reduce((accumulator, unit) => {
+      const factionCode = (unit.factionCode || '').toUpperCase()
+      if (factionCode !== '') {
+        accumulator[factionCode] = (accumulator[factionCode] || 0) + 1
+      }
+      return accumulator
+    }, {})
+  }, [units])
+
+  const buildInputMenMap = useCallback((unitsData) => {
+    const map = {}
+    unitsData.forEach((unit) => {
+      map[`${unit.factionCode}-${unit.unitCode}-${unit.identifier}`] = parseInt(unit.men, 10) || DEFAULT_MEN_VALUE
+    })
+    return map
+  }, [DEFAULT_MEN_VALUE])
 
   // FUNCTIONS
   const selectFaction = (index) => {
@@ -38,6 +62,104 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
         unitCode: unitCode
       })
     }
+  }
+
+  const openBulkModal = useCallback(() => {
+    setBulkInput('')
+    setBulkError('')
+    setIsBulkModalOpen(true)
+  }, [])
+
+  const closeBulkModal = useCallback(() => {
+    setIsBulkModalOpen(false)
+  }, [])
+
+  useEffect(() => {
+    if (typeof registerBulkAdditionHandler !== 'function') {
+      return undefined
+    }
+    registerBulkAdditionHandler(openBulkModal)
+    return undefined
+  }, [openBulkModal, registerBulkAdditionHandler])
+
+  useEffect(() => {
+    setInputMen(buildInputMenMap(units))
+  }, [units, buildInputMenMap])
+
+  const handleBulkConfirm = () => {
+    setBulkError('')
+    const lines = bulkInput.split('\n').map(line => line.trim()).filter(Boolean)
+
+    if (lines.length === 0) {
+      setBulkError('Enter at least one line with faction, unit, men, and copies.')
+      return
+    }
+
+    let totalCopies = 0
+    const unitsPayload = []
+    const factionCounts = { ...existingFactionCounts }
+
+    for (let index = 0; index < lines.length; index += 1) {
+      const line = lines[index]
+      const parts = line.split(/[\s,]+/).filter(Boolean)
+
+      if (parts.length !== 4) {
+        setBulkError(`Line ${index + 1} must contain exactly four values.`)
+        return
+      }
+
+      const [rawFactionCode, rawUnitCode, rawMen, rawCopies] = parts
+      const factionCode = rawFactionCode.toUpperCase()
+      const unitCode = rawUnitCode.toUpperCase()
+
+      if (!validFactionCodes.includes(factionCode)) {
+        setBulkError(`Line ${index + 1}: Unknown faction code "${rawFactionCode}".`)
+        return
+      }
+
+      if (!validUnitCodes.includes(unitCode)) {
+        setBulkError(`Line ${index + 1}: Unknown unit code "${rawUnitCode}".`)
+        return
+      }
+
+      const men = Number(rawMen)
+      const copies = Number(rawCopies)
+
+      if (!Number.isInteger(men) || men < 1 || men > 99999) {
+        setBulkError(`Line ${index + 1}: Men value must be an integer between 1 and 99999.`)
+        return
+      }
+
+      if (!Number.isInteger(copies) || copies < 1) {
+        setBulkError(`Line ${index + 1}: Copies value must be an integer greater than 0.`)
+        return
+      }
+
+      totalCopies += copies
+
+      if (totalCopies > 100) {
+        setBulkError('Total number of copies cannot exceed 100.')
+        return
+      }
+
+      const currentCount = factionCounts[factionCode] || 0
+      if (currentCount + copies > 100) {
+        setBulkError(`Line ${index + 1}: Adding ${copies} copies exceeds 100 units for faction ${factionCode}.`)
+        return
+      }
+      factionCounts[factionCode] = currentCount + copies
+
+      for (let copy = 0; copy < copies; copy += 1) {
+        unitsPayload.push({ factionCode, unitCode, men })
+      }
+    }
+
+    socket.emit('add-units-bulk', {
+      roomUuid: params.battleuuid,
+      units: unitsPayload
+    })
+
+    closeBulkModal()
   }
 
   const removeUnit = (factionCode, unitCode, identifier) => {
@@ -66,27 +188,29 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
   useEffect(() => {
     socket.on('unit-added', (data) => {
       setUnits(data.units)
+      setInputMen(buildInputMenMap(data.units))
     })
 
     socket.on('unit-removed', (data) => {
       setUnits(data.units)
+      setInputMen(buildInputMenMap(data.units))
     })
 
     socket.on('men-changed', (data) => {
-      setInputMen(() => {
-        let initialState = {}
-        data.units.forEach(u => {
-          initialState[`${u.factionCode}-${u.unitCode}-${u.identifier}`] = parseInt(u.men) || DEFAULT_MEN_VALUE
-        })
-        return initialState
-      })
+      setInputMen(buildInputMenMap(data.units))
       setUnits(data.units)
+    })
+
+    socket.on('units-bulk-added', (data) => {
+      setUnits(data.units)
+      setInputMen(buildInputMenMap(data.units))
     })
 
     return () => {
       socket.off('unit-added')
       socket.off('unit-removed')
       socket.off('men-changed')
+      socket.off('units-bulk-added')
     }
   }, [])
 
@@ -145,6 +269,24 @@ const SetupUnits = ({ unitShop, units, setUnits, factions }) => {
           </div>
         ))}
       </div>
+
+      <Modal
+        isOpen={isBulkModalOpen}
+        onCancel={closeBulkModal}
+        onSubmit={handleBulkConfirm}
+        submitText='Confirm'
+      >
+        <div className='bulk-addition-modal'>
+          <h3>Bulk Unit Addition</h3>
+          <p>Enter one unit per line as faction, unit, men, copies.</p>
+          {bulkError && <div className='bulk-addition-error'>{bulkError}</div>}
+          <textarea
+            value={bulkInput}
+            onChange={(e) => setBulkInput(e.target.value)}
+            placeholder='KAR, VHINF, 25, 3'
+          />
+        </div>
+      </Modal>
     </div>
   )
 }
