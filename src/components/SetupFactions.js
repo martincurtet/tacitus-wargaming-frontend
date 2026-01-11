@@ -53,7 +53,7 @@ const SetupFactions = ({ users, setUsers, factionShop, factions, setFactions, se
       socket.emit('change-strat-ability', {
         roomUuid: params.battleuuid,
         userUuid: userUuid,
-        stratAbility: value
+        stratAbility: stratAbility
       })
     }
   }
